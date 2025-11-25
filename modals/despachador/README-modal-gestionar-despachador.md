@@ -177,13 +177,11 @@ Opciones para avanzar:
 2. En Programada
     Si la solicitud es "Programada", el Despachador puede enviar a "Vigente", el nombre de la transición es: "Iniciar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Inicio
     Si la solicitud es "Programada", el Despachador puede enviar a "Rechazada", el nombre de la transición es: "Rechazar Trabajo"
-    Si la solicitud es "Programada", el Despachador puede enviar a "Suspendida", el nombre de la transición es: "Suspender Trabajo"
 
 3. Vigente
     Si la solicitud es "Vigente", el Despachador puede enviar a "Extendida", el nombre de la transición es: "Extender Trabajo"
-    Si la solicitud es "Vigente", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización
-    Si la solicitud es "Vigente", el Despachador puede enviar a "Rechazada", el nombre de la transición es: "Rechazar Trabajo"
     Si la solicitud es "Vigente", el Despachador puede enviar a "Suspendida", el nombre de la transición es: "Suspender Trabajo"
+    Si la solicitud es "Vigente", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización
 
 4. Extendida
     Si la solicitud es "Extendida", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización

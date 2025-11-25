@@ -1,4 +1,18 @@
+<style>
+    /* Asegura que los dropdowns de filtros se muestren sobre la botonera */
+    #zona-filtro {
+        overflow: visible;
+    }
+
+    #zona-filtro .bootstrap-select .dropdown-menu {
+        z-index: 9999; /* asegurar que quede siempre sobre la botonera y otros elementos */
+    }
+</style>
+
 <h2 class="mb-4"><i class="fas fa-file-alt"></i> Solicitudes</h2>
+
+<!-- Resumen de solicitudes del solicitante -->
+<div class="row mb-4" id="resumen-solicitante"></div>
 
 <div class="row mb-4">
     <div class="col-12">
@@ -26,7 +40,14 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Instalación GM</label>
-                            <select class="form-control" id="filtroInstalacionGMSolic">
+                            <select
+                                class="form-control selectpicker"
+                                id="filtroInstalacionGMSolic"
+                                multiple
+                                data-actions-box="true"
+                                data-live-search="true"
+                                data-container="body"
+                                data-none-selected-text="Todas las instalaciones">
                                 <option value="">Todas</option>
                                 <option value="Santiago Solar">Santiago Solar</option>
                                 <option value="Nueva Renca">Nueva Renca</option>
@@ -77,19 +98,19 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Fecha Desde</label>
+                            <label>Fecha Inicio Programada Desde</label>
                             <input type="date" class="form-control" id="filtroFechaDesdeSolic">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Fecha Hasta</label>
+                            <label>Fecha Inicio Programada Hasta</label>
                             <input type="date" class="form-control" id="filtroFechaHastaSolic">
                         </div>
                     </div>
                 </div>
-                <div class="btns-accion-filtro">
-                    <a href="javascript:;" class="btn-filtrar text-decoration-none" onclick="aplicarFiltrosSolic()">
+                <div class="btns-accion-filtro d-flex align-items-center">
+                    <a href="javascript:;" class="btn-filtrar text-decoration-none mr-3" onclick="aplicarFiltrosSolic()">
                         <i class="fas fa-filter"></i> Filtrar
                     </a>
                     <a href="javascript:;" class="btn-limpiar text-decoration-none" onclick="limpiarFiltrosSolic()">
@@ -103,15 +124,18 @@
 
 <div class="row mb-4 align-items-center">
     <div class="col-lg-6">
-        <div class="botonera">
+        <div class="botonera d-flex align-items-center">
             <a class="btn btn-customized" href="javascript:;" role="button" onclick="abrirModalNuevaSolicitudSolic()" id="btn-newDoc">
                 <i class="fa fa-plus"></i> Nueva Solicitud
+            </a>
+            <a class="btn btn-success ml-2" href="javascript:;" role="button" id="btn-descargar-excel-solic">
+                <i class="fas fa-file-excel"></i> Descargar Excel Vinculado
             </a>
         </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
         <div class="row justify-content-end">
-            <div class="form-group col-lg-4 col-md-4 col-sm-4 mb-0">
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 mb-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -121,7 +145,7 @@
                     <input type="text" class="form-control" disabled="" aria-label="" value="En Proceso" autocomplete="off">
                 </div>
             </div>
-            <div class="form-group col-lg-4 col-md-4 col-sm-4 mb-0">
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 mb-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -129,6 +153,16 @@
                         </div>
                     </div>
                     <input type="text" class="form-control" disabled="" aria-label="" value="Finalizadas" autocomplete="off">
+                </div>
+            </div>
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 mb-0">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input class="cbxFilter" type="radio" aria-label="" name="flexRadioDefault" id="cbxTodas" autocomplete="off" onchange="filtrarPorEstado('todas')">
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" disabled="" aria-label="" value="Todas" autocomplete="off">
                 </div>
             </div>				
         </div>
@@ -195,6 +229,130 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     const tbody = $('#tablaSolicitudesSolicitante tbody');
     tbody.empty(); // Limpiar tabla
     
+    // Calcular resumen por estado
+    const resumen = {
+        totalGeneradas: solicitudes.length,
+        totalDevueltas: 0,
+        totalAnuladas: 0,
+        totalEnProceso: 0,
+        totalVigentes: 0,
+        totalRechazado: 0,
+        totalExtendida: 0,
+        totalSuspendida: 0,
+        totalFinalizadas: 0
+    };
+
+    solicitudes.forEach(sol => {
+        const estado = sol.ESTADO;
+        if (estado === 'Devuelta') resumen.totalDevueltas++;
+        if (estado === 'No Solicitada') resumen.totalAnuladas++;
+        if (['En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumen.totalEnProceso++;
+        if (estado === 'Vigente') resumen.totalVigentes++;
+        if (estado === 'Rechazada') resumen.totalRechazado++;
+        if (estado === 'Extendida') resumen.totalExtendida++;
+        if (estado === 'Suspendida') resumen.totalSuspendida++;
+        if (estado === 'Finalizada') resumen.totalFinalizadas++;
+    });
+
+    // Pintar tarjetas de resumen
+    let resumenHtml = '';
+    resumenHtml += `
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Generadas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Generadas - Año en curso" data-content="Cantidad total de solicitudes creadas por el solicitante, sin filtrar por estado."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalGeneradas}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Devueltas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Devueltas - Año en curso" data-content="Solicitudes que han sido devueltas al solicitante para corrección o ajuste."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalDevueltas}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Anuladas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Anuladas - Año en curso" data-content="Solicitudes marcadas como 'No Solicitada' o anuladas antes de ser gestionadas."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalAnuladas}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total En Proceso
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total En Proceso - Año en curso" data-content="Solicitudes en estados Pendiente, En Análisis, Administrador Gestionando o Programada."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalEnProceso}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Vigentes
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigentes - Año en curso" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalVigentes}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Rechazado
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazado - Año en curso" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalRechazado}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Extendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendida - Año en curso" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalExtendida}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-dark h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Suspendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendida - Año en curso" data-content="Solicitudes que han sido suspendidas temporalmente."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalSuspendida}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Finalizadas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Finalizadas - Año en curso" data-content="Solicitudes cuyo ciclo de vida ha terminado correctamente."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalFinalizadas}</h4>
+                </div>
+            </div>
+        </div>
+    `;
+
+    $('#resumen-solicitante').html(resumenHtml);
+    // Inicializar popovers para los indicadores
+    $('#resumen-solicitante [data-toggle="popover"]').popover();
+    
     // Generar cada fila
     solicitudes.forEach(solicitud => {
         // Determinar función de ver según el estado
@@ -224,41 +382,52 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         }
         
         // Determinar acciones según el estado
-        let acciones = '';
+        let accionesContenido = '';
         if (['Devuelta'].includes(solicitud.ESTADO)) {
             // Estados editables para el solicitante (Devuelta)
-            acciones = `
-
-                <a href="javascript:;" onclick="abrirModalEditarSolic(${solicitud.ID_REGISTRO})" class="text-warning ml-2" title="Editar">
-                    <i class="fas fa-edit"></i>
+            accionesContenido = `
+                <a class="dropdown-item" href="javascript:;" onclick="abrirModalEditarSolic(${solicitud.ID_REGISTRO})">
+                    <i class="fas fa-edit mr-2 text-warning"></i> Editar
                 </a>
-                <a href="javascript:;" onclick="${funcionVer}" class="text-primary ml-2" title="Ver">
-                    <i class="fas fa-eye"></i>
+                <a class="dropdown-item" href="javascript:;" onclick="${funcionVer}">
+                    <i class="fas fa-eye mr-2 text-primary"></i> Ver
                 </a>
-                <a href="javascript:;" onclick="clonarSolicitudSolic(${solicitud.ID_REGISTRO})" class="text-info ml-2" title="Clonar">
-                    <i class="fas fa-copy"></i>
+                <a class="dropdown-item" href="javascript:;" onclick="clonarSolicitudSolic(${solicitud.ID_REGISTRO})">
+                    <i class="fas fa-copy mr-2 text-info"></i> Clonar
                 </a>
-                <a href="javascript:;" onclick="gestionarSolicitudSolic(${solicitud.ID_REGISTRO})" class="text-danger ml-2" title="Gestionar">
-                    <i class="fas fa-arrow-circle-right"></i>
+                <a class="dropdown-item" href="javascript:;" onclick="gestionarSolicitudSolic(${solicitud.ID_REGISTRO})">
+                    <i class="fas fa-arrow-circle-right mr-2 text-danger"></i> Gestionar
                 </a>
-                <a href="javascript:;" onclick="abrirBitacora(${solicitud.ID_REGISTRO})" class="text-success ml-2" title="Bitácora">
-                    <i class="fas fa-clipboard-list"></i>
+                <a class="dropdown-item" href="javascript:;" onclick="abrirBitacora(${solicitud.ID_REGISTRO})">
+                    <i class="fas fa-clipboard-list mr-2 text-success"></i> Bitácora
                 </a>
             `;
         } else {
             // Estados no editables (solo ver, clonar y bitácora)
-            acciones = `
-                <a href="javascript:;" onclick="${funcionVer}" class="text-primary" title="Ver">
-                    <i class="fas fa-eye"></i>
+            accionesContenido = `
+                <a class="dropdown-item" href="javascript:;" onclick="${funcionVer}">
+                    <i class="fas fa-eye mr-2 text-primary"></i> Ver
                 </a>
-                <a href="javascript:;" onclick="clonarSolicitudSolic(${solicitud.ID_REGISTRO})" class="text-info ml-2" title="Clonar">
-                    <i class="fas fa-copy"></i>
+                <a class="dropdown-item" href="javascript:;" onclick="clonarSolicitudSolic(${solicitud.ID_REGISTRO})">
+                    <i class="fas fa-copy mr-2 text-info"></i> Clonar
                 </a>
-                <a href="javascript:;" onclick="abrirBitacora(${solicitud.ID_REGISTRO})" class="text-success ml-2" title="Bitácora">
-                    <i class="fas fa-clipboard-list"></i>
+                <a class="dropdown-item" href="javascript:;" onclick="abrirBitacora(${solicitud.ID_REGISTRO})">
+                    <i class="fas fa-clipboard-list mr-2 text-success"></i> Bitácora
                 </a>
             `;
         }
+
+        const acciones = `
+            <div class="dropdown d-inline-block">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="accionesMenu${solicitud.ID_REGISTRO}"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accionesMenu${solicitud.ID_REGISTRO}">
+                    ${accionesContenido}
+                </div>
+            </div>
+        `;
         
         // Generar HTML de la fila
         const fila = `
@@ -287,6 +456,11 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     // Variable local para el filtro actual
     let filtroActual = 'proceso';
     
+    // Inicializar selectpicker de Instalación GM
+    $(function() {
+        $('#filtroInstalacionGMSolic').selectpicker();
+    });
+    
     // Función para limpiar filtros (legacy)
     window.limpiarFiltros = function() {
         $('#zona-filtro select').val('');
@@ -298,7 +472,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         const table = $('#tablaSolicitudesSolicitante').DataTable();
         
         // Obtener valores de filtros
-        const filtroInstalacion = $('#filtroInstalacionGMSolic').val();
+        const filtroInstalacion = $('#filtroInstalacionGMSolic').val(); // ahora puede ser array
         const filtroEquipos = $('#filtroEquiposSolic').val().toLowerCase();
         const filtroTipoInterv = $('#filtroTipoIntervencionSolic').val();
         const filtroRiesgo = $('#filtroRiesgoSolic').val();
@@ -306,8 +480,13 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         const filtroFechaDesde = $('#filtroFechaDesdeSolic').val();
         const filtroFechaHasta = $('#filtroFechaHastaSolic').val();
         
-        // Aplicar búsqueda por Instalación GM (columna 4)
-        table.column(4).search(filtroInstalacion);
+        // Aplicar búsqueda por Instalación GM (columna 4) - soporte multi selección
+        if (Array.isArray(filtroInstalacion) && filtroInstalacion.length > 0 && !filtroInstalacion.includes('')) {
+            const pattern = '^(' + filtroInstalacion.join('|') + ')$';
+            table.column(4).search(pattern, true, false); // regex = true, smart = false
+        } else {
+            table.column(4).search('');
+        }
         
         // Aplicar búsqueda por Equipos (columna 5)
         table.column(5).search(filtroEquipos);

@@ -6,29 +6,10 @@ $(document).ready(function() {
     console.log('Componentes GEME cargados correctamente');
     
     // ============================================
-    // SIDEBAR TOGGLE
+    // SIDEBAR - INICIALIZACIÓN CENTRALIZADA
     // ============================================
-    $('#sidebarCollapse').on('click', function() {
-        $('#sidebar').toggleClass('active');
-        $('#content').toggleClass('active');
-        $('.overlay').toggleClass('active');
-        
-        // Cambiar icono del botón
-        var icon = $(this).find('i');
-        if ($('#sidebar').hasClass('active')) {
-            icon.removeClass('fa-bars').addClass('fa-times');
-        } else {
-            icon.removeClass('fa-times').addClass('fa-bars');
-        }
-    });
-    
-    // Cerrar sidebar al hacer click en el overlay (móviles)
-    $('.overlay').on('click', function() {
-        $('#sidebar').removeClass('active');
-        $('#content').removeClass('active');
-        $(this).removeClass('active');
-        $('#sidebarCollapse i').removeClass('fa-times').addClass('fa-bars');
-    });
+    // Todos los event listeners del sidebar se manejan en initSidebar()
+    // para evitar duplicaciones y conflictos
     
     // ============================================
     // RESPONSIVE SIDEBAR
@@ -56,36 +37,8 @@ $(document).ready(function() {
     // SIDEBAR MENU COLLAPSE (SOLO CSS)
     // ============================================
     
-    // Manejar el click en los toggles del sidebar
-    $('#sidebar .dropdown-toggle').on('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        var $this = $(this);
-        var $submenu = $this.next('ul');
-        var isExpanded = $this.attr('aria-expanded') === 'true';
-        
-        // Guardar scroll position
-        var scrollPos = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Cerrar otros submenús
-        $('#sidebar .dropdown-toggle').not($this).attr('aria-expanded', 'false').removeClass('active');
-        $('#sidebar ul.collapse').not($submenu).removeClass('show');
-        
-        // Toggle el submenú actual solo con clases CSS
-        if (isExpanded) {
-            $this.attr('aria-expanded', 'false').removeClass('active');
-            $submenu.removeClass('show');
-        } else {
-            $this.attr('aria-expanded', 'true').addClass('active');
-            $submenu.addClass('show');
-        }
-        
-        // Forzar scroll a la posición original
-        window.scrollTo(0, scrollPos);
-        document.documentElement.scrollTop = scrollPos;
-        document.body.scrollTop = scrollPos;
-    });
+    // Los event listeners del sidebar se manejan en la función reinicializarSidebar()
+    // para evitar duplicaciones y conflictos
     
     // ============================================
     // CARGAR CONTENIDO DINÁMICO
@@ -110,10 +63,139 @@ $(document).ready(function() {
         $('.modal').off('hidden.bs.modal');
     }
     
+    // Función para limpiar DataTables existentes
+    function limpiarDataTables() {
+        // Verificar si DataTables está disponible
+        if (typeof $.fn.DataTable === 'undefined') {
+            console.log('DataTables no está disponible, saltando limpieza...');
+            return;
+        }
+        
+        // Destruir todas las instancias de DataTables en el contenido dinámico
+        $('#dynamic-content table').each(function() {
+            try {
+                if ($.fn.DataTable.isDataTable(this)) {
+                    $(this).DataTable().destroy();
+                    console.log('DataTable destruida:', this.id || 'tabla sin ID');
+                }
+            } catch (e) {
+                console.warn('Error al destruir DataTable:', e);
+            }
+        });
+        
+        // Limpiar filtros personalizados de DataTables
+        try {
+            if ($.fn.dataTable && $.fn.dataTable.ext && $.fn.dataTable.ext.search) {
+                $.fn.dataTable.ext.search = [];
+                console.log('Filtros de DataTables limpiados');
+            }
+        } catch (e) {
+            console.warn('Error al limpiar filtros de DataTables:', e);
+        }
+    }
+    
+    // ============================================
+    // INICIALIZACIÓN COMPLETA DEL SIDEBAR
+    // ============================================
+    var sidebarInitialized = false; // Flag para evitar múltiples inicializaciones
+    
+    function initSidebar() {
+        if (sidebarInitialized) {
+            console.log('Sidebar ya inicializado, saltando...');
+            return;
+        }
+        
+        console.log('🔧 Inicializando sidebar por primera vez...');
+        
+        // Limpiar cualquier event listener previo
+        $('#sidebarCollapse').off('click.sidebar');
+        $('#sidebar .dropdown-toggle').off('click.sidebar');
+        $('.overlay').off('click.sidebar');
+        $('#sidebar .a-submenu').off('click.sidebar');
+        
+        // 1. BOTÓN DE COLAPSAR SIDEBAR
+        $('#sidebarCollapse').on('click.sidebar', function() {
+            console.log('🔘 Botón sidebar clicked');
+            $('#sidebar').toggleClass('active');
+            $('#content').toggleClass('active');
+            $('.overlay').toggleClass('active');
+            
+            // Cambiar símbolo del botón (> abierto, < cerrado)
+            var $icon = $('#sidebarToggleIcon');
+            if ($('#sidebar').hasClass('active')) {
+                $icon.text('>');
+            } else {
+                $icon.text('<');
+            }
+            
+            // Guardar estado
+            setTimeout(saveSidebarState, 100);
+        });
+        
+        // 2. DROPDOWN TOGGLES DEL SIDEBAR
+        $('#sidebar .dropdown-toggle').on('click.sidebar', function(e) {
+            console.log('📂 Dropdown toggle clicked');
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var $this = $(this);
+            var $submenu = $this.next('ul');
+            var isExpanded = $this.attr('aria-expanded') === 'true';
+            
+            console.log('Submenu encontrado:', $submenu.length > 0 ? 'SÍ' : 'NO', 'Expandido:', isExpanded);
+            
+            // Guardar scroll position
+            var scrollPos = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Cerrar otros submenús
+            $('#sidebar .dropdown-toggle').not($this).attr('aria-expanded', 'false').removeClass('active');
+            $('#sidebar ul.collapse').not($submenu).removeClass('show');
+            
+            // Toggle el submenú actual
+            if (isExpanded) {
+                $this.attr('aria-expanded', 'false').removeClass('active');
+                $submenu.removeClass('show');
+                console.log('➖ Cerrando submenu');
+            } else {
+                $this.attr('aria-expanded', 'true').addClass('active');
+                $submenu.addClass('show');
+                console.log('➕ Abriendo submenu');
+            }
+            
+            // Restaurar scroll position
+            setTimeout(function() {
+                window.scrollTo(0, scrollPos);
+                document.documentElement.scrollTop = scrollPos;
+                document.body.scrollTop = scrollPos;
+            }, 10);
+        });
+        
+        // 3. OVERLAY CLICK PARA CERRAR EN MÓVILES
+        $('.overlay').on('click.sidebar', function() {
+            console.log('📱 Overlay clicked - cerrando sidebar');
+            $('#sidebar').removeClass('active');
+            $('#content').removeClass('active');
+            $(this).removeClass('active');
+            $('#sidebarToggleIcon').text('<');
+        });
+        
+        // 4. HIGHLIGHT ACTIVE SUBMENU ITEM
+        $('#sidebar .a-submenu').on('click.sidebar', function() {
+            $('#sidebar .a-submenu').removeClass('active');
+            $(this).addClass('active');
+        });
+        
+        sidebarInitialized = true;
+        console.log('✅ Sidebar inicializado correctamente');
+    }
+    
     // Función para cargar vistas HTML en el contenedor dinámico
     window.loadView = function(viewPath) {
-        // Limpiar modales antes de cargar nueva vista
+        console.log('🔄 Cargando vista:', viewPath);
+        
+        // Limpiar modales y DataTables antes de cargar nueva vista
         limpiarModales();
+        limpiarDataTables();
         
         $('#dynamic-content').html('<div class="text-center my-5"><i class="fa fa-spinner fa-spin fa-3x text-primary"></i><p class="mt-3">Cargando...</p></div>');
         
@@ -121,7 +203,55 @@ $(document).ready(function() {
             url: viewPath,
             method: 'GET',
             success: function(data) {
+                // Insertar el contenido HTML directamente
                 $('#dynamic-content').html(data);
+                
+                // Esperar un momento para que el DOM se actualice completamente
+                setTimeout(function() {
+                    // Buscar y ejecutar scripts con src primero
+                    var scriptsWithSrc = [];
+                    $('#dynamic-content script[src]').each(function() {
+                        var src = $(this).attr('src');
+                        if (src) {
+                            scriptsWithSrc.push(src);
+                        }
+                    });
+                    
+                    // Cargar scripts externos secuencialmente
+                    function loadScriptsSequentially(scripts, callback) {
+                        if (scripts.length === 0) {
+                            callback();
+                            return;
+                        }
+                        
+                        var script = scripts.shift();
+                        $.getScript(script).done(function() {
+                            loadScriptsSequentially(scripts, callback);
+                        }).fail(function() {
+                            console.warn('Error cargando script:', script);
+                            loadScriptsSequentially(scripts, callback);
+                        });
+                    }
+                    
+                    // Después de cargar scripts externos, ejecutar scripts inline
+                    loadScriptsSequentially(scriptsWithSrc, function() {
+                        // Ejecutar scripts inline
+                        $('#dynamic-content script:not([src])').each(function() {
+                            var scriptContent = this.text || this.textContent || this.innerHTML;
+                            if (scriptContent && scriptContent.trim() !== '') {
+                                try {
+                                    // Usar eval en lugar de Function constructor para preservar el contexto
+                                    eval(scriptContent);
+                                } catch (e) {
+                                    console.error('Error ejecutando script inline:', e);
+                                    console.log('Script content:', scriptContent.substring(0, 200) + '...');
+                                }
+                            }
+                        });
+                        
+                        // El sidebar ya está inicializado, no necesita reinicialización
+                    });
+                }, 50); // Pequeño delay para asegurar que el DOM esté listo
             },
             error: function() {
                 $('#dynamic-content').html('<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error al cargar la vista</div>');
@@ -285,13 +415,7 @@ $(document).ready(function() {
         lastScrollTop = scrollTop;
     });
     
-    // ============================================
-    // HIGHLIGHT ACTIVE SUBMENU ITEM
-    // ============================================
-    $('#sidebar .a-submenu').on('click', function() {
-        $('#sidebar .a-submenu').removeClass('active');
-        $(this).addClass('active');
-    });
+    // HIGHLIGHT ACTIVE SUBMENU ITEM se maneja en initSidebar()
     
     // ============================================
     // KEYBOARD SHORTCUTS
@@ -325,7 +449,9 @@ $(document).ready(function() {
             if (isActive) {
                 $('#sidebar').addClass('active');
                 $('#content').addClass('active');
-                $('#sidebarCollapse i').removeClass('fa-bars').addClass('fa-times');
+                $('#sidebarToggleIcon').text('>');
+            } else {
+                $('#sidebarToggleIcon').text('<');
             }
         }
     }
@@ -333,10 +459,7 @@ $(document).ready(function() {
     // Cargar estado al iniciar
     loadSidebarState();
     
-    // Guardar estado al cambiar
-    $('#sidebarCollapse').on('click', function() {
-        setTimeout(saveSidebarState, 400);
-    });
+    // El event listener para guardar estado se maneja en initSidebar()
     
     // ============================================
     // ANIMACIONES DE ENTRADA
@@ -446,6 +569,22 @@ $(document).ready(function() {
     
     // Iniciar actualización automática (comentado para demo)
     // autoUpdateCounters();
+    
+    // ============================================
+    // INICIALIZAR SIDEBAR AL CARGAR LA PÁGINA
+    // ============================================
+    // Inicializar el sidebar una sola vez al cargar la página
+    initSidebar();
+    
+    // Verificar estado de DataTables al cargar
+    setTimeout(function() {
+        console.log('🔍 Estado de DataTables:');
+        console.log('- jQuery disponible:', typeof $ !== 'undefined');
+        console.log('- DataTables disponible:', typeof $.fn.DataTable !== 'undefined');
+        if (typeof $.fn.DataTable !== 'undefined') {
+            console.log('- Versión DataTables:', $.fn.dataTable.version);
+        }
+    }, 1000);
     
     // ============================================
     // BREADCRUMB DINÁMICO
@@ -2323,7 +2462,7 @@ function configurarTransicionesEstadoDesp(estadoActual) {
             break;
             
         case 'Programada':
-            // Puede avanzar a "Vigente", "Rechazada" o "Suspendida"
+            // Puede avanzar a "Vigente" o "Rechazada"
             opcionesHTML = `
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="accionDesp" id="accionVigente" value="Vigente" checked>
@@ -2334,43 +2473,31 @@ function configurarTransicionesEstadoDesp(estadoActual) {
                 <div class="form-check mt-2">
                     <input class="form-check-input" type="radio" name="accionDesp" id="accionRechazadaP" value="Rechazada">
                     <label class="form-check-label" for="accionRechazadaP">
-                        <strong>Rechazar Solicitud</strong> - Cambiar estado a "Rechazada"
-                    </label>
-                </div>
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="radio" name="accionDesp" id="accionSuspendidaP" value="Suspendida">
-                    <label class="form-check-label" for="accionSuspendidaP">
-                        <strong>Suspender Trabajo</strong> - Cambiar estado a "Suspendida"
+                        <strong>Rechazar Trabajo</strong> - Cambiar estado a "Rechazada"
                     </label>
                 </div>
             `;
             break;
             
         case 'Vigente':
-            // Puede avanzar a "Extendida", "Finalizada", "Rechazada" o "Suspendida"
+            // Puede avanzar a "Extendida", "Suspendida" o "Finalizada"
             opcionesHTML = `
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="accionDesp" id="accionFinalizada" value="Finalizada" checked>
-                    <label class="form-check-label" for="accionFinalizada">
-                        <strong>Finalizar Trabajo</strong> - Cambiar estado a "Finalizada" (requiere fecha efectiva de fin)
-                    </label>
-                </div>
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="radio" name="accionDesp" id="accionExtendida" value="Extendida">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionExtendida" value="Extendida" checked>
                     <label class="form-check-label" for="accionExtendida">
                         <strong>Extender Trabajo</strong> - Cambiar estado a "Extendida"
-                    </label>
-                </div>
-                <div class="form-check mt-2">
-                    <input class="form-check-input" type="radio" name="accionDesp" id="accionRechazadaV" value="Rechazada">
-                    <label class="form-check-label" for="accionRechazadaV">
-                        <strong>Rechazar Solicitud</strong> - Cambiar estado a "Rechazada"
                     </label>
                 </div>
                 <div class="form-check mt-2">
                     <input class="form-check-input" type="radio" name="accionDesp" id="accionSuspendidaV" value="Suspendida">
                     <label class="form-check-label" for="accionSuspendidaV">
                         <strong>Suspender Trabajo</strong> - Cambiar estado a "Suspendida"
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionFinalizada" value="Finalizada">
+                    <label class="form-check-label" for="accionFinalizada">
+                        <strong>Finalizar Trabajo</strong> - Cambiar estado a "Finalizada" (requiere fecha efectiva de fin)
                     </label>
                 </div>
             `;

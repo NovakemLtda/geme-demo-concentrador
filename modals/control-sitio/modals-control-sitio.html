@@ -29,13 +29,15 @@
                     <div class="custom-control custom-checkbox mb-2">
                         <input type="checkbox" class="custom-control-input instalacion-checkbox" id="inst-Nueva-Renca" value="Nueva Renca">
                         <label class="custom-control-label" for="inst-Nueva-Renca">
-                            <i class="fas fa-bolt mr-2 text-primary"></i>Nueva Renca
+                            <!-- <i class="fas fa-bolt mr-2 text-primary"></i> -->
+                            <i class="fas fa-industry mr-2 text-secondary"></i>Nueva Renca
                         </label>
                     </div>
                     <div class="custom-control custom-checkbox mb-2">
                         <input type="checkbox" class="custom-control-input instalacion-checkbox" id="inst-Los-Vientos" value="Los Vientos">
                         <label class="custom-control-label" for="inst-Los-Vientos">
-                            <i class="fas fa-wind mr-2 text-info"></i>Los Vientos
+                            <!-- <i class="fas fa-wind mr-2 text-info"></i> -->
+                            <i class="fas fa-industry mr-2 text-secondary"></i>Los Vientos
                         </label>
                     </div>
                     <div class="custom-control custom-checkbox mb-2">
@@ -47,7 +49,8 @@
                     <div class="custom-control custom-checkbox mb-2">
                         <input type="checkbox" class="custom-control-input instalacion-checkbox" id="inst-CEME1" value="CEME1">
                         <label class="custom-control-label" for="inst-CEME1">
-                            <i class="fas fa-plug mr-2 text-success"></i>CEME1
+                            <!-- <i class="fas fa-plug mr-2 text-success"></i> -->
+                            <i class="fas fa-solar-panel mr-2 text-warning"></i>CEME1
                         </label>
                     </div>
                 </div>
@@ -57,6 +60,253 @@
                     <i class="fas fa-times mr-2"></i>Cancelar
                 </button>
                 <button type="button" class="btn btn-primary" onclick="guardarInstalaciones()">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR/EDITAR TIPO DE TECNOLOGÍA (Mantenedores) -->
+<div class="modal fade" id="modalTipoTecnologia" tabindex="-1" role="dialog" aria-labelledby="modalTipoTecnologiaLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="modalTipoTecnologiaLabel">
+                    <i class="fas fa-bolt mr-2"></i><span id="tituloModalTipoTecnologia">Agregar Tipo de Tecnología</span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formTipoTecnologia">
+                    <input type="hidden" id="tipoTecnologiaId">
+                    
+                    <div class="form-group">
+                        <label><strong>Código <span class="text-danger">*</span></strong></label>
+                        <input type="text" class="form-control" id="codigoTipoTecnologia" required placeholder="Ej: Solar, Termica, BESS" maxlength="20">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Nombre <span class="text-danger">*</span></strong></label>
+                        <input type="text" class="form-control" id="nombreTipoTecnologia" required placeholder="Ej: Solar Fotovoltaica, Térmica">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Ícono de tecnología <span class="text-danger">*</span></strong></label>
+                        <select class="form-control" id="iconoTipoTecnologia" required onchange="actualizarPreviewIconoTipoTecnologia()">
+                            <option value="" disabled selected>Seleccione un ícono...</option>
+                            <option value="fas fa-solar-panel mr-2 text-warning">Solar (panel solar)</option>
+                            <option value="fas fa-industry mr-2 text-secondary">Térmica / Industrial</option>
+                            <option value="fas fa-wind mr-2 text-info">Eólica</option>
+                            <option value="fas fa-water mr-2 text-primary">Hidráulica</option>
+                            <option value="fas fa-battery-full mr-2 text-success">BESS / Batería</option>
+                            <option value="fas fa-leaf mr-2 text-success">Biomasa</option>
+                            <option value="fas fa-gas-pump mr-2 text-success">Hidrógeno Verde</option>
+                            <option value="fas fa-bolt mr-2 text-warning">Genérico Energía</option>
+                            <option value="fas fa-sun mr-2 text-warning">Renovable (Sol)</option>
+                            <option value="fas fa-globe-americas mr-2 text-success">Renovable (Planeta)</option>
+                        </select>
+                        <small class="form-text text-muted">Selecciona el ícono que se mostrará en la tabla de instalaciones.</small>
+
+                        <div class="mt-3">
+                            <span class="d-block mb-1"><strong>Vista previa seleccionada:</strong></span>
+                            <i id="previewIconTipoTecnologia" class="fas fa-question-circle text-muted"></i>
+                        </div>
+
+                        <div class="mt-3">
+                            <span class="d-block mb-2"><strong>Íconos disponibles:</strong></span>
+                            <div class="d-flex flex-wrap">
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-solar-panel mr-2 text-warning"></i>
+                                    <small class="d-block">Solar</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-industry mr-2 text-secondary"></i>
+                                    <small class="d-block">Térmica / Industrial</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-wind mr-2 text-info"></i>
+                                    <small class="d-block">Eólica</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-water mr-2 text-primary"></i>
+                                    <small class="d-block">Hidráulica</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-battery-full mr-2 text-success"></i>
+                                    <small class="d-block">BESS / Batería</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-leaf mr-2 text-success"></i>
+                                    <small class="d-block">Biomasa</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-gas-pump mr-2 text-success"></i>
+                                    <small class="d-block">Hidrógeno Verde</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-bolt mr-2 text-warning"></i>
+                                    <small class="d-block">Genérico Energía</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-sun mr-2 text-warning"></i>
+                                    <small class="d-block">Renovable (Sol)</small>
+                                </div>
+                                <div class="mr-3 mb-2 text-center">
+                                    <i class="fas fa-globe-americas mr-2 text-success"></i>
+                                    <small class="d-block">Renovable (Planeta)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Estado</strong></label>
+                        <select class="form-control" id="estadoTipoTecnologia">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-warning" onclick="guardarTipoTecnologia()">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR/EDITAR TIPO DE TRABAJO (Mantenedores) -->
+<div class="modal fade" id="modalTipoTrabajo" tabindex="-1" role="dialog" aria-labelledby="modalTipoTrabajoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalTipoTrabajoLabel">
+                    <i class="fas fa-briefcase mr-2"></i><span id="tituloModalTipoTrabajo">Agregar Tipo de trabajo</span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formTipoTrabajo">
+                    <input type="hidden" id="tipoTrabajoId">
+                    
+                    <div class="form-group">
+                        <label><strong>Código <span class="text-danger">*</span></strong></label>
+                        <input type="text" class="form-control" id="codigoTipoTrabajo" required placeholder="Ej: SDCN, SDCF, SICN" maxlength="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Descripción <span class="text-danger">*</span></strong></label>
+                        <input type="text" class="form-control" id="descripcionTipoTrabajo" required placeholder="Ej: SDCN - Solicitud de Desconexión Curso Normal">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Estado</strong></label>
+                        <select class="form-control" id="estadoTipoTrabajo">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarTipoTrabajo()">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR/EDITAR AFECTACIÓN (Mantenedores) -->
+<div class="modal fade" id="modalAfectacion" tabindex="-1" role="dialog" aria-labelledby="modalAfectacionLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalAfectacionLabel">
+                    <i class="fas fa-exclamation-circle mr-2"></i><span id="tituloModalAfectacion">Agregar Afectación</span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formAfectacion">
+                    <input type="hidden" id="afectacionId">
+                    
+                    <div class="form-group">
+                        <label><strong>Nombre Afectación <span class="text-danger">*</span></strong></label>
+                        <input type="text" class="form-control" id="nombreAfectacion" required placeholder="Ej: SSCC, Protecciones, Medidores">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Estado</strong></label>
+                        <select class="form-control" id="estadoAfectacion">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-danger" onclick="guardarAfectacion()">
+                    <i class="fas fa-save mr-2"></i>Guardar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AGREGAR/EDITAR TIPO DE EQUIPO (Mantenedores) -->
+<div class="modal fade" id="modalTipoEquipo" tabindex="-1" role="dialog" aria-labelledby="modalTipoEquipoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title" id="modalTipoEquipoLabel">
+                    <i class="fas fa-tools mr-2"></i><span id="tituloModalTipoEquipo">Agregar Tipo de Equipo</span>
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formTipoEquipo">
+                    <input type="hidden" id="tipoEquipoId">
+                    
+                    <div class="form-group">
+                        <label><strong>Nombre Tipo de Equipo <span class="text-danger">*</span></strong></label>
+                        <input type="text" class="form-control" id="nombreTipoEquipo" required placeholder="Ej: Transformador, Batería, Paños">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label><strong>Estado</strong></label>
+                        <select class="form-control" id="estadoTipoEquipo">
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fas fa-times mr-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="guardarTipoEquipo()">
                     <i class="fas fa-save mr-2"></i>Guardar
                 </button>
             </div>
@@ -201,6 +451,18 @@
                         <small class="form-text text-muted">Máximo 10 caracteres</small>
                     </div>
                     
+                    <div class="form-group">
+                        <label><strong>Tipo de tecnología</strong></label>
+                        <select class="form-control" id="tecnologiaInstalacion">
+                            <option value="Solar">Solar</option>
+                            <option value="Termica">Térmica</option>
+                            <option value="Eolica">Eólica</option>
+                            <option value="Hidraulica">Hidráulica</option>
+                            <option value="BESS">BESS</option>
+                            <option value="Biomasa">Biomasa</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label><strong>Estado</strong></label>
                         <select class="form-control" id="estadoInstalacion">

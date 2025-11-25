@@ -223,7 +223,8 @@ body {
 }
 
 #sidebar.active {
-    margin-left: -280px;
+    /* Dejar ~15% visible al colapsar en escritorio (42px de 280px) */
+    margin-left: -238px;
 }
 
 #sidebar .sidebar-header {
@@ -353,8 +354,9 @@ body {
     overflow-anchor: none;
 }
 
+/* Cuando el sidebar está colapsado en escritorio, dejar espacio para la franja visible (~42px) */
 #content.active {
-    margin-left: 0;
+    margin-left: 42px;
 }
 
 /* Botón para toggle sidebar */

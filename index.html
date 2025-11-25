@@ -112,16 +112,16 @@
                     <li>
                         <a href="javascript:void(0)" aria-expanded="false" class="dropdown-toggle">Concentrador de Solicitudes</a>
                         <ul class="collapse list-unstyled" id="subMenu1">
-                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/solicitante.html?v=75');">Solicitante</a></li>
-                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/administrador.html?v=72');">Administrador</a></li>
-                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/despachador.html?v=48');">Despachador</a></li>
+                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/solicitante.html?v=87');">Solicitante</a></li>
+                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/administrador.html?v=78');">Administrador</a></li>
+                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/despachador.html?v=58');">Despachador</a></li>
                         </ul>
                     </li>
                     <li>
                         <a href="javascript:void(0)" aria-expanded="false" class="dropdown-toggle">Control del Sitio</a>
                         <ul class="collapse list-unstyled" id="subMenu2">
-                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/permisos-usuarios.html?v=12');">Permisos de Usuarios</a></li>
-                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/mantenedores.html?v=13');">Mantenedores</a></li>
+                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/permisos-usuarios.html?v=16');">Permisos de Usuarios</a></li>
+                            <li><a class="a-sidebar a-submenu" href="javascript:;" onclick="loadView('views/mantenedores.html?v=29');">Mantenedores</a></li>
                         </ul>
                     </li>
                     <!-- <li>
@@ -135,246 +135,23 @@
 
             <!-- CONTENIDO PRINCIPAL -->
             <div id="content">
-                <button type="button" id="sidebarCollapse" class="btn btn-info mb-3">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="container-fluid">
-
-
-                    <!-- CONTENEDOR DINÁMICO -->
-                    <div id="dynamic-content">
-                        <!-- Aquí se cargará el contenido dinámicamente -->
-                        <h2 class="mb-4">Bienvenido al Concentrador de Solicitudes del Centro de Operación</h2>
-                        <p>Selecciona una opción del menú para comenzar.</p>
-                    </div>
-
-                    <!-- CONTENIDO DE EJEMPLO (se puede eliminar después) -->
-                    <div id="ejemplo-estilos" style="display: none;">
-                        <h2 class="mb-4">Ejemplos de Estilos GEME</h2>
-
-                        <!-- CARDS DE ALCANCE -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Cards de Alcance</h4>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card card-alcance text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Módulo 1</h5>
-                                        <p class="card-text">Descripción del módulo</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card card-alcance text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Módulo 2</h5>
-                                        <p class="card-text">Descripción del módulo</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card card-alcance text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Módulo 3</h5>
-                                        <p class="card-text">Descripción del módulo</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="card card-alcance text-white">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Módulo 4</h5>
-                                        <p class="card-text">Descripción del módulo</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- CARDS TIPO G y N -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Cards Tipo G y N</h4>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="card cardTipoG">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card Tipo G</h5>
-                                        <p class="card-text">Gris por defecto, naranja al hover</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="card cardTipoN">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card Tipo N</h5>
-                                        <p class="card-text">Naranja por defecto, gris al hover</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="card cardTipoG">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Card Tipo G</h5>
-                                        <p class="card-text">Gris por defecto, naranja al hover</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- BOTONES PERSONALIZADOS -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Botones Personalizados</h4>
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <a href="javascript:;" class="btn-customized">
-                                    <i class="fas fa-save"></i> Botón Customized (Naranja)
-                                </a>
-                                <a href="javascript:;" class="btn-customized-2">
-                                    <i class="fas fa-edit"></i> Botón Customized 2 (Blanco)
-                                </a>
-                                <a href="javascript:;" class="btn-filter">
-                                    <i class="fas fa-filter"></i> Botón Filtro
-                                </a>
-                            </div>
-                            <div class="col-md-4">
-                                <a href="javascript:;" class="btn-customized-3">
-                                    <i class="fas fa-check"></i> Botón Customized 3 (Full Width)
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- TÍTULO ÁREAS -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Títulos de Áreas</h4>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="tituloAreas p-3 text-center">
-                                    <h5 class="mb-0">Área de Gestión</h5>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="tituloAreas p-3 text-center">
-                                    <h5 class="mb-0">Área de Operaciones</h5>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- TABLA CON ESTILOS -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Tabla con Estilos</h4>
-                            </div>
-                            <div class="col-12">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr class="table-group">
-                                            <th>ID</th>
-                                            <th>Nombre</th>
-                                            <th>Descripción</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Item 1</td>
-                                            <td class="truncate">Este es un texto muy largo que será truncado con puntos suspensivos cuando exceda el ancho máximo permitido</td>
-                                            <td>
-                                                <a href="javascript:;" class="btn-customized-4 btn-customized-dark" title="Ver">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="javascript:;" class="btn-customized-4 btn-customized-light" title="Editar">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr class="table-group">
-                                            <td>2</td>
-                                            <td>Item 2</td>
-                                            <td>Descripción corta</td>
-                                            <td>
-                                                <a href="javascript:;" class="btn-customized-4 btn-customized-dark" title="Ver">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="javascript:;" class="btn-customized-4 btn-customized-light" title="Editar">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- BOTONES DE FILTRO -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Botones de Acción y Filtro</h4>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="btns-accion-filtro">
-                                    <a href="javascript:;" class="btn-filtrar text-decoration-none">
-                                        <i class="fas fa-filter"></i> Filtrar
-                                    </a>
-                                    <a href="javascript:;" class="btn-limpiar text-decoration-none">
-                                        <i class="fas fa-eraser"></i> Limpiar
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- ELEMENTOS HOVER -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Elementos con Hover</h4>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <div class="h_area p-3 border">
-                                    <p class="mb-0">Elemento con hover naranja</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <div class="h_area p-3 border">
-                                    <p class="mb-0">Elemento con hover naranja</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-2">
-                                <div class="h_area p-3 border">
-                                    <p class="mb-0">Elemento con hover naranja</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="line"></div>
-
-                        <!-- SPINNER -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h4>Spinner de Carga</h4>
-                            </div>
-                            <div class="col-12">
-                                <div class="spinner">
-                                    <i class="fa fa-spinner spinning"></i>
-                                </div>
-                            </div>
+                <div class="container-fluid pl-0">
+                    <!-- Contenedor para botón de sidebar y contenido dinámico en la misma línea -->
+                    <div class="d-flex align-items-start mb-3">
+                        <button
+                            type="button"
+                            id="sidebarCollapse"
+                            class="btn btn-info btn-sm mr-3"
+                            style="margin-left:-40px; position: relative; z-index: 1051; width: 32px; height: 32px; border-radius: 50%; padding: 0; display: flex; align-items: center; justify-content: center;">
+                            <span id="sidebarToggleIcon">&lt;</span>
+                        </button>
+                        <!-- CONTENEDOR DINÁMICO -->
+                        <div id="dynamic-content" class="flex-grow-1">
+                            <!-- Aquí se cargará el contenido dinámicamente -->
+                            <h2 class="mb-4">Bienvenido al Concentrador de Solicitudes del Centro de Operación</h2>
+                            <p>Selecciona una opción del menú para comenzar.</p>
                         </div>
                     </div>
-                    <!-- FIN CONTENIDO DE EJEMPLO -->
                 </div>
             </div>
         </div>
@@ -405,9 +182,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Trumbowyg/2.23.0/trumbowyg.min.js" integrity="sha512-sffB9/tXFFTwradcJHhojkhmrCj0hWeaz8M05Aaap5/vlYBfLx5Y7woKi6y0NrqVNgben6OIANTGGlojPTQGEw==" crossorigin="anonymous"></script>
     
     <!-- Cargador de Modales Dinámicos -->
-    <script src="modals/solicitante/modals-loader.js"></script>
-    <script src="modals/administrador/modals-loader.js"></script>
-    <script src="modals/despachador/modals-loader.js"></script>
+    <script src="modals/solicitante/modals-loader.js?v=3"></script>
+    <script src="modals/administrador/modals-loader.js?v=3"></script>
+    <script src="modals/despachador/modals-loader.js?v=3"></script>
 
     <!-- Contenedor para modales dinámicos (se llenarán automáticamente) -->
     <div id="modals-container"></div>

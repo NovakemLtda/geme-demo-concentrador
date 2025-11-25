@@ -1,5 +1,11 @@
 <h2 class="mb-4"><i class="fas fa-clipboard-list"></i> Despachador - Control de Solicitudes</h2>
 
+<!-- Indicadores próximos 30 días para Despachador -->
+<div class="row mb-4" id="resumen-despachador"></div>
+
+<!-- Resumen global de solicitudes del despachador -->
+<div class="row mb-4" id="resumen-despachador-global"></div>
+
 <div class="row mb-4">
     <div class="col-12">
         <div class="btn-group mt-1" id="zona-botonera-filtro" role="group" aria-label="Botonera">
@@ -47,7 +53,13 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Instalación GM</label>
-                            <select class="form-control" id="filtroInstalacionGMDesp">
+                            <select
+                                class="form-control selectpicker"
+                                id="filtroInstalacionGMDesp"
+                                multiple
+                                data-actions-box="true"
+                                data-live-search="true"
+                                data-none-selected-text="Todas las instalaciones">
                                 <option value="">Todas</option>
                                 <option value="Santiago Solar">Santiago Solar</option>
                                 <option value="Nueva Renca">Nueva Renca</option>
@@ -99,19 +111,19 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Fecha Desde</label>
+                            <label>Fecha Programada Inicio Desde</label>
                             <input type="date" class="form-control" id="filtroFechaDesdeDesp">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Fecha Hasta</label>
+                            <label>Fecha Programada Inicio Hasta</label>
                             <input type="date" class="form-control" id="filtroFechaHastaDesp">
                         </div>
                     </div>
                 </div>
-                <div class="btns-accion-filtro">
-                    <a href="javascript:;" class="btn-filtrar text-decoration-none" onclick="aplicarFiltrosDesp()">
+                <div class="btns-accion-filtro d-flex align-items-center">
+                    <a href="javascript:;" class="btn-filtrar text-decoration-none mr-3" onclick="aplicarFiltrosDesp()">
                         <i class="fas fa-filter"></i> Filtrar
                     </a>
                     <a href="javascript:;" class="btn-limpiar text-decoration-none" onclick="limpiarFiltrosDesp()">
@@ -125,15 +137,18 @@
 
 <div class="row mb-4 align-items-center">
     <div class="col-lg-6">
-        <div class="botonera">
+        <div class="botonera d-flex align-items-center">
             <a class="btn btn-customized" href="javascript:;" role="button" onclick="abrirModalNuevaSolicitudDesp()" id="btn-newDoc">
                 <i class="fa fa-plus"></i> Nueva Solicitud
+            </a>
+            <a class="btn btn-success ml-2" href="javascript:;" role="button" id="btn-descargar-excel-desp">
+                <i class="fas fa-file-excel"></i> Descargar Excel Vinculado
             </a>
         </div>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
         <div class="row justify-content-end">
-            <div class="form-group col-lg-4 col-md-4 col-sm-4 mb-0">
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 mb-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -143,7 +158,7 @@
                     <input type="text" class="form-control" disabled="" aria-label="" value="En Proceso" autocomplete="off">
                 </div>
             </div>
-            <div class="form-group col-lg-4 col-md-4 col-sm-4 mb-0">
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 mb-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <div class="input-group-text">
@@ -152,8 +167,20 @@
                     </div>
                     <input type="text" class="form-control" disabled="" aria-label="" value="Finalizadas" autocomplete="off">
                 </div>
-            </div>				
+            </div>
+            <div class="form-group col-lg-3 col-md-3 col-sm-3 mb-0">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">
+                            <input class="cbxFilter" type="radio" aria-label="" name="flexRadioDefault" id="cbxTodas" autocomplete="off" onchange="filtrarPorEstado('todas')">
+                        </div>
+                    </div>
+                    <input type="text" class="form-control" disabled="" aria-label="" value="Todas" autocomplete="off">
+                </div>
+            </div>            
         </div>
+    </div>
+                
     </div>
 </div>
 
@@ -219,6 +246,178 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     
     const tbody = $('#table-solicitudes tbody');
     tbody.empty(); // Limpiar tabla
+
+    // ===============================
+    // Indicadores próximos 30 días
+    // ===============================
+    const ahora = new Date();
+    const en30Dias = new Date();
+    en30Dias.setDate(ahora.getDate() + 30);
+
+    let sodiProgramadas = 0;
+    let intervencionesProgramadas = 0;
+    let desconexionesProgramadas = 0;
+
+    solicitudes.forEach(sol => {
+        if (sol.ESTADO !== 'Programada' || !sol.INICIO_PROGRAMADO) return;
+
+        const fechaInicio = new Date(sol.INICIO_PROGRAMADO);
+        if (isNaN(fechaInicio.getTime())) return;
+
+        if (fechaInicio >= ahora && fechaInicio <= en30Dias) {
+            // Clasificar según tipo
+            if (sol.TIPO === 'SODI') {
+                sodiProgramadas++;
+            } else if (['SICN', 'SICF'].includes(sol.TIPO)) {
+                intervencionesProgramadas++;
+            } else if (['SDCN', 'SDCF'].includes(sol.TIPO)) {
+                desconexionesProgramadas++;
+            }
+        }
+    });
+
+    const resumenHtml = `
+        <div class="col-md-4 mb-2">
+            <div class="card card-alcance text-white">
+                <div class="card-body py-2">
+                    <h5 class="card-title mb-1"><i class="fas fa-bolt"></i> SODI Programadas (30 días)
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="SODI Programadas (30 días)" data-content="Solicitudes de tipo SODI en estado Programada cuyo inicio está dentro de los próximos 30 días (año en curso)."></i>
+                    </h5>
+                    <h2 class="mb-0">${sodiProgramadas}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-2">
+            <div class="card card-alcance text-white">
+                <div class="card-body py-2">
+                    <h5 class="card-title mb-1"><i class="fas fa-tools"></i> Intervenciones Programadas (30 días)
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Intervenciones Programadas (30 días)" data-content="Solicitudes de tipo SICN/SICF en estado Programada cuyo inicio está dentro de los próximos 30 días (año en curso)."></i>
+                    </h5>
+                    <h2 class="mb-0">${intervencionesProgramadas}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-2">
+            <div class="card card-alcance text-white">
+                <div class="card-body py-2">
+                    <h5 class="card-title mb-1"><i class="fas fa-plug"></i> Desconexiones Programadas (30 días)
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Desconexiones Programadas (30 días)" data-content="Solicitudes de tipo SDCN/SDCF en estado Programada cuyo inicio está dentro de los próximos 30 días (año en curso)."></i>
+                    </h5>
+                    <h2 class="mb-0">${desconexionesProgramadas}</h2>
+                </div>
+            </div>
+        </div>
+    `;
+
+    $('#resumen-despachador').html(resumenHtml);
+    // Inicializar popovers para indicadores de próximos 30 días
+    $('#resumen-despachador [data-toggle="popover"]').popover();
+    
+    // ===============================
+    // Resumen global por estado/tipo
+    // ===============================
+    const resumenGlobal = {
+        totalSolicitudesGeneradas: 0, // sin SODI
+        totalProgramada: 0,
+        totalVigente: 0,
+        totalRechazada: 0,
+        totalExtendida: 0,
+        totalSuspendida: 0,
+        totalFinalizadas: 0
+    };
+
+    solicitudes.forEach(sol => {
+        const estado = sol.ESTADO;
+        const tipo = sol.TIPO;
+
+        if (tipo !== 'SODI') {
+            resumenGlobal.totalSolicitudesGeneradas++;
+        }
+
+        if (estado === 'Programada') resumenGlobal.totalProgramada++;
+        if (estado === 'Vigente') resumenGlobal.totalVigente++;
+        if (estado === 'Rechazada') resumenGlobal.totalRechazada++;
+        if (estado === 'Extendida') resumenGlobal.totalExtendida++;
+        if (estado === 'Suspendida') resumenGlobal.totalSuspendida++;
+        if (estado === 'Finalizada') resumenGlobal.totalFinalizadas++;
+    });
+
+    const resumenGlobalHtml = `
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Solicitudes Generadas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Solicitudes Generadas - Año en curso" data-content="Cantidad total de solicitudes visibles para el despachador excluyendo las de tipo SODI."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalSolicitudesGeneradas}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Programada
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Programada - Año en curso" data-content="Solicitudes cuyo estado actual es Programada."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalProgramada}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Vigente
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigente - Año en curso" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalVigente}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Rechazada
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazada - Año en curso" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalRechazada}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Extendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendida - Año en curso" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalExtendida}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-dark h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Suspendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendida - Año en curso" data-content="Solicitudes suspendidas temporalmente en su ejecución."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalSuspendida}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-secondary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Finalizadas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Finalizadas - Año en curso" data-content="Solicitudes cuyo ciclo de vida ha finalizado correctamente."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenGlobal.totalFinalizadas}</h4>
+                </div>
+            </div>
+        </div>
+    `;
+
+    $('#resumen-despachador-global').html(resumenGlobalHtml);
+    // Inicializar popovers para indicadores globales
+    $('#resumen-despachador-global [data-toggle="popover"]').popover();
     
     // Generar cada fila
     solicitudes.forEach(solicitud => {
@@ -335,6 +534,11 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     // Variable local para el filtro actual
     let filtroActual = 'proceso';
     
+    // Inicializar selectpicker de Instalación GM
+    $(function() {
+        $('#filtroInstalacionGMDesp').selectpicker();
+    });
+    
     // Función para limpiar filtros (legacy)
     window.limpiarFiltros = function() {
         $('#zona-filtro select').val('');
@@ -348,7 +552,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         // Obtener valores de filtros
         const filtroID = $('#filtroIDSolicitudDesp').val().toLowerCase();
         const filtroTipo = $('#filtroTipoDesp').val();
-        const filtroInstalacion = $('#filtroInstalacionGMDesp').val();
+        const filtroInstalacion = $('#filtroInstalacionGMDesp').val(); // puede ser array
         const filtroEmpSol = $('#filtroEmpresaSolicitanteDesp').val();
         const filtroEmpRec = $('#filtroEmpresaReceptoraDesp').val();
         const filtroSODI = $('#filtroAplicaSODIDesp').val();
@@ -361,8 +565,13 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         // Aplicar búsqueda por Tipo
         table.column(3).search(filtroTipo);
         
-        // Aplicar búsqueda por Instalación GM
-        table.column(6).search(filtroInstalacion);
+        // Aplicar búsqueda por Instalación GM (multi-selección)
+        if (Array.isArray(filtroInstalacion) && filtroInstalacion.length > 0 && !filtroInstalacion.includes('')) {
+            const pattern = '^(' + filtroInstalacion.join('|') + ')$';
+            table.column(6).search(pattern, true, false);
+        } else {
+            table.column(6).search('');
+        }
         
         // Aplicar búsqueda por Empresa Solicitante
         table.column(9).search(filtroEmpSol);
@@ -475,4 +684,4 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
 </script>
 
 <!-- Cargar modales del despachador -->
-<script src="modals/despachador/modals-loader.js?v=2" defer></script>
+<script src="modals/despachador/modals-loader.js?v=3" defer></script>

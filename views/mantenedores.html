@@ -47,19 +47,35 @@
 						<th scope="row">2</th>
 						<td><i class="fas fa-exclamation-triangle mr-2 text-danger"></i>Plazo Máximo de Envío de Solicitudes SODI</td>
 					</tr>
-					<tr onclick="view_mantenedor('EquiposInstalacion', this)" style="cursor:pointer">
-						<th scope="row">3</th>
-						<td><i class="fas fa-tools mr-2 text-info"></i>Equipos a Intervenir por Instalación</td>
-					</tr>
 					<tr onclick="view_mantenedor('Empresas', this)" style="cursor:pointer">
-						<th scope="row">4</th>
+						<th scope="row">3</th>
 						<td><i class="fas fa-building mr-2 text-success"></i>Empresas Solicitantes/Receptoras</td>
 					</tr>
 					<tr onclick="view_mantenedor('Instalaciones', this)" style="cursor:pointer">
-						<th scope="row">5</th>
+						<th scope="row">4</th>
 						<td><i class="fas fa-map-marker-alt mr-2 text-primary"></i>Instalaciones GM</td>
 					</tr>
-				  </tbody>
+					<tr onclick="view_mantenedor('TiposTecnologia', this)" style="cursor:pointer">
+						<th scope="row">5</th>
+						<td><i class="fas fa-bolt mr-2 text-warning"></i>Tipos de Tecnología</td>
+					</tr>
+					<tr onclick="view_mantenedor('EquiposInstalacion', this)" style="cursor:pointer">
+						<th scope="row">6</th>
+						<td><i class="fas fa-tools mr-2 text-info"></i>Equipos a Intervenir por Instalación</td>
+					</tr>
+					<tr onclick="view_mantenedor('TiposEquipos', this)" style="cursor:pointer">
+						<th scope="row">7</th>
+						<td><i class="fas fa-tools mr-2 text-secondary"></i>Tipos de Equipos</td>
+					</tr>
+					<tr onclick="view_mantenedor('Afectaciones', this)" style="cursor:pointer">
+						<th scope="row">8</th>
+						<td><i class="fas fa-exclamation-circle mr-2 text-danger"></i>Afectaciones</td>
+					</tr>
+					<tr onclick="view_mantenedor('TiposTrabajo', this)" style="cursor:pointer">
+						<th scope="row">9</th>
+						<td><i class="fas fa-briefcase mr-2 text-primary"></i>Tipo de trabajo</td>
+					</tr>
+					  </tbody>
 				</table>
 			</div>
 		</div>
@@ -230,17 +246,19 @@
 										</td>
 										<td class="text-center align-middle">
 											<div class="input-group input-group-sm">
-												<input type="number" class="form-control text-center" id="dias-sabado" value="0" min="0" max="30" disabled>
+												<input type="number" class="form-control text-center" id="dias-sabado" value="0" min="0" max="30">
 												<div class="input-group-append">
 													<span class="input-group-text">días</span>
 												</div>
 											</div>
 										</td>
 										<td class="text-center align-middle">
-											<input type="time" class="form-control form-control-sm" id="hora-sabado" value="00:00" disabled>
+											<input type="time" class="form-control form-control-sm" id="hora-sabado" value="00:00">
 										</td>
 										<td class="text-center align-middle">
-											<span class="badge badge-secondary">No Hábil</span>
+											<button class="btn btn-sm btn-success" onclick="guardarPlazo('sabado')" title="Guardar">
+												<i class="fas fa-save"></i>
+											</button>
 										</td>
 									</tr>
 									
@@ -252,17 +270,19 @@
 										</td>
 										<td class="text-center align-middle">
 											<div class="input-group input-group-sm">
-												<input type="number" class="form-control text-center" id="dias-domingo" value="0" min="0" max="30" disabled>
+												<input type="number" class="form-control text-center" id="dias-domingo" value="0" min="0" max="30">
 												<div class="input-group-append">
 													<span class="input-group-text">días</span>
 												</div>
 											</div>
 										</td>
 										<td class="text-center align-middle">
-											<input type="time" class="form-control form-control-sm" id="hora-domingo" value="00:00" disabled>
+											<input type="time" class="form-control form-control-sm" id="hora-domingo" value="00:00">
 										</td>
 										<td class="text-center align-middle">
-											<span class="badge badge-secondary">No Hábil</span>
+											<button class="btn btn-sm btn-success" onclick="guardarPlazo('domingo')" title="Guardar">
+												<i class="fas fa-save"></i>
+											</button>
 										</td>
 									</tr>
 								</tbody>
@@ -271,11 +291,219 @@
 						
 						<div class="alert alert-info mt-3" role="alert">
 							<i class="fas fa-lightbulb mr-2"></i>
-							<strong>Nota:</strong> Los cambios se guardan individualmente por cada día. 
-							Los días sábado y domingo están deshabilitados por defecto (días no hábiles).
+							<strong>Nota:</strong> Los cambios se guardan individualmente por cada día, incluyendo sábado y domingo si así se requiere.
 						</div>
 					</div>
 				</div>		
+			</div>			
+		</div>
+
+		<!-- MANTENEDOR TIPOS DE TECNOLOGÍA -->
+		<div class="row d-none" id="mantTiposTecnologia">
+			<div class="col-lg-12 col-md-12 col-sm-12">	
+				<div class="row">
+					<div class="col-12">
+						<h5 class="ml-3 mb-3">
+							<i class="fas fa-bolt mr-2 text-warning"></i>
+							Mantenedor de Tipos de Tecnología
+						</h5>
+						<p class="ml-3 text-muted">
+							<i class="fas fa-info-circle mr-1"></i>
+							Configure los tipos de tecnología (código, nombre e ícono) utilizados por las instalaciones.
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 mb-3">
+						<button class="btn btn-warning" onclick="agregarTipoTecnologia()">
+							<i class="fas fa-plus mr-1"></i>Agregar Tipo de Tecnología
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive">
+							<table class="table table-sm table-hover table-bordered">
+								<thead class="thead-dark">
+									<tr class="text-center">
+										<th style="width: 5%;">#</th>
+										<th style="width: 15%;">
+											<i class="fas fa-tag mr-2"></i>Código
+										</th>
+										<th style="width: 30%;">
+											<i class="fas fa-file-alt mr-2"></i>Nombre
+										</th>
+										<th style="width: 20%;">
+											<i class="fas fa-icons mr-2"></i>Ícono
+										</th>
+										<th style="width: 15%;">
+											<i class="fas fa-toggle-on mr-2"></i>Estado
+										</th>
+										<th style="width: 15%;">
+											<i class="fas fa-cogs mr-2"></i>Acciones
+										</th>
+									</tr>
+								</thead>
+								<tbody id="tablaTiposTecnologia">
+									<!-- Se llenará dinámicamente -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+
+		<!-- MANTENEDOR TIPO DE TRABAJO -->
+		<div class="row d-none" id="mantTiposTrabajo">
+			<div class="col-lg-12 col-md-12 col-sm-12">	
+				<div class="row">
+					<div class="col-12">
+						<h5 class="ml-3 mb-3">
+							<i class="fas fa-briefcase mr-2 text-primary"></i>
+							Mantenedor de Tipo de trabajo
+						</h5>
+						<p class="ml-3 text-muted">
+							<i class="fas fa-info-circle mr-1"></i>
+							Gestione los tipos de trabajo disponibles (SDCN, SDCF, SICN, SICF, IL, MM, SODI) que se utilizan en el campo Tipo de las solicitudes.
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 mb-3">
+						<button class="btn btn-primary" onclick="agregarTipoTrabajo()">
+							<i class="fas fa-plus mr-1"></i>Agregar Tipo de trabajo
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive">
+							<table class="table table-sm table-hover table-bordered">
+								<thead class="thead-dark">
+									<tr class="text-center">
+										<th style="width: 5%;">#</th>
+										<th style="width: 15%;">
+											<i class="fas fa-tag mr-2"></i>Código
+										</th>
+										<th style="width: 45%;">
+											<i class="fas fa-file-alt mr-2"></i>Descripción
+										</th>
+										<th style="width: 15%;">
+											<i class="fas fa-toggle-on mr-2"></i>Estado
+										</th>
+										<th style="width: 20%;">
+											<i class="fas fa-cogs mr-2"></i>Acciones
+										</th>
+									</tr>
+								</thead>
+								<tbody id="tablaTiposTrabajo">
+									<!-- Se llenará dinámicamente -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+
+		<!-- MANTENEDOR AFECTACIONES -->
+		<div class="row d-none" id="mantAfectaciones">
+			<div class="col-lg-12 col-md-12 col-sm-12">	
+				<div class="row">
+					<div class="col-12">
+						<h5 class="ml-3 mb-3">
+							<i class="fas fa-exclamation-circle mr-2 text-danger"></i>
+							Mantenedor de Afectaciones
+						</h5>
+						<p class="ml-3 text-muted">
+							<i class="fas fa-info-circle mr-1"></i>
+							Gestione las afectaciones disponibles (SSCC, Protecciones, Medidores) que se utilizan en el formulario de solicitudes.
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 mb-3">
+						<button class="btn btn-danger" onclick="agregarAfectacion()">
+							<i class="fas fa-plus mr-1"></i>Agregar Afectación
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive">
+							<table class="table table-sm table-hover table-bordered">
+								<thead class="thead-dark">
+									<tr class="text-center">
+										<th style="width: 5%;">#</th>
+										<th style="width: 60%;">
+											<i class="fas fa-exclamation-circle mr-2"></i>Nombre Afectación
+										</th>
+										<th style="width: 15%;">
+											<i class="fas fa-toggle-on mr-2"></i>Estado
+										</th>
+										<th style="width: 20%;">
+											<i class="fas fa-cogs mr-2"></i>Acciones
+										</th>
+									</tr>
+								</thead>
+								<tbody id="tablaAfectaciones">
+									<!-- Se llenará dinámicamente -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>			
+		</div>
+
+		<!-- MANTENEDOR TIPOS DE EQUIPOS -->
+		<div class="row d-none" id="mantTiposEquipos">
+			<div class="col-lg-12 col-md-12 col-sm-12">	
+				<div class="row">
+					<div class="col-12">
+						<h5 class="ml-3 mb-3">
+							<i class="fas fa-tools mr-2 text-secondary"></i>
+							Mantenedor de Tipos de Equipos
+						</h5>
+						<p class="ml-3 text-muted">
+							<i class="fas fa-info-circle mr-1"></i>
+							Gestione los tipos de equipos disponibles para asociar a los equipos de las instalaciones.
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 mb-3">
+						<button class="btn btn-secondary" onclick="agregarTipoEquipo()">
+							<i class="fas fa-plus mr-1"></i>Agregar Tipo de Equipo
+						</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">
+						<div class="table-responsive">
+							<table class="table table-sm table-hover table-bordered">
+								<thead class="thead-dark">
+									<tr class="text-center">
+										<th style="width: 5%;">#</th>
+										<th style="width: 60%;">
+											<i class="fas fa-tools mr-2"></i>Nombre Tipo de Equipo
+										</th>
+										<th style="width: 15%;">
+											<i class="fas fa-toggle-on mr-2"></i>Estado
+										</th>
+										<th style="width: 20%;">
+											<i class="fas fa-cogs mr-2"></i>Acciones
+										</th>
+									</tr>
+								</thead>
+								<tbody id="tablaTiposEquipos">
+									<!-- Se llenará dinámicamente -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
 			</div>			
 		</div>
 
@@ -577,9 +805,6 @@
 											<button class="btn btn-sm btn-primary" onclick="editarEmpresa(1)" title="Editar">
 												<i class="fas fa-edit"></i>
 											</button>
-											<button class="btn btn-sm btn-danger" onclick="eliminarEmpresa(1)" title="Eliminar">
-												<i class="fas fa-trash"></i>
-											</button>
 										</td>
 									</tr>
 									<!-- GM -->
@@ -591,9 +816,6 @@
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarEmpresa(2)" title="Editar">
 												<i class="fas fa-edit"></i>
-											</button>
-											<button class="btn btn-sm btn-danger" onclick="eliminarEmpresa(2)" title="Eliminar">
-												<i class="fas fa-trash"></i>
 											</button>
 										</td>
 									</tr>
@@ -607,9 +829,6 @@
 											<button class="btn btn-sm btn-primary" onclick="editarEmpresa(3)" title="Editar">
 												<i class="fas fa-edit"></i>
 											</button>
-											<button class="btn btn-sm btn-danger" onclick="eliminarEmpresa(3)" title="Eliminar">
-												<i class="fas fa-trash"></i>
-											</button>
 										</td>
 									</tr>
 									<!-- Transelec Sur -->
@@ -621,9 +840,6 @@
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarEmpresa(4)" title="Editar">
 												<i class="fas fa-edit"></i>
-											</button>
-											<button class="btn btn-sm btn-danger" onclick="eliminarEmpresa(4)" title="Eliminar">
-												<i class="fas fa-trash"></i>
 											</button>
 										</td>
 									</tr>
@@ -637,9 +853,6 @@
 											<button class="btn btn-sm btn-primary" onclick="editarEmpresa(5)" title="Editar">
 												<i class="fas fa-edit"></i>
 											</button>
-											<button class="btn btn-sm btn-danger" onclick="eliminarEmpresa(5)" title="Eliminar">
-												<i class="fas fa-trash"></i>
-											</button>
 										</td>
 									</tr>
 									<!-- Saesa -->
@@ -651,9 +864,6 @@
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarEmpresa(6)" title="Editar">
 												<i class="fas fa-edit"></i>
-											</button>
-											<button class="btn btn-sm btn-danger" onclick="eliminarEmpresa(6)" title="Eliminar">
-												<i class="fas fa-trash"></i>
 											</button>
 										</td>
 									</tr>
@@ -699,13 +909,16 @@
 								<thead class="thead-dark">
 									<tr class="text-center">
 										<th style="width: 5%;">#</th>
-										<th style="width: 40%;">
+										<th style="width: 30%;">
 											<i class="fas fa-map-marker-alt mr-2"></i>Nombre Instalación
 										</th>
-										<th style="width: 25%;">
+										<th style="width: 20%;">
 											<i class="fas fa-tag mr-2"></i>Código
 										</th>
-										<th style="width: 15%;">
+										<th style="width: 25%;">
+											<i class="fas fa-bolt mr-2"></i>Tipo de tecnología
+										</th>
+										<th style="width: 10%;">
 											<i class="fas fa-toggle-on mr-2"></i>Estado
 										</th>
 										<th style="width: 15%;">
@@ -719,6 +932,9 @@
 										<td class="text-center">1</td>
 										<td><strong>CEME1</strong></td>
 										<td class="text-center"><span class="badge badge-info">CEME1</span></td>
+										<td class="text-center">
+											<i class="fas fa-solar-panel mr-1 text-warning"></i>Solar
+										</td>
 										<td class="text-center"><span class="badge badge-success">Activo</span></td>
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarInstalacion(1)" title="Editar">
@@ -734,6 +950,9 @@
 										<td class="text-center">2</td>
 										<td><strong>Nueva Renca</strong></td>
 										<td class="text-center"><span class="badge badge-info">NR</span></td>
+										<td class="text-center">
+											<i class="fas fa-industry mr-1 text-secondary"></i>Térmica
+										</td>
 										<td class="text-center"><span class="badge badge-success">Activo</span></td>
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarInstalacion(2)" title="Editar">
@@ -749,6 +968,9 @@
 										<td class="text-center">3</td>
 										<td><strong>Santa Lidia</strong></td>
 										<td class="text-center"><span class="badge badge-info">SL</span></td>
+										<td class="text-center">
+											<i class="fas fa-industry mr-1 text-secondary"></i>Térmica
+										</td>
 										<td class="text-center"><span class="badge badge-success">Activo</span></td>
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarInstalacion(3)" title="Editar">
@@ -764,6 +986,9 @@
 										<td class="text-center">4</td>
 										<td><strong>Los Vientos</strong></td>
 										<td class="text-center"><span class="badge badge-info">LV</span></td>
+										<td class="text-center">
+											<i class="fas fa-industry mr-1 text-secondary"></i>Térmica
+										</td>
 										<td class="text-center"><span class="badge badge-success">Activo</span></td>
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarInstalacion(4)" title="Editar">
@@ -779,6 +1004,9 @@
 										<td class="text-center">5</td>
 										<td><strong>Santiago Solar</strong></td>
 										<td class="text-center"><span class="badge badge-info">SS</span></td>
+										<td class="text-center">
+											<i class="fas fa-solar-panel mr-1 text-warning"></i>Solar
+										</td>
 										<td class="text-center"><span class="badge badge-success">Activo</span></td>
 										<td class="text-center">
 											<button class="btn btn-sm btn-primary" onclick="editarInstalacion(5)" title="Editar">

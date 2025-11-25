@@ -1,5 +1,5 @@
 // ============================================
-// CARGADOR DE MODALES DINÁMICOS - DESPACHADOR
+// CARGADOR DE MODALES DINÁMICOS - DESPACHADOR v3
 // ============================================
 
 (function() {
@@ -9,7 +9,6 @@
         'modals/despachador/editar-despachador.html',  // Modal de edición
         'modals/despachador/ver-despachador.html',  // Modal unificado para todos los estados
         'modals/despachador/gestionar-despachador.html',  // Modal de gestión unificado
-        'modals/despachador/gestionar-solicitud-programada-desp.html',
         'modals/despachador/clonar-despachador.html',  // Modal de clonación
         'modals/bitacora.html'
     ];
@@ -27,7 +26,7 @@
 
     // Cargar todos los modales al iniciar
     $(document).ready(function() {
-        console.log('Cargando modales del despachador...');
+        console.log('🔧 Cargando modales del despachador v3 (SIN gestionar-solicitud-programada-desp)...');
         
         // Contenedor para los modales
         if ($('#modals-container').length === 0) {
