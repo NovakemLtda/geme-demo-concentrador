@@ -349,15 +349,15 @@
                             <tr class="table-group">
                                 <th class="text-center">Acciones</th>
                                 <th>ID Registro</th>
-                                <th>ID Solicitud</th>
-                                <th>Tipo</th>
-                                <th>Fecha Prog. Inicio</th>
-                                <th>Fecha Prog. Fin</th>
+                                <th>ID CEN</th>
+                                <th>Tipo de intervención</th>
                                 <th>Instalación GM</th>
-                                <th>Administrador</th>
-                                <th>Solicitante</th>
-                                <th>Empresa Solicitante</th>
-                                <th>Empresa Receptora</th>
+                                <th>Descripción del trabajo</th>
+                                <th>Condiciones requeridas</th>
+                                <th>Empresa solicitante</th>
+                                <th>Empresa receptora</th>
+                                <th>Fecha programada de inicio</th>
+                                <th>Fecha programada de fin</th>
                                 <th>Aplica SODI</th>
                                 <th>Estado</th>
                             </tr>
@@ -1055,14 +1055,14 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
                 <td class="text-center">${acciones}</td>
                 <td>${solicitud.ID_REGISTRO}</td>
                 <td>${solicitud.ID_SOLICITUD}</td>
-                <td><span class="badge ${badgeTipo}">${solicitud.TIPO}</span></td>
-                <td>${solicitud.INICIO_PROGRAMADO}</td>
-                <td>${solicitud.FIN_PROGRAMADO}</td>
+                <td>${solicitud.TIPO_INTERVENCION || solicitud.TIPO}</td>
                 <td>${solicitud.INSTALACION_GM}</td>
-                <td>${solicitud.ADMINISTRADOR}</td>
-                <td>${solicitud.SOLICITANTE}</td>
+                <td>${solicitud.DESCRIPCION || ''}</td>
+                <td>${solicitud.CONDICIONES || ''}</td>
                 <td>${solicitud.EMPRESA_SOLICITANTE}</td>
                 <td>${solicitud.EMPRESA_RECEPTORA}</td>
+                <td>${solicitud.INICIO_PROGRAMADO}</td>
+                <td>${solicitud.FIN_PROGRAMADO}</td>
                 <td>${solicitud.APLICA_SODI}</td>
                 <td><span class="badge ${badgeEstado}">${solicitud.ESTADO}</span></td>
             </tr>
@@ -1272,7 +1272,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         "pageLength": 10,
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Mostrar todo"]],
         "responsive": true,
-        "order": [[1, "desc"]],
+        "order": [[9, "asc"]],
         "columnDefs": [
             { "orderable": false, "targets": 0 }
         ]

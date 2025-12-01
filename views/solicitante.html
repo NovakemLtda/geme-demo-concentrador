@@ -273,12 +273,15 @@
                             <tr class="table-group">
                                 <th class="text-center">Acciones</th>
                                 <th>ID Registro</th>
-                                <th>Fecha Prog. Inicio</th>
-                                <th>Fecha Prog. Fin</th>
+                                <th>ID CEN</th>
+                                <th>Tipo de intervención</th>
                                 <th>Instalación GM</th>
-                                <th>Instalaciones/Equipos a intervenir</th>
-                                <th>Tipo Intervención</th>
-                                <th>Riesgo</th>
+                                <th>Descripción del trabajo</th>
+                                <th>Condiciones requeridas</th>
+                                <th>Empresa solicitante</th>
+                                <th>Empresa receptora</th>
+                                <th>Fecha programada de inicio</th>
+                                <th>Fecha programada de fin</th>
                                 <th>Aplica SODI</th>
                                 <th>Estado</th>
                             </tr>
@@ -732,12 +735,15 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             <tr>
                 <td class="text-center">${acciones}</td>
                 <td>${solicitud.ID_REGISTRO}</td>
+                <td>${solicitud.ID_SOLICITUD}</td>
+                <td>${solicitud.TIPO_INTERVENCION}</td>
+                <td>${solicitud.INSTALACION_GM}</td>
+                <td>${solicitud.DESCRIPCION || ''}</td>
+                <td>${solicitud.CONDICIONES || ''}</td>
+                <td>${solicitud.EMPRESA_SOLICITANTE}</td>
+                <td>${solicitud.EMPRESA_RECEPTORA}</td>
                 <td>${solicitud.INICIO_PROGRAMADO}</td>
                 <td>${solicitud.FIN_PROGRAMADO}</td>
-                <td>${solicitud.INSTALACION_GM}</td>
-                <td>${solicitud.EQUIPOS}</td>
-                <td>${solicitud.TIPO_INTERVENCION}</td>
-                <td><span class="badge ${badgeRiesgo}">${solicitud.RIESGO}</span></td>
                 <td>${solicitud.APLICA_SODI}</td>
                 <td><span class="badge ${badgeEstado}">${solicitud.ESTADO}</span></td>
             </tr>
@@ -853,8 +859,8 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     // Función de filtro personalizada
     $.fn.dataTable.ext.search.push(
         function(settings, data, dataIndex) {
-            // data[9] es la columna del Estado (índice 9, la última columna)
-            const estadoColumna = data[9]; // Contiene el HTML del badge
+            // data[12] es la columna del Estado (índice 12, la última columna)
+            const estadoColumna = data[12]; // Contiene el HTML del badge
             
             // Extraer el texto del estado del HTML
             const tempDiv = document.createElement('div');
@@ -890,7 +896,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         "pageLength": 10,
         "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Mostrar todo"]],
         "responsive": true,
-        "order": [[1, "desc"]],
+        "order": [[9, "asc"]],
         "columnDefs": [
             { "orderable": false, "targets": 0 }
         ]
