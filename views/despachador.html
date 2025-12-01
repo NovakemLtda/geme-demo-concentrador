@@ -1,10 +1,108 @@
 <h2 class="mb-4"><i class="fas fa-clipboard-list"></i> Despachador - Control de Solicitudes</h2>
 
-<!-- Indicadores próximos 30 días para Despachador -->
-<div class="row mb-4" id="resumen-despachador"></div>
+<!-- Estilos específicos para los tabs -->
+<style>
+    /* Estilos para los tabs */
+    .nav-tabs .nav-link.active {
+        background-color: white;
+        color: #333;
+        font-weight: bold;
+        border-bottom-color: white;
+    }
+    .nav-tabs .nav-link:not(.active) {
+        color: white; /* Mejorar contraste */
+        font-weight: 600; /* Hacer más visible */
+        text-shadow: 0 0 1px rgba(0,0,0,0.3); /* Añadir sombra para mejor legibilidad */
+    }
+    .nav-tabs .nav-link:not(.active):hover {
+        color: white;
+        border-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Estilos para las tarjetas */
+    .card-alcance {
+        background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+        border: none;
+    }
+    
+    /* Eliminar bordes de las tarjetas en los dashboards */
+    #resumen-despachador-proceso .card,
+    #resumen-despachador-historico .card {
+        border: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Eliminar bordes internos en el dashboard histórico */
+    #resumen-despachador-historico .card-body {
+        border: none !important;
+    }
+    
+    /* Eliminar borde del contenedor de tabs */
+    #dashboard-content-desp {
+        border: none !important;
+    }
+    
+    /* Eliminar bordes de los paneles de tabs */
+    .tab-pane {
+        border: none !important;
+    }
+    
+    /* Mejorar espaciado */
+    .card-body {
+        padding: 0.75rem;
+    }
+    
+    /* Eliminar bordes del selector */
+    #filtroAnioHistoricoDesp {
+        box-shadow: none;
+    }
+</style>
 
-<!-- Resumen global de solicitudes del despachador -->
-<div class="row mb-4" id="resumen-despachador-global"></div>
+<!-- Dashboard con tabs para indicadores -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <ul class="nav nav-tabs card-header-tabs" id="dashboard-tabs-desp" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active bg-white text-dark font-weight-bold" id="proceso-tab-desp" data-toggle="tab" href="#proceso-content-desp" role="tab" aria-controls="proceso-content-desp" aria-selected="true">
+                            <i class="fas fa-tasks"></i> Dashboard En Proceso
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" id="historico-tab-desp" data-toggle="tab" href="#historico-content-desp" role="tab" aria-controls="historico-content-desp" aria-selected="false">
+                            <i class="fas fa-history"></i> Dashboard Histórico
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="dashboard-content-desp">
+                    <!-- Tab de Dashboard En Proceso -->
+                    <div class="tab-pane fade show active" id="proceso-content-desp" role="tabpanel" aria-labelledby="proceso-tab-desp">
+                        <div class="row" id="resumen-despachador-proceso"></div>
+                    </div>
+                    
+                    <!-- Tab de Dashboard Histórico -->
+                    <div class="tab-pane fade" id="historico-content-desp" role="tabpanel" aria-labelledby="historico-tab-desp">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="form-group d-flex align-items-center border-0">
+                                    <label for="filtroAnioHistoricoDesp" class="mr-2 mb-0 font-weight-bold">Año:</label>
+                                    <select class="form-control form-control-sm border-0" id="filtroAnioHistoricoDesp" style="width: auto; min-width: 80px; max-width: 120px;" onchange="cargarDashboardHistoricoDesp()">
+                                        <!-- Las opciones se cargarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="resumen-despachador-historico"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row mb-4">
     <div class="col-12">
@@ -37,8 +135,14 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Tipo</label>
-                            <select class="form-control" id="filtroTipoDesp">
+                            <label>Tipo de Trabajo</label>
+                            <select
+                                class="form-control selectpicker"
+                                id="filtroTipoDesp"
+                                multiple
+                                data-actions-box="true"
+                                data-live-search="true"
+                                data-none-selected-text="Todos los tipos">
                                 <option value="">Todos</option>
                                 <option value="SDCN">SDCN - Solicitud de Desconexión Curso Normal</option>
                                 <option value="SDCF">SDCF - Solicitud de Desconexión Curso Forzoso</option>
@@ -71,6 +175,35 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
+                            <label>Estado</label>
+                            <select
+                                class="form-control selectpicker"
+                                id="filtroEstadoDesp"
+                                multiple
+                                data-actions-box="true"
+                                data-live-search="true"
+                                data-container="body"
+                                data-none-selected-text="Todos los estados">
+                                <option value="">Todos</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Devuelta">Devuelta</option>
+                                <option value="En Análisis">En Análisis</option>
+                                <option value="Administrador Gestionando">Administrador Gestionando</option>
+                                <option value="Despachador Gestionando">Despachador Gestionando</option>
+                                <option value="Programada">Programada</option>
+                                <option value="Vigente">Vigente</option>
+                                <option value="Extendida">Extendida</option>
+                                <option value="Finalizada">Finalizada</option>
+                                <option value="No Solicitada">No Solicitada</option>
+                                <option value="Rechazada">Rechazada</option>
+                                <option value="Suspendida">Suspendida</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                                        <div class="col-md-3">
+                        <div class="form-group">
                             <label>Empresa Solicitante</label>
                             <select class="form-control" id="filtroEmpresaSolicitanteDesp">
                                 <option value="">Todas</option>
@@ -83,8 +216,6 @@
                             </select>
                         </div>
                     </div>
-                </div>
-                <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label>Empresa Receptora</label>
@@ -101,16 +232,6 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Aplica SODI</label>
-                            <select class="form-control" id="filtroAplicaSODIDesp">
-                                <option value="">Todos</option>
-                                <option value="Sí">Sí</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
                             <label>Fecha Programada Inicio Desde</label>
                             <input type="date" class="form-control" id="filtroFechaDesdeDesp">
                         </div>
@@ -119,6 +240,18 @@
                         <div class="form-group">
                             <label>Fecha Programada Inicio Hasta</label>
                             <input type="date" class="form-control" id="filtroFechaHastaDesp">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                                        <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Aplica SODI</label>
+                            <select class="form-control" id="filtroAplicaSODIDesp">
+                                <option value="">Todos</option>
+                                <option value="Sí">Sí</option>
+                                <option value="No">No</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -248,176 +381,386 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     tbody.empty(); // Limpiar tabla
 
     // ===============================
-    // Indicadores próximos 30 días
+    // Calcular indicadores para ambos dashboards
     // ===============================
+    
+    // Obtener fecha actual y calcular fecha en 30 días
     const ahora = new Date();
     const en30Dias = new Date();
     en30Dias.setDate(ahora.getDate() + 30);
-
-    let sodiProgramadas = 0;
-    let intervencionesProgramadas = 0;
-    let desconexionesProgramadas = 0;
-
+    const anioActual = ahora.getFullYear();
+    
+    // Extraer años únicos de las solicitudes para el selector
+    const aniosDisponibles = new Set();
     solicitudes.forEach(sol => {
-        if (sol.ESTADO !== 'Programada' || !sol.INICIO_PROGRAMADO) return;
-
-        const fechaInicio = new Date(sol.INICIO_PROGRAMADO);
-        if (isNaN(fechaInicio.getTime())) return;
-
-        if (fechaInicio >= ahora && fechaInicio <= en30Dias) {
-            // Clasificar según tipo
-            if (sol.TIPO === 'SODI') {
-                sodiProgramadas++;
-            } else if (['SICN', 'SICF'].includes(sol.TIPO)) {
-                intervencionesProgramadas++;
-            } else if (['SDCN', 'SDCF'].includes(sol.TIPO)) {
-                desconexionesProgramadas++;
+        if (sol.CREADO) {
+            const fechaCreacion = new Date(sol.CREADO);
+            if (!isNaN(fechaCreacion.getTime())) {
+                aniosDisponibles.add(fechaCreacion.getFullYear());
             }
         }
     });
-
-    const resumenHtml = `
-        <div class="col-md-4 mb-2">
-            <div class="card card-alcance text-white">
-                <div class="card-body py-2">
-                    <h5 class="card-title mb-1"><i class="fas fa-bolt"></i> SODI Programadas (30 días)
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="SODI Programadas (30 días)" data-content="Solicitudes de tipo SODI en estado Programada cuyo inicio está dentro de los próximos 30 días (año en curso)."></i>
-                    </h5>
-                    <h2 class="mb-0">${sodiProgramadas}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-2">
-            <div class="card card-alcance text-white">
-                <div class="card-body py-2">
-                    <h5 class="card-title mb-1"><i class="fas fa-tools"></i> Intervenciones Programadas (30 días)
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Intervenciones Programadas (30 días)" data-content="Solicitudes de tipo SICN/SICF en estado Programada cuyo inicio está dentro de los próximos 30 días (año en curso)."></i>
-                    </h5>
-                    <h2 class="mb-0">${intervencionesProgramadas}</h2>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-2">
-            <div class="card card-alcance text-white">
-                <div class="card-body py-2">
-                    <h5 class="card-title mb-1"><i class="fas fa-plug"></i> Desconexiones Programadas (30 días)
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Desconexiones Programadas (30 días)" data-content="Solicitudes de tipo SDCN/SDCF en estado Programada cuyo inicio está dentro de los próximos 30 días (año en curso)."></i>
-                    </h5>
-                    <h2 class="mb-0">${desconexionesProgramadas}</h2>
-                </div>
-            </div>
-        </div>
-    `;
-
-    $('#resumen-despachador').html(resumenHtml);
-    // Inicializar popovers para indicadores de próximos 30 días
-    $('#resumen-despachador [data-toggle="popover"]').popover();
+    
+    // Asegurar que siempre estén disponibles al menos los años 2023, 2024 y 2025
+    aniosDisponibles.add(2023);
+    aniosDisponibles.add(2024);
+    aniosDisponibles.add(2025);
+    
+    // Si no hay años disponibles en los datos, agregar años de ejemplo
+    if (aniosDisponibles.size < 5) {
+        // Añadir año actual y 4 años anteriores como ejemplo
+        aniosDisponibles.add(anioActual);
+        for (let i = 1; i <= 4; i++) {
+            aniosDisponibles.add(anioActual - i);
+        }
+    }
+    
+    // Ordenar años de mayor a menor
+    const aniosOrdenados = Array.from(aniosDisponibles).sort((a, b) => b - a);
+    
+    // Poblar selector de años
+    const selectorAnio = $('#filtroAnioHistoricoDesp');
+    selectorAnio.empty();
+    aniosOrdenados.forEach(anio => {
+        selectorAnio.append(`<option value="${anio}"${anio === anioActual ? ' selected' : ''}>${anio}</option>`);
+    });
     
     // ===============================
-    // Resumen global por estado/tipo
+    // Dashboard En Proceso
     // ===============================
-    const resumenGlobal = {
-        totalSolicitudesGeneradas: 0, // sin SODI
+    
+    // Indicadores para solicitudes en proceso
+    const resumenProceso = {
+        totalEnAnalisis: 0,
+        totalAdminGestionando: 0,
         totalProgramada: 0,
-        totalVigente: 0,
-        totalRechazada: 0,
+        totalVigentes: 0,
         totalExtendida: 0,
-        totalSuspendida: 0,
-        totalFinalizadas: 0
+        sodiProgramadas: 0,
+        intervencionesProgramadas: 0,
+        desconexionesProgramadas: 0
     };
 
     solicitudes.forEach(sol => {
         const estado = sol.ESTADO;
         const tipo = sol.TIPO;
-
-        if (tipo !== 'SODI') {
-            resumenGlobal.totalSolicitudesGeneradas++;
+        
+        // Conteo por estados en proceso
+        if (estado === 'En Análisis') resumenProceso.totalEnAnalisis++;
+        if (estado === 'Administrador Gestionando') resumenProceso.totalAdminGestionando++;
+        if (estado === 'Programada') resumenProceso.totalProgramada++;
+        if (estado === 'Vigente') resumenProceso.totalVigentes++;
+        if (estado === 'Extendida') resumenProceso.totalExtendida++;
+        
+        // Conteo para indicadores de próximos 30 días
+        if (estado === 'Programada' && sol.INICIO_PROGRAMADO) {
+            const fechaInicio = new Date(sol.INICIO_PROGRAMADO);
+            if (!isNaN(fechaInicio.getTime()) && fechaInicio >= ahora && fechaInicio <= en30Dias) {
+                // Clasificar según tipo
+                if (tipo === 'SODI') {
+                    resumenProceso.sodiProgramadas++;
+                } else if (['SICN', 'SICF'].includes(tipo)) {
+                    resumenProceso.intervencionesProgramadas++;
+                } else if (['SDCN', 'SDCF'].includes(tipo)) {
+                    resumenProceso.desconexionesProgramadas++;
+                }
+            }
         }
-
-        if (estado === 'Programada') resumenGlobal.totalProgramada++;
-        if (estado === 'Vigente') resumenGlobal.totalVigente++;
-        if (estado === 'Rechazada') resumenGlobal.totalRechazada++;
-        if (estado === 'Extendida') resumenGlobal.totalExtendida++;
-        if (estado === 'Suspendida') resumenGlobal.totalSuspendida++;
-        if (estado === 'Finalizada') resumenGlobal.totalFinalizadas++;
     });
 
-    const resumenGlobalHtml = `
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-primary h-100">
+    // Generar HTML para dashboard en proceso
+    let resumenProcesoHtml = '';
+    
+    // Primero los indicadores de próximos 30 días
+    resumenProcesoHtml += `
+        <div class="col-md-4 mb-3">
+            <div class="card card-alcance text-white">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Solicitudes Generadas
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Solicitudes Generadas - Año en curso" data-content="Cantidad total de solicitudes visibles para el despachador excluyendo las de tipo SODI."></i>
+                    <h5 class="card-title mb-1"><i class="fas fa-bolt"></i> SODI Programadas (30 días)
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="SODI Programadas (30 días)" data-content="Solicitudes de tipo SODI en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
+                    </h5>
+                    <h2 class="mb-0">${resumenProceso.sodiProgramadas}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card card-alcance text-white">
+                <div class="card-body py-2">
+                    <h5 class="card-title mb-1"><i class="fas fa-tools"></i> Intervenciones Programadas (30 días)
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Intervenciones Programadas (30 días)" data-content="Solicitudes de tipo SICN/SICF en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
+                    </h5>
+                    <h2 class="mb-0">${resumenProceso.intervencionesProgramadas}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card card-alcance text-white">
+                <div class="card-body py-2">
+                    <h5 class="card-title mb-1"><i class="fas fa-plug"></i> Desconexiones Programadas (30 días)
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Desconexiones Programadas (30 días)" data-content="Solicitudes de tipo SDCN/SDCF en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
+                    </h5>
+                    <h2 class="mb-0">${resumenProceso.desconexionesProgramadas}</h2>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Luego los indicadores de estados en proceso
+    resumenProcesoHtml += `
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">En Análisis
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="En Análisis" data-content="Solicitudes que se encuentran en estado de análisis."></i>
                     </small>
-                    <h4 class="mb-0">${resumenGlobal.totalSolicitudesGeneradas}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalEnAnalisis}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-info h-100">
+            <div class="card text-white bg-warning h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Programada
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Programada - Año en curso" data-content="Solicitudes cuyo estado actual es Programada."></i>
+                    <small class="d-block">Admin. Gestionando
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Administrador Gestionando" data-content="Solicitudes que están siendo gestionadas por un administrador."></i>
                     </small>
-                    <h4 class="mb-0">${resumenGlobal.totalProgramada}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalAdminGestionando}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-success h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Vigente
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigente - Año en curso" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                    <small class="d-block">Programada
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Programada" data-content="Solicitudes que han sido programadas pero aún no están vigentes."></i>
                     </small>
-                    <h4 class="mb-0">${resumenGlobal.totalVigente}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalProgramada}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-danger h-100">
+            <div class="card text-white bg-primary h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Rechazada
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazada - Año en curso" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                    <small class="d-block">Vigente
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Vigente" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
                     </small>
-                    <h4 class="mb-0">${resumenGlobal.totalRechazada}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-secondary h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total Extendida
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendida - Año en curso" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
-                    </small>
-                    <h4 class="mb-0">${resumenGlobal.totalExtendida}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-dark h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total Suspendida
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendida - Año en curso" data-content="Solicitudes suspendidas temporalmente en su ejecución."></i>
-                    </small>
-                    <h4 class="mb-0">${resumenGlobal.totalSuspendida}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalVigentes}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-secondary h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Finalizadas
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Finalizadas - Año en curso" data-content="Solicitudes cuyo ciclo de vida ha finalizado correctamente."></i>
+                    <small class="d-block">Extendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Extendida" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
                     </small>
-                    <h4 class="mb-0">${resumenGlobal.totalFinalizadas}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalExtendida}</h4>
                 </div>
             </div>
         </div>
     `;
+    
+    // Insertar HTML en el dashboard de proceso
+    $('#resumen-despachador-proceso').html(resumenProcesoHtml);
+    // Inicializar popovers para los indicadores
+    $('#resumen-despachador-proceso [data-toggle="popover"]').popover();
+    
+    // ===============================
+    // Función para cargar Dashboard Histórico
+    // ===============================
+    window.cargarDashboardHistoricoDesp = function() {
+        const anioSeleccionado = parseInt($('#filtroAnioHistoricoDesp').val());
+        
+        // Indicadores para solicitudes históricas
+        const resumenHistorico = {
+            totalGeneradas: 0,
+            totalSODIs: 0,
+            totalCEN: 0,
+            totalDevueltas: 0,
+            totalAnuladas: 0,
+            totalEnProceso: 0,
+            totalVigentes: 0,
+            totalRechazadas: 0,
+            totalExtendidas: 0,
+            totalSuspendidas: 0,
+            totalFinalizadas: 0
+        };
+        
+        solicitudes.forEach(sol => {
+            // Verificar si la solicitud pertenece al año seleccionado
+            let pertenece = false;
+            if (sol.CREADO) {
+                const fechaCreacion = new Date(sol.CREADO);
+                if (!isNaN(fechaCreacion.getTime()) && fechaCreacion.getFullYear() === anioSeleccionado) {
+                    pertenece = true;
+                }
+            }
+            
+            if (pertenece) {
+                const estado = sol.ESTADO;
+                const tipo = sol.TIPO;
+                
+                // Incrementar total general
+                resumenHistorico.totalGeneradas++;
+                
+                // Conteo por tipo
+                if (tipo === 'SODI') {
+                    resumenHistorico.totalSODIs++;
+                } else {
+                    resumenHistorico.totalCEN++;
+                }
+                
+                // Conteo por estado
+                if (estado === 'Devuelta') resumenHistorico.totalDevueltas++;
+                if (estado === 'No Solicitada') resumenHistorico.totalAnuladas++;
+                if (['En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumenHistorico.totalEnProceso++;
+                if (estado === 'Vigente') resumenHistorico.totalVigentes++;
+                if (estado === 'Rechazada') resumenHistorico.totalRechazadas++;
+                if (estado === 'Extendida') resumenHistorico.totalExtendidas++;
+                if (estado === 'Suspendida') resumenHistorico.totalSuspendidas++;
+                if (estado === 'Finalizada') resumenHistorico.totalFinalizadas++;
+            }
+        });
+        
+        // Generar HTML para dashboard histórico
+        let resumenHistoricoHtml = '';
+        
+        // Primero los totales por tipo (en una fila con 3 columnas de igual tamaño)
+        resumenHistoricoHtml += `
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body py-2">
+                        <h5 class="card-title mb-1">Total Solicitudes
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Solicitudes ${anioSeleccionado}" data-content="Total de solicitudes generadas en el año ${anioSeleccionado}."></i>
+                        </h5>
+                        <h2 class="mb-0">${resumenHistorico.totalGeneradas}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body py-2">
+                        <h5 class="card-title mb-1">Total SODIs
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total SODIs ${anioSeleccionado}" data-content="Total de solicitudes tipo SODI generadas en ${anioSeleccionado}."></i>
+                        </h5>
+                        <h2 class="mb-0">${resumenHistorico.totalSODIs}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card text-white bg-info h-100">
+                    <div class="card-body py-2">
+                        <h5 class="card-title mb-1">Total CEN
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total CEN ${anioSeleccionado}" data-content="Total de solicitudes no SODI (CEN) generadas en ${anioSeleccionado}."></i>
+                        </h5>
+                        <h2 class="mb-0">${resumenHistorico.totalCEN}</h2>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Luego los indicadores por estado
+        resumenHistoricoHtml += `
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Devueltas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Devueltas - ${anioSeleccionado}" data-content="Solicitudes que han sido devueltas en el flujo de aprobación."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalDevueltas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Anuladas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Anuladas - ${anioSeleccionado}" data-content="Solicitudes que han sido anuladas en el flujo de aprobación."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalAnuladas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-info h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total En Proceso
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total En Proceso - ${anioSeleccionado}" data-content="Solicitudes en estados En Análisis, Administrador Gestionando o Programada."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalEnProceso}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Vigentes
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigentes - ${anioSeleccionado}" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalVigentes}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Rechazadas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazadas - ${anioSeleccionado}" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalRechazadas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Extendidas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendidas - ${anioSeleccionado}" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalExtendidas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-dark h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Suspendidas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendidas - ${anioSeleccionado}" data-content="Solicitudes suspendidas temporalmente en su ejecución."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalSuspendidas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Finalizadas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Finalizadas - ${anioSeleccionado}" data-content="Solicitudes cuyo ciclo de vida ha finalizado correctamente."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalFinalizadas}</h4>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insertar HTML en el dashboard histórico
+        $('#resumen-despachador-historico').html(resumenHistoricoHtml);
+        // Inicializar popovers para los indicadores
+        $('#resumen-despachador-historico [data-toggle="popover"]').popover();
+    };
+    
+    // Cargar dashboard histórico inicial
+    cargarDashboardHistoricoDesp();
+    
+    // Configurar comportamiento de los tabs
+    $('#dashboard-tabs-desp a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        
+        // Actualizar estilos de los tabs
+        $('#dashboard-tabs-desp a').removeClass('bg-white text-dark font-weight-bold').addClass('text-white');
+        $(this).removeClass('text-white').addClass('bg-white text-dark font-weight-bold');
+    });
 
-    $('#resumen-despachador-global').html(resumenGlobalHtml);
-    // Inicializar popovers para indicadores globales
-    $('#resumen-despachador-global [data-toggle="popover"]').popover();
     
     // Generar cada fila
     solicitudes.forEach(solicitud => {
@@ -468,40 +811,47 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         }
         
         // Acciones del despachador
-        let accionEditar = '';
-        let accionGestionar = '';
+        let accionesContenido = '';
         
         // Botón Editar: SOLO para "Despachador Gestionando"
-        if (solicitud.ESTADO === 'Despachador Gestionando') {
-            accionEditar = `
-                <a href="javascript:;" onclick="editarSolicitudDesp(${solicitud.ID_REGISTRO})" class="text-warning" title="Editar">
-                    <i class="fas fa-edit"></i>
-                </a>
-            `;
-        }
+        const botonEditar = solicitud.ESTADO === 'Despachador Gestionando'
+            ? `<a class="dropdown-item" href="javascript:;" onclick="editarSolicitudDesp(${solicitud.ID_REGISTRO})">
+                <i class="fas fa-edit mr-2 text-warning"></i> Editar
+            </a>`
+            : '';
         
         // Mostrar botón "Gestionar" solo para estados que el despachador puede gestionar
         const estadosGestionables = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida'];
-        if (estadosGestionables.includes(solicitud.ESTADO)) {
-            accionGestionar = `
-                <a href="javascript:;" onclick="gestionarSolicitudDesp(${solicitud.ID_REGISTRO})" class="text-danger ml-2" title="Gestionar">
-                    <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            `;
-        }
+        const botonGestionar = estadosGestionables.includes(solicitud.ESTADO)
+            ? `<a class="dropdown-item" href="javascript:;" onclick="gestionarSolicitudDesp(${solicitud.ID_REGISTRO})">
+                <i class="fas fa-arrow-circle-right mr-2 text-danger"></i> Gestionar
+            </a>`
+            : '';
         
+        accionesContenido = `
+            ${botonEditar}
+            <a class="dropdown-item" href="javascript:;" onclick="${funcionVer}">
+                <i class="fas fa-eye mr-2 text-primary"></i> Ver
+            </a>
+            <a class="dropdown-item" href="javascript:;" onclick="clonarSolicitudDesp(${solicitud.ID_REGISTRO})">
+                <i class="fas fa-copy mr-2 text-info"></i> Clonar
+            </a>
+            ${botonGestionar}
+            <a class="dropdown-item" href="javascript:;" onclick="abrirBitacora(${solicitud.ID_REGISTRO})">
+                <i class="fas fa-clipboard-list mr-2 text-success"></i> Bitácora
+            </a>
+        `;
+
         const acciones = `
-            ${accionEditar}
-            <a href="javascript:;" onclick="${funcionVer}" class="text-primary ml-2" title="Ver">
-                <i class="fas fa-eye"></i>
-            </a>
-            <a href="javascript:;" onclick="clonarSolicitudDesp(${solicitud.ID_REGISTRO})" class="text-info ml-2" title="Clonar">
-                <i class="fas fa-copy"></i>
-            </a>
-            ${accionGestionar}
-            <a href="javascript:;" onclick="abrirBitacora(${solicitud.ID_REGISTRO})" class="text-success ml-2" title="Bitácora">
-                <i class="fas fa-clipboard-list"></i>
-            </a>
+            <div class="dropdown d-inline-block">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="accionesMenuDesp${solicitud.ID_REGISTRO}"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="accionesMenuDesp${solicitud.ID_REGISTRO}">
+                    ${accionesContenido}
+                </div>
+            </div>
         `;
         
         // Generar HTML de la fila
@@ -534,9 +884,29 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     // Variable local para el filtro actual
     let filtroActual = 'proceso';
     
-    // Inicializar selectpicker de Instalación GM
+    // Fechas mínimas y máximas (últimos 24 meses)
+    const hoy = new Date();
+    const haceDosAnios = new Date(hoy.getTime());
+    haceDosAnios.setFullYear(hoy.getFullYear() - 2);
+    
+    function formatearFecha(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    
+    const fechaMax = formatearFecha(hoy);
+    const fechaMin = formatearFecha(haceDosAnios);
+    
+    // Inicializar selectpicker de Instalación GM, Tipo de Trabajo y Estado
     $(function() {
         $('#filtroInstalacionGMDesp').selectpicker();
+        $('#filtroTipoDesp').selectpicker();
+        $('#filtroEstadoDesp').selectpicker();
+        
+        // Restringir siempre el rango de fechas a los últimos 2 años
+        $('#filtroFechaDesdeDesp, #filtroFechaHastaDesp').attr('min', fechaMin).attr('max', fechaMax);
     });
     
     // Función para limpiar filtros (legacy)
@@ -551,19 +921,25 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         
         // Obtener valores de filtros
         const filtroID = $('#filtroIDSolicitudDesp').val().toLowerCase();
-        const filtroTipo = $('#filtroTipoDesp').val();
+        const filtroTipo = $('#filtroTipoDesp').val(); // array de tipos seleccionados
         const filtroInstalacion = $('#filtroInstalacionGMDesp').val(); // puede ser array
         const filtroEmpSol = $('#filtroEmpresaSolicitanteDesp').val();
         const filtroEmpRec = $('#filtroEmpresaReceptoraDesp').val();
         const filtroSODI = $('#filtroAplicaSODIDesp').val();
         const filtroFechaDesde = $('#filtroFechaDesdeDesp').val();
         const filtroFechaHasta = $('#filtroFechaHastaDesp').val();
+        const filtroEstado = $('#filtroEstadoDesp').val(); // array de estados seleccionados
         
         // Aplicar búsqueda por ID
         table.column(2).search(filtroID);
         
-        // Aplicar búsqueda por Tipo
-        table.column(3).search(filtroTipo);
+        // Aplicar búsqueda por Tipo de Trabajo (multi-selección)
+        if (Array.isArray(filtroTipo) && filtroTipo.length > 0 && !filtroTipo.includes('')) {
+            const patternTipo = '^(' + filtroTipo.join('|') + ')$';
+            table.column(3).search(patternTipo, true, false);
+        } else {
+            table.column(3).search('');
+        }
         
         // Aplicar búsqueda por Instalación GM (multi-selección)
         if (Array.isArray(filtroInstalacion) && filtroInstalacion.length > 0 && !filtroInstalacion.includes('')) {
@@ -582,10 +958,18 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         // Aplicar búsqueda por Aplica SODI
         table.column(11).search(filtroSODI);
         
+        // Aplicar búsqueda por Estado (multi-selección)
+        if (Array.isArray(filtroEstado) && filtroEstado.length > 0 && !filtroEstado.includes('')) {
+            const patternEstado = '(' + filtroEstado.join('|') + ')';
+            table.column(12).search(patternEstado, true, false);
+        } else {
+            table.column(12).search('');
+        }
+        
         // Redibujar tabla
         table.draw();
         
-        console.log('Filtros aplicados:', {filtroID, filtroTipo, filtroInstalacion, filtroEmpSol, filtroEmpRec, filtroSODI});
+        console.log('Filtros aplicados:', {filtroID, filtroTipo, filtroInstalacion, filtroEmpSol, filtroEmpRec, filtroSODI, filtroEstado, filtroFechaDesde, filtroFechaHasta});
     };
     
     // Función para limpiar filtros personalizados
@@ -599,6 +983,12 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         $('#filtroAplicaSODIDesp').val('');
         $('#filtroFechaDesdeDesp').val('');
         $('#filtroFechaHastaDesp').val('');
+        $('#filtroEstadoDesp').val('');
+        
+        // Reiniciar selectpicker
+        $('#filtroInstalacionGMDesp').selectpicker('deselectAll').selectpicker('refresh');
+        $('#filtroTipoDesp').selectpicker('deselectAll').selectpicker('refresh');
+        $('#filtroEstadoDesp').selectpicker('deselectAll').selectpicker('refresh');
         
         // Limpiar búsquedas de DataTable
         const table = $('#table-solicitudes').DataTable();
@@ -611,6 +1001,17 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     window.filtrarPorEstado = function(tipo) {
         console.log('Filtrando por:', tipo);
         filtroActual = tipo;
+        
+        // Ajustar rango de fechas según el radio seleccionado
+        if (tipo === 'proceso') {
+            // En Proceso: no aplicar rango por defecto, solo restricciones de 2 años
+            $('#filtroFechaDesdeDesp').val('');
+            $('#filtroFechaHastaDesp').val('');
+        } else if (tipo === 'finalizadas' || tipo === 'todas') {
+            // Finalizadas o Todas: mostrar por defecto los últimos 24 meses
+            $('#filtroFechaDesdeDesp').val(fechaMin);
+            $('#filtroFechaHastaDesp').val(fechaMax);
+        }
         
         const table = $('#table-solicitudes').DataTable();
         
@@ -630,7 +1031,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $('.solicitud-finalizada').removeAttr('style');
     
     // Estados que se consideran "En Proceso" para Despachador
-    const estadosEnProceso = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida'];
+    const estadosEnProceso = ['Pendiente', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Despachador Gestionando', 'Programada', 'Vigente', 'Extendida'];
     
     // Estados que se consideran "Finalizadas"
     const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Suspendida'];
