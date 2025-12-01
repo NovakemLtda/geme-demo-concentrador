@@ -7,12 +7,106 @@
     #zona-filtro .bootstrap-select .dropdown-menu {
         z-index: 9999; /* asegurar que quede siempre sobre la botonera y otros elementos */
     }
+    
+    /* Estilos para el dashboard del solicitante */
+    .card-alcance {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 10px;
+        transition: transform 0.2s;
+    }
+    
+    .card-alcance:hover {
+        transform: translateY(-2px);
+    }
+    
+    /* Eliminar bordes de las tarjetas en los dashboards */
+    #resumen-solicitante-proceso .card,
+    #resumen-solicitante-historico .card {
+        border: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Eliminar bordes internos en el dashboard histórico */
+    #resumen-solicitante-historico .card-body {
+        border: none !important;
+    }
+    
+    /* Eliminar borde del contenedor de tabs */
+    #dashboard-content-solic {
+        border: none !important;
+    }
+    
+    /* Eliminar bordes de los paneles de tabs */
+    .tab-pane {
+        border: none !important;
+    }
+    
+    /* Mejorar espaciado */
+    .card-body {
+        padding: 0.75rem;
+    }
+    
+    /* Eliminar bordes del selector */
+    #filtroAnioHistoricoSolic {
+        box-shadow: none;
+    }
+    
+    /* Asegurar que los números de los indicadores se vean en blanco */
+    .card.text-white h2,
+    .card.text-white h4 {
+        color: white !important;
+    }
 </style>
 
 <h2 class="mb-4"><i class="fas fa-file-alt"></i> Solicitudes</h2>
 
-<!-- Resumen de solicitudes del solicitante -->
-<div class="row mb-4" id="resumen-solicitante"></div>
+<!-- Dashboard con tabs para indicadores del solicitante -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <ul class="nav nav-tabs card-header-tabs" id="dashboard-tabs-solic" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active bg-white text-dark font-weight-bold" id="proceso-tab-solic" data-toggle="tab" href="#proceso-content-solic" role="tab" aria-controls="proceso-content-solic" aria-selected="true">
+                            <i class="fas fa-tasks"></i> Dashboard En Proceso
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" id="historico-tab-solic" data-toggle="tab" href="#historico-content-solic" role="tab" aria-controls="historico-content-solic" aria-selected="false">
+                            <i class="fas fa-history"></i> Dashboard Histórico
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="dashboard-content-solic">
+                    <!-- Tab de Dashboard En Proceso -->
+                    <div class="tab-pane fade show active" id="proceso-content-solic" role="tabpanel" aria-labelledby="proceso-tab-solic">
+                        <div class="row" id="resumen-solicitante-proceso"></div>
+                    </div>
+                    
+                    <!-- Tab de Dashboard Histórico -->
+                    <div class="tab-pane fade" id="historico-content-solic" role="tabpanel" aria-labelledby="historico-tab-solic">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="form-group d-flex align-items-center border-0">
+                                    <label for="filtroAnioHistoricoSolic" class="mr-2 mb-0 font-weight-bold">Año:</label>
+                                    <select class="form-control form-control-sm border-0" id="filtroAnioHistoricoSolic" style="width: auto; min-width: 80px; max-width: 120px;" onchange="cargarDashboardHistoricoSolic()">
+                                        <!-- Las opciones se cargarán dinámicamente -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" id="resumen-solicitante-historico"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Resumen de solicitudes del solicitante (legacy) -->
+<div class="row mb-4" id="resumen-solicitante" style="display: none;"></div>
 
 <div class="row mb-4">
     <div class="col-12">
@@ -228,130 +322,334 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     
     const tbody = $('#tablaSolicitudesSolicitante tbody');
     tbody.empty(); // Limpiar tabla
+
+    // ===============================
+    // Calcular indicadores para ambos dashboards
+    // ===============================
     
-    // Calcular resumen por estado
-    const resumen = {
-        totalGeneradas: solicitudes.length,
-        totalDevueltas: 0,
-        totalAnuladas: 0,
-        totalEnProceso: 0,
+    // Obtener fecha actual y calcular fecha en 30 días
+    const ahora = new Date();
+    const en30Dias = new Date();
+    en30Dias.setDate(ahora.getDate() + 30);
+    const anioActual = ahora.getFullYear();
+    
+    // Extraer años únicos de las solicitudes para el selector
+    const aniosDisponibles = new Set();
+    solicitudes.forEach(sol => {
+        if (sol.CREADO) {
+            const fechaCreacion = new Date(sol.CREADO);
+            if (!isNaN(fechaCreacion.getTime())) {
+                aniosDisponibles.add(fechaCreacion.getFullYear());
+            }
+        }
+    });
+    
+    // Asegurar que siempre estén disponibles al menos los años 2023, 2024 y 2025
+    aniosDisponibles.add(2023);
+    aniosDisponibles.add(2024);
+    aniosDisponibles.add(2025);
+    
+    // Si no hay años disponibles en los datos, agregar años de ejemplo
+    if (aniosDisponibles.size < 5) {
+        // Añadir año actual y 4 años anteriores como ejemplo
+        aniosDisponibles.add(anioActual);
+        for (let i = 1; i <= 4; i++) {
+            aniosDisponibles.add(anioActual - i);
+        }
+    }
+    
+    // Ordenar años de mayor a menor
+    const aniosOrdenados = Array.from(aniosDisponibles).sort((a, b) => b - a);
+    
+    // Poblar selector de años
+    const selectorAnio = $('#filtroAnioHistoricoSolic');
+    selectorAnio.empty();
+    aniosOrdenados.forEach(anio => {
+        selectorAnio.append(`<option value="${anio}"${anio === anioActual ? ' selected' : ''}>${anio}</option>`);
+    });
+    
+    // ===============================
+    // Dashboard En Proceso
+    // ===============================
+    
+    // Indicadores para solicitudes en proceso
+    const resumenProceso = {
+        totalEnAnalisis: 0,
+        totalAdminGestionando: 0,
+        totalProgramada: 0,
         totalVigentes: 0,
-        totalRechazado: 0,
         totalExtendida: 0,
-        totalSuspendida: 0,
-        totalFinalizadas: 0
+        sodiProgramadas: 0,
+        intervencionesProgramadas: 0,
+        desconexionesProgramadas: 0
     };
 
     solicitudes.forEach(sol => {
         const estado = sol.ESTADO;
-        if (estado === 'Devuelta') resumen.totalDevueltas++;
-        if (estado === 'No Solicitada') resumen.totalAnuladas++;
-        if (['En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumen.totalEnProceso++;
-        if (estado === 'Vigente') resumen.totalVigentes++;
-        if (estado === 'Rechazada') resumen.totalRechazado++;
-        if (estado === 'Extendida') resumen.totalExtendida++;
-        if (estado === 'Suspendida') resumen.totalSuspendida++;
-        if (estado === 'Finalizada') resumen.totalFinalizadas++;
+        const tipo = sol.TIPO;
+        
+        // Conteo por estados en proceso
+        if (estado === 'En Análisis') resumenProceso.totalEnAnalisis++;
+        if (estado === 'Administrador Gestionando') resumenProceso.totalAdminGestionando++;
+        if (estado === 'Programada') resumenProceso.totalProgramada++;
+        if (estado === 'Vigente') resumenProceso.totalVigentes++;
+        if (estado === 'Extendida') resumenProceso.totalExtendida++;
+        
+        // Conteo para indicadores de próximos 30 días
+        if (estado === 'Programada' && sol.INICIO_PROGRAMADO) {
+            const fechaInicio = new Date(sol.INICIO_PROGRAMADO);
+            if (!isNaN(fechaInicio.getTime()) && fechaInicio >= ahora && fechaInicio <= en30Dias) {
+                // Clasificar según tipo
+                if (tipo === 'SODI') {
+                    resumenProceso.sodiProgramadas++;
+                } else if (['SICN', 'SICF'].includes(tipo)) {
+                    resumenProceso.intervencionesProgramadas++;
+                } else if (['SDCN', 'SDCF'].includes(tipo)) {
+                    resumenProceso.desconexionesProgramadas++;
+                }
+            }
+        }
     });
 
-    // Pintar tarjetas de resumen
-    let resumenHtml = '';
-    resumenHtml += `
+    // Generar HTML para dashboard en proceso
+    let resumenProcesoHtml = '';
+    
+    // Indicadores de estados en proceso
+    resumenProcesoHtml += `
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-primary h-100">
+            <div class="card text-white bg-info h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Generadas
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Generadas - Año en curso" data-content="Cantidad total de solicitudes creadas por el solicitante, sin filtrar por estado."></i>
+                    <small class="d-block">En Análisis
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="En Análisis" data-content="Solicitudes que se encuentran en estado de análisis."></i>
                     </small>
-                    <h4 class="mb-0">${resumen.totalGeneradas}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalEnAnalisis}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-warning h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Devueltas
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Devueltas - Año en curso" data-content="Solicitudes que han sido devueltas al solicitante para corrección o ajuste."></i>
+                    <small class="d-block">Admin. Gestionando
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Administrador Gestionando" data-content="Solicitudes que están siendo gestionadas por un administrador."></i>
                     </small>
-                    <h4 class="mb-0">${resumen.totalDevueltas}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-secondary h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total Anuladas
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Anuladas - Año en curso" data-content="Solicitudes marcadas como 'No Solicitada' o anuladas antes de ser gestionadas."></i>
-                    </small>
-                    <h4 class="mb-0">${resumen.totalAnuladas}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-info h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total En Proceso
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total En Proceso - Año en curso" data-content="Solicitudes en estados Pendiente, En Análisis, Administrador Gestionando o Programada."></i>
-                    </small>
-                    <h4 class="mb-0">${resumen.totalEnProceso}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalAdminGestionando}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-success h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Vigentes
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigentes - Año en curso" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                    <small class="d-block">Programada
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Programada" data-content="Solicitudes que han sido programadas pero aún no están vigentes."></i>
                     </small>
-                    <h4 class="mb-0">${resumen.totalVigentes}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalProgramada}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-danger h-100">
+            <div class="card text-white bg-primary h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Rechazado
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazado - Año en curso" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                    <small class="d-block">Vigente
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Vigente" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
                     </small>
-                    <h4 class="mb-0">${resumen.totalRechazado}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-secondary h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total Extendida
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendida - Año en curso" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
-                    </small>
-                    <h4 class="mb-0">${resumen.totalExtendida}</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-dark h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total Suspendida
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendida - Año en curso" data-content="Solicitudes que han sido suspendidas temporalmente."></i>
-                    </small>
-                    <h4 class="mb-0">${resumen.totalSuspendida}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalVigentes}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-secondary h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Finalizadas
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Finalizadas - Año en curso" data-content="Solicitudes cuyo ciclo de vida ha terminado correctamente."></i>
+                    <small class="d-block">Extendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Extendida" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
                     </small>
-                    <h4 class="mb-0">${resumen.totalFinalizadas}</h4>
+                    <h4 class="mb-0">${resumenProceso.totalExtendida}</h4>
                 </div>
             </div>
         </div>
     `;
-
-    $('#resumen-solicitante').html(resumenHtml);
+    
+    // Insertar HTML en el dashboard de proceso
+    $('#resumen-solicitante-proceso').html(resumenProcesoHtml);
     // Inicializar popovers para los indicadores
-    $('#resumen-solicitante [data-toggle="popover"]').popover();
+    $('#resumen-solicitante-proceso [data-toggle="popover"]').popover();
+    
+    // ===============================
+    // Función para cargar Dashboard Histórico
+    // ===============================
+    window.cargarDashboardHistoricoSolic = function() {
+        const anioSeleccionado = parseInt($('#filtroAnioHistoricoSolic').val());
+        
+        // Indicadores para solicitudes históricas
+        const resumenHistorico = {
+            totalGeneradas: 0,
+            totalSODIs: 0,
+            totalCEN: 0,
+            totalDevueltas: 0,
+            totalAnuladas: 0,
+            totalEnProceso: 0,
+            totalVigentes: 0,
+            totalRechazadas: 0,
+            totalExtendidas: 0,
+            totalSuspendidas: 0,
+            totalFinalizadas: 0
+        };
+        
+        solicitudes.forEach(sol => {
+            // Verificar si la solicitud pertenece al año seleccionado
+            let pertenece = false;
+            if (sol.CREADO) {
+                const fechaCreacion = new Date(sol.CREADO);
+                if (!isNaN(fechaCreacion.getTime()) && fechaCreacion.getFullYear() === anioSeleccionado) {
+                    pertenece = true;
+                }
+            }
+            
+            if (pertenece) {
+                const estado = sol.ESTADO;
+                const tipo = sol.TIPO;
+                
+                // Incrementar total general
+                resumenHistorico.totalGeneradas++;
+                
+                // Conteo por tipo
+                if (tipo === 'SODI') {
+                    resumenHistorico.totalSODIs++;
+                } else {
+                    resumenHistorico.totalCEN++;
+                }
+                
+                // Conteo por estado
+                if (estado === 'Devuelta') resumenHistorico.totalDevueltas++;
+                if (estado === 'No Solicitada') resumenHistorico.totalAnuladas++;
+                if (['En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumenHistorico.totalEnProceso++;
+                if (estado === 'Vigente') resumenHistorico.totalVigentes++;
+                if (estado === 'Rechazada') resumenHistorico.totalRechazadas++;
+                if (estado === 'Extendida') resumenHistorico.totalExtendidas++;
+                if (estado === 'Suspendida') resumenHistorico.totalSuspendidas++;
+                if (estado === 'Finalizada') resumenHistorico.totalFinalizadas++;
+            }
+        });
+        
+        // Generar HTML para dashboard histórico
+        let resumenHistoricoHtml = '';
+        
+        // Solo mostrar total de solicitudes
+        resumenHistoricoHtml += `
+            <div class="col-md-3 mb-3">
+                <div class="card text-white bg-primary h-100">
+                    <div class="card-body py-2">
+                        <h5 class="card-title mb-1">Total Solicitudes
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Solicitudes ${anioSeleccionado}" data-content="Total de solicitudes generadas en el año ${anioSeleccionado}."></i>
+                        </h5>
+                        <h2 class="mb-0">${resumenHistorico.totalGeneradas}</h2>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Luego los indicadores por estado
+        resumenHistoricoHtml += `
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-warning h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Devueltas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Devueltas - ${anioSeleccionado}" data-content="Solicitudes que han sido devueltas en el flujo de aprobación."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalDevueltas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Anuladas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Anuladas - ${anioSeleccionado}" data-content="Solicitudes que han sido anuladas en el flujo de aprobación."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalAnuladas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-info h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total En Proceso
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total En Proceso - ${anioSeleccionado}" data-content="Solicitudes en estados En Análisis, Administrador Gestionando o Programada."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalEnProceso}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-success h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Vigentes
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigentes - ${anioSeleccionado}" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalVigentes}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-danger h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Rechazadas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazadas - ${anioSeleccionado}" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalRechazadas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Extendidas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendidas - ${anioSeleccionado}" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalExtendidas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-dark h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Suspendidas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendidas - ${anioSeleccionado}" data-content="Solicitudes suspendidas temporalmente en su ejecución."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalSuspendidas}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 col-lg-2 mb-3">
+                <div class="card text-white bg-secondary h-100">
+                    <div class="card-body py-2">
+                        <small class="d-block">Total Finalizadas
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Finalizadas - ${anioSeleccionado}" data-content="Solicitudes cuyo ciclo de vida ha finalizado correctamente."></i>
+                        </small>
+                        <h4 class="mb-0">${resumenHistorico.totalFinalizadas}</h4>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        // Insertar HTML en el dashboard histórico
+        $('#resumen-solicitante-historico').html(resumenHistoricoHtml);
+        // Inicializar popovers para los indicadores
+        $('#resumen-solicitante-historico [data-toggle="popover"]').popover();
+    };
+    
+    // Cargar dashboard histórico inicial
+    cargarDashboardHistoricoSolic();
+    
+    // Configurar comportamiento de los tabs
+    $('#dashboard-tabs-solic a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        
+        // Actualizar estilos de los tabs
+        $('#dashboard-tabs-solic a').removeClass('bg-white text-dark font-weight-bold').addClass('text-white');
+        $(this).removeClass('text-white').addClass('bg-white text-dark font-weight-bold');
+    });
+
     
     // Generar cada fila
     solicitudes.forEach(solicitud => {
