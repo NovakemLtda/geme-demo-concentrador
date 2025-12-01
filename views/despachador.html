@@ -808,7 +808,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
                 break;
             case 'Suspendida': 
                 badgeEstado = 'badge-dark'; 
-                claseFinalizad = 'solicitud-finalizada';
+                claseFinalizad = 'solicitud-en-proceso';
                 break;
             case 'No Solicitada': 
                 badgeEstado = 'badge-secondary'; 
@@ -827,7 +827,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             : '';
         
         // Mostrar botón "Gestionar" solo para estados que el despachador puede gestionar
-        const estadosGestionables = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida'];
+        const estadosGestionables = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida', 'Finalizada'];
         const botonGestionar = estadosGestionables.includes(solicitud.ESTADO)
             ? `<a class="dropdown-item" href="javascript:;" onclick="gestionarSolicitudDesp(${solicitud.ID_REGISTRO})">
                 <i class="fas fa-arrow-circle-right mr-2 text-danger"></i> Gestionar
@@ -1037,10 +1037,10 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $('.solicitud-finalizada').removeAttr('style');
     
     // Estados que se consideran "En Proceso" para Despachador
-    const estadosEnProceso = ['Pendiente', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Despachador Gestionando', 'Programada', 'Vigente', 'Extendida'];
+    const estadosEnProceso = ['Pendiente', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Despachador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida'];
     
     // Estados que se consideran "Finalizadas"
-    const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Suspendida'];
+    const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada'];
     
     // Función de filtro personalizada
     $.fn.dataTable.ext.search.push(

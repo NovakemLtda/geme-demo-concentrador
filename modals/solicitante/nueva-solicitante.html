@@ -11,17 +11,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formNuevaSolicitud">
-                    <!-- Leyenda de campos obligatorios -->
-                    <div class="alert alert-info mb-3" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            <div>
-                                <strong>Leyenda:</strong>
-                                <span class="ml-3"><span class="text-danger">*</span> Campos obligatorios</span>
+                <!-- Tabs Navigation Principal -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="mainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="formulario-tab" data-toggle="tab" href="#formulario" role="tab" aria-controls="formulario" aria-selected="true">
+                            <i class="fas fa-edit mr-2"></i>Formulario de Solicitud
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="aprobadores-tab" data-toggle="tab" href="#aprobadores" role="tab" aria-controls="aprobadores" aria-selected="false">
+                            <i class="fas fa-user-check mr-2"></i>Aprobadores
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="distribucion-tab" data-toggle="tab" href="#distribucion" role="tab" aria-controls="distribucion" aria-selected="false">
+                            <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content Principal -->
+                <div class="tab-content" id="mainTabsContent">
+                    <!-- Tab: Formulario de Solicitud -->
+                    <div class="tab-pane fade show active" id="formulario" role="tabpanel" aria-labelledby="formulario-tab">
+                        <form id="formNuevaSolicitud">
+                            <!-- Leyenda de campos obligatorios -->
+                            <div class="alert alert-info mb-3" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <div>
+                                        <strong>Leyenda:</strong>
+                                        <span class="ml-3"><span class="text-danger">*</span> Campos obligatorios</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
                     <!-- Header: Estado -->
                     <div class="card mb-3">
@@ -245,7 +268,150 @@
                             </div>
                         </div>
                     </div>
-                </form>
+
+                        </form>
+                    </div>
+
+                    <!-- Tab: Aprobadores -->
+                    <div class="tab-pane fade" id="aprobadores" role="tabpanel" aria-labelledby="aprobadores-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Configuración de Aprobadores:</strong> Busque y seleccione las personas que deben aprobar esta solicitud.
+                        </div>
+
+                        <div class="row">
+                            <!-- Panel Izquierdo: Búsqueda y Lista de Aprobadores Disponibles -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light py-2">
+                                        <h6 class="mb-0 text-primary"><i class="fas fa-search mr-2"></i>Buscar Aprobadores</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Buscador -->
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="buscarAprobadores" placeholder="Buscar por nombre o cargo...">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="buscarAprobadores()">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Lista de Últimos Aprobadores Utilizados -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Últimos aprobadores utilizados:</small>
+                                        </div>
+                                        <div id="listaAprobadoresDisponibles" class="border rounded p-2" style="height: 300px; overflow-y: auto;">
+                                            <!-- Se llenará dinámicamente -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel Derecho: Aprobadores Seleccionados -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white py-2">
+                                        <h6 class="mb-0"><i class="fas fa-user-check mr-2"></i>Aprobadores Seleccionados</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Lista de Aprobadores Seleccionados -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Lista de aprobación (<span id="contadorAprobadores">0</span>):</small>
+                                        </div>
+                                        <div id="listaAprobadoresSeleccionados" class="border rounded p-2" style="height: 300px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="fas fa-users fa-2x mb-2"></i>
+                                                <p>No hay aprobadores seleccionados</p>
+                                                <small>Seleccione aprobadores de la lista de la izquierda</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Lista de Distribución -->
+                    <div class="tab-pane fade" id="distribucion" role="tabpanel" aria-labelledby="distribucion-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Distribución:</strong> Seleccione las personas que recibirán notificaciones sobre esta solicitud.
+                        </div>
+
+                        <div class="row">
+                            <!-- Panel Izquierdo: Búsqueda y Lista de Usuarios Disponibles -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light py-2">
+                                        <h6 class="mb-0 text-primary"><i class="fas fa-search mr-2"></i>Buscar Usuarios</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Buscador -->
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="buscarDistribucion" placeholder="Buscar por nombre o departamento...">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="buscarDistribucion()">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Lista de Últimos Usuarios Agregados -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Últimos usuarios agregados a la lista de distribución:</small>
+                                        </div>
+                                        <div id="listaDistribucionDisponible" class="border rounded p-2" style="height: 200px; overflow-y: auto;">
+                                            <!-- Se llenará dinámicamente -->
+                                        </div>
+
+                                        <!-- Agregar Usuario Externo -->
+                                        <div class="mt-3">
+                                            <h6 class="text-primary"><i class="fas fa-user-plus mr-2"></i>Agregar Usuario Externo</h6>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">Nombre completo</label>
+                                                <input type="text" class="form-control" id="nombreExterno" placeholder="Ej: Juan Pérez">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="text-muted small mb-1">Correo electrónico</label>
+                                                <input type="email" class="form-control" id="correoExterno" placeholder="Ej: juan.perez@empresa.com">
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="agregarUsuarioExterno()">
+                                                <i class="fas fa-plus mr-1"></i>Agregar a Lista
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel Derecho: Lista de Distribución Seleccionada -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-info text-white py-2">
+                                        <h6 class="mb-0"><i class="fas fa-share-alt mr-2"></i>Lista de Distribución</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Lista de Distribución Seleccionada -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Usuarios en lista (<span id="contadorDistribucion">0</span>):</small>
+                                        </div>
+                                        <div id="listaDistribucionSeleccionada" class="border rounded p-2" style="height: 350px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="fas fa-envelope fa-2x mb-2"></i>
+                                                <p>No hay usuarios en la lista</p>
+                                                <small>Seleccione usuarios de la lista de la izquierda</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -259,15 +425,24 @@
     </div>
 </div>
 
-<!-- Script para lógica condicional del formulario -->
+<!-- Script para lógica del formulario y gestión de aprobadores/distribución -->
 <script>
+// Variables globales para gestión de listas
+let aprobadoresDisponibles = [];
+let aprobadoresSeleccionados = [];
+let distribucionDisponible = [];
+let distribucionSeleccionada = [];
+
 $(document).ready(function() {
-    // Lógica condicional para DESCRIPCION_RIESGO - Ahora se muestra siempre
+    // Inicializar datos
+    inicializarAprobadores();
+    inicializarDistribucion();
+    
+    // Lógica condicional para DESCRIPCION_RIESGO
     $('#nuevaSolicRiesgo').on('change', function() {
         const riesgo = $(this).val();
         const textarea = $('#nuevaSolicDescripcionRiesgo');
         
-        // El campo siempre es obligatorio cuando se selecciona un riesgo
         if (riesgo && riesgo !== '') {
             textarea.prop('required', true);
         } else {
@@ -287,15 +462,396 @@ $(document).ready(function() {
         } else {
             container.slideUp(300);
             textarea.prop('required', false);
-            textarea.val(''); // Limpiar el campo
+            textarea.val('');
         }
     });
     
-    // Limpiar campos condicionales al cerrar el modal
+    // Eventos de tabs principales
+    $('#aprobadores-tab').on('shown.bs.tab', function() {
+        cargarAprobadoresDisponibles();
+        $('#buscarAprobadores').focus();
+    });
+    
+    $('#distribucion-tab').on('shown.bs.tab', function() {
+        cargarDistribucionDisponible();
+        $('#buscarDistribucion').focus();
+    });
+    
+    // Búsqueda en tiempo real
+    $('#buscarAprobadores').on('input', function() {
+        filtrarAprobadores($(this).val());
+    });
+    
+    $('#buscarDistribucion').on('input', function() {
+        filtrarDistribucion($(this).val());
+    });
+    
+    // Limpiar todo al cerrar el modal
     $('#modalNuevaSolicitudSolic').on('hidden.bs.modal', function() {
-        $('#nuevaSolicDescripcionRiesgo').prop('required', false).val('');
-        $('#nuevaSolicDescripcionAfectacionContainer').hide();
-        $('#nuevaSolicDescripcionAfectacion').prop('required', false).val('');
+        limpiarFormulario();
     });
 });
+
+// Inicializar datos de aprobadores
+function inicializarAprobadores() {
+    aprobadoresDisponibles = [
+        {id: 1, nombre: 'Juan Pérez', cargo: 'Administrador Senior', email: 'juan.perez@empresa.com', departamento: 'Administración'},
+        {id: 2, nombre: 'María González', cargo: 'Jefe de Operaciones', email: 'maria.gonzalez@empresa.com', departamento: 'Operaciones'},
+        {id: 3, nombre: 'Carlos Rodríguez', cargo: 'Supervisor Técnico', email: 'carlos.rodriguez@empresa.com', departamento: 'Técnico'},
+        {id: 4, nombre: 'Ana López', cargo: 'Coordinadora de Mantenimiento', email: 'ana.lopez@empresa.com', departamento: 'Mantenimiento'},
+        {id: 5, nombre: 'Roberto Silva', cargo: 'Supervisor de Turno', email: 'roberto.silva@empresa.com', departamento: 'Operaciones'},
+        {id: 6, nombre: 'Patricia Morales', cargo: 'Jefe de Área', email: 'patricia.morales@empresa.com', departamento: 'Administración'},
+        {id: 7, nombre: 'Diego Fernández', cargo: 'Coordinador Operativo', email: 'diego.fernandez@empresa.com', departamento: 'Operaciones'},
+        {id: 8, nombre: 'Lucía Castro', cargo: 'Especialista Senior', email: 'lucia.castro@empresa.com', departamento: 'Técnico'},
+        {id: 9, nombre: 'Miguel Torres', cargo: 'Técnico Especialista', email: 'miguel.torres@empresa.com', departamento: 'Técnico'},
+        {id: 10, nombre: 'Carmen Ruiz', cargo: 'Ingeniera de Procesos', email: 'carmen.ruiz@empresa.com', departamento: 'Ingeniería'}
+    ];
+}
+
+// Inicializar datos de distribución
+function inicializarDistribucion() {
+    distribucionDisponible = [
+        {id: 1, nombre: 'Elena Vargas', cargo: 'Coordinadora General', email: 'elena.vargas@empresa.com', departamento: 'Coordinación'},
+        {id: 2, nombre: 'Ricardo Jiménez', cargo: 'Jefe de Planificación', email: 'ricardo.jimenez@empresa.com', departamento: 'Planificación'},
+        {id: 3, nombre: 'Mónica Delgado', cargo: 'Supervisora de Operaciones', email: 'monica.delgado@empresa.com', departamento: 'Operaciones'},
+        {id: 4, nombre: 'Alejandro Ramos', cargo: 'Coordinador de Mantenimiento', email: 'alejandro.ramos@empresa.com', departamento: 'Mantenimiento'},
+        {id: 5, nombre: 'Valeria Ortiz', cargo: 'Analista de Procesos', email: 'valeria.ortiz@empresa.com', departamento: 'Análisis'},
+        {id: 6, nombre: 'Fernando Vega', cargo: 'Analista Técnico', email: 'fernando.vega@empresa.com', departamento: 'Técnico'},
+        {id: 7, nombre: 'Sofía Herrera', cargo: 'Coordinadora de Calidad', email: 'sofia.herrera@empresa.com', departamento: 'Calidad'},
+        {id: 8, nombre: 'Andrés Mendoza', cargo: 'Supervisor de Seguridad', email: 'andres.mendoza@empresa.com', departamento: 'Seguridad'},
+        {id: 9, nombre: 'Departamento de Informática', cargo: 'Equipo IT', email: 'informatica@empresa.com', departamento: 'Informática'},
+        {id: 10, nombre: 'Recursos Humanos', cargo: 'Equipo RRHH', email: 'rrhh@empresa.com', departamento: 'RRHH'}
+    ];
+}
+
+// Cargar últimos aprobadores utilizados
+function cargarAprobadoresDisponibles() {
+    const container = $('#listaAprobadoresDisponibles');
+    container.empty();
+    
+    // Simular "últimos utilizados" - mostrar los primeros 5 como más utilizados
+    const ultimosUtilizados = aprobadoresDisponibles.slice(0, 5).filter(a => 
+        !aprobadoresSeleccionados.find(s => s.id === a.id)
+    );
+    
+    if (ultimosUtilizados.length === 0) {
+        container.html('<div class="text-center text-muted py-3"><i class="fas fa-users-slash"></i><br>No hay aprobadores recientes disponibles</div>');
+        return;
+    }
+    
+    ultimosUtilizados.forEach(aprobador => {
+        const item = $(`
+            <div class="border-bottom py-2 aprobador-item" data-id="${aprobador.id}" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${aprobador.nombre}</strong>
+                        <br><small class="text-muted">${aprobador.cargo}</small>
+                        <br><small class="text-info">${aprobador.email}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success" onclick="agregarAprobador(${aprobador.id})">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+// Cargar últimos usuarios agregados a distribución
+function cargarDistribucionDisponible() {
+    const container = $('#listaDistribucionDisponible');
+    container.empty();
+    
+    // Simular "últimos agregados" - mostrar los primeros 5 como más utilizados
+    const ultimosAgregados = distribucionDisponible.slice(0, 5).filter(d => 
+        !distribucionSeleccionada.find(s => s.id === d.id)
+    );
+    
+    if (ultimosAgregados.length === 0) {
+        container.html('<div class="text-center text-muted py-3"><i class="fas fa-users-slash"></i><br>No hay usuarios recientes disponibles</div>');
+        return;
+    }
+    
+    ultimosAgregados.forEach(usuario => {
+        const item = $(`
+            <div class="border-bottom py-2 distribucion-item" data-id="${usuario.id}" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${usuario.nombre}</strong>
+                        <br><small class="text-info">${usuario.email}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-info" onclick="agregarDistribucion(${usuario.id})">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+// Filtrar aprobadores
+function filtrarAprobadores(termino) {
+    const container = $('#listaAprobadoresDisponibles');
+    const aprobadoresFiltrados = aprobadoresDisponibles.filter(a => {
+        const coincide = a.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                        a.cargo.toLowerCase().includes(termino.toLowerCase()) ||
+                        a.email.toLowerCase().includes(termino.toLowerCase());
+        return coincide && !aprobadoresSeleccionados.find(s => s.id === a.id);
+    });
+    
+    container.empty();
+    
+    if (aprobadoresFiltrados.length === 0) {
+        container.html('<div class="text-center text-muted py-3"><i class="fas fa-search"></i><br>No se encontraron resultados</div>');
+        return;
+    }
+    
+    aprobadoresFiltrados.forEach(aprobador => {
+        const item = $(`
+            <div class="border-bottom py-2 aprobador-item" data-id="${aprobador.id}" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${aprobador.nombre}</strong>
+                        <br><small class="text-muted">${aprobador.cargo}</small>
+                        <br><small class="text-info">${aprobador.email}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-success" onclick="agregarAprobador(${aprobador.id})">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+// Filtrar distribución
+function filtrarDistribucion(termino) {
+    const container = $('#listaDistribucionDisponible');
+    const distribucionFiltrada = distribucionDisponible.filter(d => {
+        const coincide = d.nombre.toLowerCase().includes(termino.toLowerCase()) ||
+                        d.cargo.toLowerCase().includes(termino.toLowerCase()) ||
+                        d.email.toLowerCase().includes(termino.toLowerCase()) ||
+                        d.departamento.toLowerCase().includes(termino.toLowerCase());
+        return coincide && !distribucionSeleccionada.find(s => s.id === d.id);
+    });
+    
+    container.empty();
+    
+    if (distribucionFiltrada.length === 0) {
+        container.html('<div class="text-center text-muted py-3"><i class="fas fa-search"></i><br>No se encontraron resultados</div>');
+        return;
+    }
+    
+    distribucionFiltrada.forEach(usuario => {
+        const item = $(`
+            <div class="border-bottom py-2 distribucion-item" data-id="${usuario.id}" style="cursor: pointer;">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${usuario.nombre}</strong>
+                        <br><small class="text-info">${usuario.email}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-info" onclick="agregarDistribucion(${usuario.id})">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+// Agregar aprobador
+function agregarAprobador(id) {
+    const aprobador = aprobadoresDisponibles.find(a => a.id === id);
+    if (aprobador && !aprobadoresSeleccionados.find(s => s.id === id)) {
+        aprobadoresSeleccionados.push(aprobador);
+        actualizarListaAprobadoresSeleccionados();
+        cargarAprobadoresDisponibles();
+        filtrarAprobadores($('#buscarAprobadores').val());
+    }
+}
+
+// Remover aprobador
+function removerAprobador(id) {
+    aprobadoresSeleccionados = aprobadoresSeleccionados.filter(a => a.id !== id);
+    actualizarListaAprobadoresSeleccionados();
+    cargarAprobadoresDisponibles();
+    filtrarAprobadores($('#buscarAprobadores').val());
+}
+
+// Agregar a distribución
+function agregarDistribucion(id) {
+    const usuario = distribucionDisponible.find(d => d.id === id);
+    if (usuario && !distribucionSeleccionada.find(s => s.id === id)) {
+        distribucionSeleccionada.push(usuario);
+        actualizarListaDistribucionSeleccionada();
+        cargarDistribucionDisponible();
+        filtrarDistribucion($('#buscarDistribucion').val());
+    }
+}
+
+// Remover de distribución
+function removerDistribucion(id) {
+    distribucionSeleccionada = distribucionSeleccionada.filter(d => d.id !== id);
+    actualizarListaDistribucionSeleccionada();
+    cargarDistribucionDisponible();
+    filtrarDistribucion($('#buscarDistribucion').val());
+}
+
+// Actualizar lista de aprobadores seleccionados
+function actualizarListaAprobadoresSeleccionados() {
+    const container = $('#listaAprobadoresSeleccionados');
+    const contador = $('#contadorAprobadores');
+    
+    contador.text(aprobadoresSeleccionados.length);
+    
+    if (aprobadoresSeleccionados.length === 0) {
+        container.html(`
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <p>No hay aprobadores seleccionados</p>
+                <small>Seleccione aprobadores de la lista de la izquierda</small>
+            </div>
+        `);
+        return;
+    }
+    
+    container.empty();
+    aprobadoresSeleccionados.forEach((aprobador, index) => {
+        const item = $(`
+            <div class="border-bottom py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge badge-primary mr-2">${index + 1}</span>
+                        <strong>${aprobador.nombre}</strong>
+                        <br><small class="text-muted ml-4">${aprobador.cargo}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removerAprobador(${aprobador.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+// Actualizar lista de distribución seleccionada
+function actualizarListaDistribucionSeleccionada() {
+    const container = $('#listaDistribucionSeleccionada');
+    const contador = $('#contadorDistribucion');
+    
+    contador.text(distribucionSeleccionada.length);
+    
+    if (distribucionSeleccionada.length === 0) {
+        container.html(`
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-envelope fa-2x mb-2"></i>
+                <p>No hay usuarios en la lista</p>
+                <small>Seleccione usuarios de la lista de la izquierda</small>
+            </div>
+        `);
+        return;
+    }
+    
+    container.empty();
+    distribucionSeleccionada.forEach(usuario => {
+        const esExterno = usuario.id > 1000; // IDs > 1000 son externos
+        const item = $(`
+            <div class="border-bottom py-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${usuario.nombre}</strong>
+                        ${esExterno ? '<span class="badge badge-warning ml-2">Externo</span>' : ''}
+                        <br><small class="text-info">${usuario.email}</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-danger" onclick="removerDistribucion(${usuario.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+// Agregar usuario externo
+function agregarUsuarioExterno() {
+    const nombre = $('#nombreExterno').val().trim();
+    const correo = $('#correoExterno').val().trim();
+    
+    if (!nombre || !correo) {
+        alert('Por favor complete nombre y correo electrónico');
+        return;
+    }
+    
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(correo)) {
+        alert('Por favor ingrese un correo electrónico válido');
+        return;
+    }
+    
+    // Verificar si ya existe
+    if (distribucionSeleccionada.find(d => d.email.toLowerCase() === correo.toLowerCase())) {
+        alert('Este correo ya está en la lista de distribución');
+        return;
+    }
+    
+    // Crear usuario externo con ID único
+    const usuarioExterno = {
+        id: 1000 + distribucionSeleccionada.filter(d => d.id > 1000).length + 1,
+        nombre: nombre,
+        cargo: 'Usuario Externo',
+        email: correo,
+        departamento: 'Externo'
+    };
+    
+    distribucionSeleccionada.push(usuarioExterno);
+    actualizarListaDistribucionSeleccionada();
+    
+    // Limpiar campos
+    $('#nombreExterno').val('');
+    $('#correoExterno').val('');
+}
+
+// Funciones de búsqueda (para compatibilidad con botones)
+function buscarAprobadores() {
+    filtrarAprobadores($('#buscarAprobadores').val());
+}
+
+function buscarDistribucion() {
+    filtrarDistribucion($('#buscarDistribucion').val());
+}
+
+// Limpiar formulario completo
+function limpiarFormulario() {
+    // Resetear a primer tab
+    $('#mainTabs a[href="#formulario"]').tab('show');
+    
+    // Limpiar campos del formulario
+    $('#formNuevaSolicitud')[0].reset();
+    $('#nuevaSolicDescripcionRiesgo').prop('required', false);
+    $('#nuevaSolicDescripcionAfectacionContainer').hide();
+    $('#nuevaSolicDescripcionAfectacion').prop('required', false);
+    
+    // Limpiar listas de aprobadores y distribución
+    aprobadoresSeleccionados = [];
+    distribucionSeleccionada = [];
+    
+    // Limpiar campos de búsqueda
+    $('#buscarAprobadores').val('');
+    $('#buscarDistribucion').val('');
+    $('#nombreExterno').val('');
+    $('#correoExterno').val('');
+    
+    // No hay checkboxes que resetear en distribución
+    
+    // Actualizar vistas
+    actualizarListaAprobadoresSeleccionados();
+    actualizarListaDistribucionSeleccionada();
+}
 </script>

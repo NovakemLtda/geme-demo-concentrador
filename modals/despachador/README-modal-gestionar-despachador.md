@@ -182,8 +182,19 @@ Opciones para avanzar:
     Si la solicitud es "Vigente", el Despachador puede enviar a "Extendida", el nombre de la transición es: "Extender Trabajo"
     Si la solicitud es "Vigente", el Despachador puede enviar a "Suspendida", el nombre de la transición es: "Suspender Trabajo"
     Si la solicitud es "Vigente", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización
-
+    Si la solicitud es "Vigente", el Despachador puede enviar a "Programada", el nombre de la transición es: "Devolver a Programada" si se devuelve a "Programada" mostrar un mensaje que diga que se borrará la "Fecha efectiva de inicio".
+   
 4. Extendida
-    Si la solicitud es "Extendida", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización
+    Si la solicitud es "Extendida", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización debe ser obligatoria
+    Si la solicitud es "Extendida", el Despachador puede enviar a "Vigente", el nombre de la transición es: "Devolver a Vigente"
+
+5. Suspendida
+    Si la solicitud es "Suspendida", el Despachador puede enviar a "Finalizada", el nombre de la transición es: "Finalizar Trabajo" esta opción es seleccionable si se ingresa una Fecha Efectiva de Finalización debe ser obligatoria
+    Si la solicitud es "Suspendida", el Despachador puede enviar a "Vigente", el nombre de la transición es: "Devolver a Vigente"
+
+6. Finalizada
+    Si la solicitud es "Finalizada", el Despachador puede enviar a "Extendida", el nombre de la transición es: "Devolver a Extendida" se debe mostrar un mensaje que diga que la fecha festiva de finalización se borrará
+    Si la solicitud es "Finalizada", el Despachador puede enviar a "Suspendida", el nombre de la transición es: "Devolver a Suspendida" se debe mostrar un mensaje que diga que la fecha festiva de finalización se borrará
+    Si la solicitud es "Finalizada", el Despachador puede enviar a "Vigente", el nombre de la transición es: "Devolver a Vigente" se debe mostrar un mensaje que diga que la fecha festiva de finalización se borrará
 
 Campo de OBSERVACIONES obligatorio

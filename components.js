@@ -2129,7 +2129,7 @@ function gestionarSolicitudDesp(solicitudId) {
     const estado = solicitud.ESTADO;
     
     // Estados que pueden ser gestionados por el despachador
-    const estadosGestionables = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida'];
+    const estadosGestionables = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida', 'Finalizada'];
     
     if (!estadosGestionables.includes(estado)) {
         alert('Esta solicitud no puede ser gestionada en su estado actual: ' + estado);
@@ -2419,7 +2419,7 @@ function aplicarReglasEditabilidadDespachador(estado) {
         $(`${modalContext} .card:has(#gestionarDespDescripcion)`).addClass('border-warning');
         $(`${modalContext} .card:has(#gestionarDespDescripcion) .card-header`).removeClass('bg-light').addClass('bg-warning text-dark').append(' <span class="badge badge-light ml-2">EDITABLE</span>');
         
-    } else if (estado === 'Vigente' || estado === 'Extendida') {
+    } else if (estado === 'Vigente') {
         // Todo en solo lectura, excepto las fechas efectivas que son editables
         // INICIO_EFECTIVO: Obligatorio y editable
         $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).attr('required', 'required');
@@ -2428,6 +2428,38 @@ function aplicarReglasEditabilidadDespachador(estado) {
         
         // FIN_EFECTIVO: Editable (obligatorio para finalizar, opcional para suspender/rechazar)
         $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false);
+        
+        // Marcar sección de Fechas Efectivas como editable
+        $(`${modalContext} .card:has(#gestionarDespInicioEfectivo)`).addClass('border-warning');
+        $(`${modalContext} .card:has(#gestionarDespInicioEfectivo) .card-header`).removeClass('bg-light').addClass('bg-warning text-dark').append(' <span class="badge badge-light ml-2">EDITABLE</span>');
+        
+    } else if (estado === 'Extendida') {
+        // Todo en solo lectura, excepto las fechas efectivas que son editables
+        // INICIO_EFECTIVO: Obligatorio y editable
+        $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).attr('required', 'required');
+        // Agregar asterisco de obligatoriedad
+        $(`${modalContext} label[for="gestionarDespInicioEfectivo"], ${modalContext} #gestionarDespInicioEfectivo`).closest('.form-group').find('label').append(' <span class="text-danger">*</span>');
+        
+        // FIN_EFECTIVO: Obligatorio y editable para estado Extendida
+        $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).attr('required', 'required');
+        // Agregar asterisco de obligatoriedad
+        $(`${modalContext} label[for="gestionarDespFinEfectivo"], ${modalContext} #gestionarDespFinEfectivo`).closest('.form-group').find('label').append(' <span class="text-danger">*</span>');
+        
+        // Marcar sección de Fechas Efectivas como editable
+        $(`${modalContext} .card:has(#gestionarDespInicioEfectivo)`).addClass('border-warning');
+        $(`${modalContext} .card:has(#gestionarDespInicioEfectivo) .card-header`).removeClass('bg-light').addClass('bg-warning text-dark').append(' <span class="badge badge-light ml-2">EDITABLE</span>');
+        
+    } else if (estado === 'Suspendida') {
+        // Suspendida es equivalente a Extendida: ambas fechas efectivas obligatorias
+        // INICIO_EFECTIVO: Obligatorio y editable
+        $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).attr('required', 'required');
+        // Agregar asterisco de obligatoriedad
+        $(`${modalContext} label[for="gestionarDespInicioEfectivo"], ${modalContext} #gestionarDespInicioEfectivo`).closest('.form-group').find('label').append(' <span class="text-danger">*</span>');
+        
+        // FIN_EFECTIVO: Obligatorio y editable para estado Suspendida
+        $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).attr('required', 'required');
+        // Agregar asterisco de obligatoriedad
+        $(`${modalContext} label[for="gestionarDespFinEfectivo"], ${modalContext} #gestionarDespFinEfectivo`).closest('.form-group').find('label').append(' <span class="text-danger">*</span>');
         
         // Marcar sección de Fechas Efectivas como editable
         $(`${modalContext} .card:has(#gestionarDespInicioEfectivo)`).addClass('border-warning');
@@ -2480,7 +2512,7 @@ function configurarTransicionesEstadoDesp(estadoActual) {
             break;
             
         case 'Vigente':
-            // Puede avanzar a "Extendida", "Suspendida" o "Finalizada"
+            // Puede avanzar a "Extendida", "Suspendida", "Finalizada" o "Programada"
             opcionesHTML = `
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="accionDesp" id="accionExtendida" value="Extendida" checked>
@@ -2500,16 +2532,74 @@ function configurarTransicionesEstadoDesp(estadoActual) {
                         <strong>Finalizar Trabajo</strong> - Cambiar estado a "Finalizada" (requiere fecha efectiva de fin)
                     </label>
                 </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionDevolverProgramada" value="Programada">
+                    <label class="form-check-label" for="accionDevolverProgramada">
+                        <strong>Devolver a Programada</strong> - Cambiar estado a "Programada"
+                        <small class="text-warning d-block"><i class="fas fa-exclamation-triangle mr-1"></i>Se borrará la fecha efectiva de inicio</small>
+                    </label>
+                </div>
             `;
             break;
             
         case 'Extendida':
-            // Puede avanzar a "Finalizada"
+            // Puede avanzar a "Finalizada" o "Vigente"
             opcionesHTML = `
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="accionDesp" id="accionFinalizadaE" value="Finalizada" checked>
                     <label class="form-check-label" for="accionFinalizadaE">
-                        <strong>Finalizar Trabajo</strong> - Cambiar estado a "Finalizada"
+                        <strong>Finalizar Trabajo</strong> - Cambiar estado a "Finalizada" (requiere fecha efectiva de fin - OBLIGATORIA)
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionDevolverVigenteE" value="Vigente">
+                    <label class="form-check-label" for="accionDevolverVigenteE">
+                        <strong>Devolver a Vigente</strong> - Cambiar estado a "Vigente"
+                    </label>
+                </div>
+            `;
+            break;
+            
+        case 'Suspendida':
+            // Puede avanzar a "Finalizada" o "Vigente"
+            opcionesHTML = `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionFinalizadaS" value="Finalizada" checked>
+                    <label class="form-check-label" for="accionFinalizadaS">
+                        <strong>Finalizar Trabajo</strong> - Cambiar estado a "Finalizada" (requiere fecha efectiva de fin - OBLIGATORIA)
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionDevolverVigenteS" value="Vigente">
+                    <label class="form-check-label" for="accionDevolverVigenteS">
+                        <strong>Devolver a Vigente</strong> - Cambiar estado a "Vigente"
+                    </label>
+                </div>
+            `;
+            break;
+            
+        case 'Finalizada':
+            // Puede devolver a "Extendida", "Suspendida" o "Vigente"
+            opcionesHTML = `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionDevolverExtendida" value="Extendida" checked>
+                    <label class="form-check-label" for="accionDevolverExtendida">
+                        <strong>Devolver a Extendida</strong> - Cambiar estado a "Extendida"
+                        <small class="text-warning d-block"><i class="fas fa-exclamation-triangle mr-1"></i>La fecha efectiva de finalización se borrará</small>
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionDevolverSuspendida" value="Suspendida">
+                    <label class="form-check-label" for="accionDevolverSuspendida">
+                        <strong>Devolver a Suspendida</strong> - Cambiar estado a "Suspendida"
+                        <small class="text-warning d-block"><i class="fas fa-exclamation-triangle mr-1"></i>La fecha efectiva de finalización se borrará</small>
+                    </label>
+                </div>
+                <div class="form-check mt-2">
+                    <input class="form-check-input" type="radio" name="accionDesp" id="accionDevolverVigenteF" value="Vigente">
+                    <label class="form-check-label" for="accionDevolverVigenteF">
+                        <strong>Devolver a Vigente</strong> - Cambiar estado a "Vigente"
+                        <small class="text-warning d-block"><i class="fas fa-exclamation-triangle mr-1"></i>La fecha efectiva de finalización se borrará</small>
                     </label>
                 </div>
             `;

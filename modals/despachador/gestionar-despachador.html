@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label class="text-muted small mb-1">Tipo <span class="text-danger">*</span></label>
+                                    <label class="text-muted small mb-1">Tipo de Trabajo<span class="text-danger">*</span></label>
                                     <select class="form-control" id="gestionarDespTipo" required>
                                         <option value="">Seleccione...</option>
                                         <option value="SDCN">SDCN - Solicitud de Desconexión Curso Normal</option>
@@ -437,3 +437,291 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript para gestión de transiciones de estado -->
+<script>
+// Variables globales para el modal de gestión
+let estadoActualSolicitud = '';
+let transicionSeleccionada = '';
+
+$(document).ready(function() {
+    // Inicializar eventos del modal
+    $('#modalGestionarSolicitudDesp').on('shown.bs.modal', function() {
+        cargarAccionesDisponibles();
+        configurarValidacionesFecha();
+        
+        // Debug: mostrar estado detectado en consola
+        console.log('Estado actual detectado:', estadoActualSolicitud);
+    });
+    
+    // Evento para cambios en las acciones
+    $(document).on('change', 'input[name="accionGestion"]', function() {
+        transicionSeleccionada = $(this).val();
+        manejarCambioAccion(transicionSeleccionada);
+    });
+    
+    // Validación en tiempo real de fecha efectiva de finalización
+    $('#gestionarDespFinEfectivo').on('change', function() {
+        validarFechaFinalizacion();
+    });
+});
+
+// Cargar acciones disponibles según el estado actual
+function cargarAccionesDisponibles() {
+    const container = $('#gestionarDespAccionesContainer');
+    container.empty();
+    
+    // Obtener el estado actual (esto se debería cargar desde los datos de la solicitud)
+    estadoActualSolicitud = obtenerEstadoActual();
+    
+    // Debug: mostrar información detallada
+    console.log('=== DEBUG ACCIONES ===');
+    console.log('Estado detectado:', estadoActualSolicitud);
+    console.log('Tipo de estado:', typeof estadoActualSolicitud);
+    console.log('Longitud del estado:', estadoActualSolicitud.length);
+    
+    let acciones = [];
+    
+    switch(estadoActualSolicitud) {
+        case 'Despachador Gestionando':
+            acciones = [
+                {valor: 'programar', texto: 'Programar Solicitud', destino: 'Programada'},
+                {valor: 'anular', texto: 'Anular Solicitud', destino: 'Anulada'}
+            ];
+            break;
+            
+        case 'Programada':
+            acciones = [
+                {valor: 'iniciar', texto: 'Iniciar Trabajo', destino: 'Vigente', requiereFecha: 'inicio'},
+                {valor: 'rechazar', texto: 'Rechazar Trabajo', destino: 'Rechazada'}
+            ];
+            break;
+            
+        case 'Vigente':
+            acciones = [
+                {valor: 'extender', texto: 'Extender Trabajo', destino: 'Extendida'},
+                {valor: 'suspender', texto: 'Suspender Trabajo', destino: 'Suspendida'},
+                {valor: 'finalizar', texto: 'Finalizar Trabajo', destino: 'Finalizada', requiereFecha: 'fin'},
+                {valor: 'devolver_programada', texto: 'Devolver a Programada', destino: 'Programada', mensaje: 'Se borrará la fecha efectiva de inicio'}
+            ];
+            break;
+            
+        case 'Extendida':
+            acciones = [
+                {valor: 'finalizar', texto: 'Finalizar Trabajo', destino: 'Finalizada', requiereFecha: 'fin', obligatorio: true},
+                {valor: 'devolver_vigente', texto: 'Devolver a Vigente', destino: 'Vigente'}
+            ];
+            break;
+            
+        case 'Suspendida':
+            acciones = [
+                {valor: 'finalizar', texto: 'Finalizar Trabajo', destino: 'Finalizada', requiereFecha: 'fin', obligatorio: true},
+                {valor: 'devolver_vigente', texto: 'Devolver a Vigente', destino: 'Vigente'}
+            ];
+            break;
+            
+        case 'Finalizada':
+            acciones = [
+                {valor: 'devolver_extendida', texto: 'Devolver a Extendida', destino: 'Extendida', mensaje: 'La fecha efectiva de finalización se borrará'},
+                {valor: 'devolver_suspendida', texto: 'Devolver a Suspendida', destino: 'Suspendida', mensaje: 'La fecha efectiva de finalización se borrará'},
+                {valor: 'devolver_vigente_final', texto: 'Devolver a Vigente', destino: 'Vigente', mensaje: 'La fecha efectiva de finalización se borrará'}
+            ];
+            break;
+            
+        default:
+            console.log('Estado no reconocido:', estadoActualSolicitud);
+            container.html('<div class="alert alert-warning">No hay acciones disponibles para este estado.</div>');
+            return;
+    }
+    
+    // Debug: mostrar acciones generadas
+    console.log('Acciones generadas:', acciones);
+    console.log('Cantidad de acciones:', acciones.length);
+    
+    // Generar los radio buttons para las acciones
+    acciones.forEach(accion => {
+        const radioHtml = `
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="accionGestion" id="accion_${accion.valor}" value="${accion.valor}" data-destino="${accion.destino}" data-requiere-fecha="${accion.requiereFecha || ''}" data-obligatorio="${accion.obligatorio || false}" data-mensaje="${accion.mensaje || ''}">
+                <label class="form-check-label" for="accion_${accion.valor}">
+                    <strong>${accion.texto}</strong>
+                    <small class="text-muted d-block">Cambiar a: ${accion.destino}</small>
+                    ${accion.mensaje ? `<small class="text-warning d-block"><i class="fas fa-exclamation-triangle mr-1"></i>${accion.mensaje}</small>` : ''}
+                </label>
+            </div>
+        `;
+        container.append(radioHtml);
+    });
+}
+
+// Manejar cambio de acción seleccionada
+function manejarCambioAccion(accion) {
+    const radioSeleccionado = $(`input[name="accionGestion"]:checked`);
+    const requiereFecha = radioSeleccionado.data('requiere-fecha');
+    const esObligatorio = radioSeleccionado.data('obligatorio');
+    const mensaje = radioSeleccionado.data('mensaje');
+    
+    // Resetear validaciones previas
+    $('#gestionarDespInicioEfectivo').prop('required', false);
+    $('#gestionarDespFinEfectivo').prop('required', false);
+    $('.fecha-advertencia').remove();
+    
+    // Configurar validaciones según la acción
+    if (requiereFecha === 'inicio') {
+        $('#gestionarDespInicioEfectivo').prop('required', true);
+        mostrarAdvertenciaFecha('inicio', 'Debe ingresar la fecha efectiva de inicio para esta acción.');
+    }
+    
+    if (requiereFecha === 'fin') {
+        $('#gestionarDespFinEfectivo').prop('required', true);
+        if (esObligatorio) {
+            mostrarAdvertenciaFecha('fin', 'La fecha efectiva de finalización es OBLIGATORIA para esta acción.');
+        } else {
+            mostrarAdvertenciaFecha('fin', 'Debe ingresar la fecha efectiva de finalización para esta acción.');
+        }
+    }
+    
+    // Mostrar mensaje de advertencia si existe
+    if (mensaje) {
+        mostrarMensajeAdvertencia(mensaje);
+    }
+}
+
+// Mostrar advertencia para campos de fecha
+function mostrarAdvertenciaFecha(tipo, mensaje) {
+    const campo = tipo === 'inicio' ? '#gestionarDespInicioEfectivo' : '#gestionarDespFinEfectivo';
+    const advertencia = `<small class="form-text text-warning fecha-advertencia"><i class="fas fa-exclamation-triangle mr-1"></i>${mensaje}</small>`;
+    $(campo).after(advertencia);
+}
+
+// Mostrar mensaje de advertencia general
+function mostrarMensajeAdvertencia(mensaje) {
+    const advertenciaHtml = `
+        <div class="alert alert-warning mt-2 fecha-advertencia" role="alert">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <strong>Advertencia:</strong> ${mensaje}
+        </div>
+    `;
+    $('#gestionarDespAccionesContainer').after(advertenciaHtml);
+}
+
+// Configurar validaciones específicas para fechas según el estado
+function configurarValidacionesFecha() {
+    // Si el estado es Extendida o Suspendida, la fecha de finalización debe ser obligatoria
+    if (estadoActualSolicitud === 'Extendida' || estadoActualSolicitud === 'Suspendida') {
+        $('#gestionarDespFinEfectivo').prop('required', true);
+        
+        // Agregar indicador visual
+        const label = $('label[for="gestionarDespFinEfectivo"]');
+        if (!label.find('.text-danger').length) {
+            label.html(label.html().replace('Fin Efectivo', 'Fin Efectivo <span class="text-danger">*</span>'));
+        }
+        
+        // Actualizar el texto de ayuda
+        $('#gestionarDespFinEfectivo').siblings('.form-text').text('OBLIGATORIO para estados Extendida y Suspendida');
+    }
+}
+
+// Validar fecha de finalización
+function validarFechaFinalizacion() {
+    const fechaFin = $('#gestionarDespFinEfectivo').val();
+    const radioSeleccionado = $('input[name="accionGestion"]:checked');
+    
+    if (radioSeleccionado.length > 0) {
+        const requiereFecha = radioSeleccionado.data('requiere-fecha');
+        const esObligatorio = radioSeleccionado.data('obligatorio');
+        
+        if (requiereFecha === 'fin' && esObligatorio && !fechaFin) {
+            $('#gestionarDespFinEfectivo').addClass('is-invalid');
+            if (!$('#gestionarDespFinEfectivo').siblings('.invalid-feedback').length) {
+                $('#gestionarDespFinEfectivo').after('<div class="invalid-feedback">La fecha efectiva de finalización es obligatoria.</div>');
+            }
+        } else {
+            $('#gestionarDespFinEfectivo').removeClass('is-invalid');
+            $('#gestionarDespFinEfectivo').siblings('.invalid-feedback').remove();
+        }
+    }
+}
+
+// Obtener el estado actual de la solicitud (simulado - en producción vendría de los datos)
+function obtenerEstadoActual() {
+    // TEMPORAL: Forzar estado "Vigente" para testing
+    // Comentar esta línea cuando se integre con datos reales
+    return 'Vigente';
+    
+    // Esta función debería obtener el estado real de la solicitud
+    // Intentar obtener desde el badge de estado
+    const estadoBadge = $('#gestionarDespEstadoBadge').text().trim();
+    
+    // Si no hay badge o está vacío, usar estado por defecto para testing
+    if (!estadoBadge || estadoBadge === '-' || estadoBadge === '') {
+        return 'Vigente'; // Estado por defecto para testing
+    }
+    
+    // Limpiar el texto del badge (puede tener espacios extra o caracteres especiales)
+    return estadoBadge.replace(/[^\w\s]/g, '').trim();
+}
+
+// Función para confirmar la gestión (actualizada)
+function confirmarGestionSolicitudDespachador() {
+    const radioSeleccionado = $('input[name="accionGestion"]:checked');
+    const observaciones = $('#gestionarDespComentarios').val().trim();
+    
+    // Validaciones básicas
+    if (!radioSeleccionado.length) {
+        alert('Debe seleccionar una acción a realizar.');
+        return;
+    }
+    
+    if (!observaciones) {
+        alert('Debe ingresar observaciones sobre la gestión.');
+        return;
+    }
+    
+    // Validaciones específicas de fecha
+    const requiereFecha = radioSeleccionado.data('requiere-fecha');
+    const esObligatorio = radioSeleccionado.data('obligatorio');
+    
+    if (requiereFecha === 'inicio') {
+        const fechaInicio = $('#gestionarDespInicioEfectivo').val();
+        if (!fechaInicio) {
+            alert('Debe ingresar la fecha efectiva de inicio para esta acción.');
+            return;
+        }
+    }
+    
+    if (requiereFecha === 'fin') {
+        const fechaFin = $('#gestionarDespFinEfectivo').val();
+        if (!fechaFin && (esObligatorio || estadoActualSolicitud === 'Extendida' || estadoActualSolicitud === 'Suspendida')) {
+            alert('Debe ingresar la fecha efectiva de finalización para esta acción.');
+            return;
+        }
+    }
+    
+    // Confirmación adicional para acciones que borran fechas
+    const mensaje = radioSeleccionado.data('mensaje');
+    if (mensaje && mensaje.includes('borrará')) {
+        if (!confirm(`¿Está seguro de continuar? ${mensaje}`)) {
+            return;
+        }
+    }
+    
+    // Si llegamos aquí, proceder con la gestión
+    const accion = radioSeleccionado.val();
+    const destino = radioSeleccionado.data('destino');
+    
+    console.log('Procesando gestión:', {
+        accion: accion,
+        estadoDestino: destino,
+        observaciones: observaciones,
+        fechaInicio: $('#gestionarDespInicioEfectivo').val(),
+        fechaFin: $('#gestionarDespFinEfectivo').val()
+    });
+    
+    // Aquí iría la lógica para enviar los datos al servidor
+    alert(`Gestión confirmada: ${radioSeleccionado.next('label').find('strong').text()}`);
+    
+    // Cerrar modal
+    $('#modalGestionarSolicitudDesp').modal('hide');
+}
+</script>
