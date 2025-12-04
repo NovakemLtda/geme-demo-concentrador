@@ -360,8 +360,8 @@
                         <thead>
                             <tr class="table-group">
                                 <th class="text-center">Acciones</th>
-                                <th>ID Registro</th>
-                                <th>ID CEN</th>
+                                <th>ID</th>
+                                <th>ID CEN/SODI</th>
                                 <th>Tipo de intervención</th>
                                 <th>Instalación GM</th>
                                 <th>Descripción del trabajo</th>
@@ -494,27 +494,18 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             <div class="card text-white bg-success h-100">
                 <div class="card-body py-2">
                     <small class="d-block">Total Vigentes
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigente" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Vigentes" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
                     </small>
                     <h4 class="mb-0">${resumen.totalVigentes}</h4>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-danger h-100">
-                <div class="card-body py-2">
-                    <small class="d-block">Total Rechazado
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazado" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
-                    </small>
-                    <h4 class="mb-0">${resumen.totalRechazado}</h4>
-                </div>
-            </div>
-        </div>
+
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-secondary h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Extendida
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendida" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
+                    <small class="d-block">Total Extendidas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Extendidas" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
                     </small>
                     <h4 class="mb-0">${resumen.totalExtendida}</h4>
                 </div>
@@ -523,10 +514,30 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-dark h-100">
                 <div class="card-body py-2">
-                    <small class="d-block">Total Suspendida
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendida" data-content="Solicitudes que han sido suspendidas temporalmente."></i>
+                    <small class="d-block">Total Suspendidas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Suspendidas" data-content="Solicitudes que han sido suspendidas temporalmente."></i>
                     </small>
                     <h4 class="mb-0">${resumen.totalSuspendida}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total No Solicitadas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total No Solicitadas" data-content="Solicitudes que han sido No Solicitada en el flujo de aprobación."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalRechazado}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Total Rechazadas
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Rechazadas" data-content="Solicitudes que han sido rechazadas en el flujo de aprobación."></i>
+                    </small>
+                    <h4 class="mb-0">${resumen.totalRechazado}</h4>
                 </div>
             </div>
         </div>
@@ -597,11 +608,14 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     
     // Indicadores para solicitudes en proceso
     const resumenProceso = {
+        totalPendiente: 0,
+        totalPorAprobar: 0,
         totalEnAnalisis: 0,
         totalAdminGestionando: 0,
         totalProgramada: 0,
         totalVigentes: 0,
         totalExtendida: 0,
+        totalSuspendida: 0,
         sodiProgramadas: 0,
         intervencionesProgramadas: 0,
         desconexionesProgramadas: 0
@@ -612,11 +626,14 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         const tipo = sol.TIPO_TRABAJO;
         
         // Conteo por estados en proceso
+        if (estado === 'Pendiente') resumenProceso.totalPendiente++;
+        if (estado === 'Por Aprobar') resumenProceso.totalPorAprobar++;
         if (estado === 'En Análisis') resumenProceso.totalEnAnalisis++;
         if (estado === 'Administrador Gestionando') resumenProceso.totalAdminGestionando++;
         if (estado === 'Programada') resumenProceso.totalProgramada++;
         if (estado === 'Vigente') resumenProceso.totalVigentes++;
         if (estado === 'Extendida') resumenProceso.totalExtendida++;
+        if (estado === 'Suspendida') resumenProceso.totalSuspendida++;
         
         // Conteo para indicadores de próximos 30 días
         if (estado === 'Programada' && sol.INICIO_PROGRAMADO) {
@@ -653,7 +670,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             <div class="card card-alcance text-white">
                 <div class="card-body py-2">
                     <h5 class="card-title mb-1"><i class="fas fa-tools"></i> Intervenciones Programadas (30 días)
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Intervenciones Programadas (30 días)" data-content="Solicitudes de tipo SICN/SICF en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Intervenciones Programadas (30 días)" data-content="Solicitudes en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
                     </h5>
                     <h2 class="mb-0">${resumenProceso.intervencionesProgramadas}</h2>
                 </div>
@@ -663,7 +680,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             <div class="card card-alcance text-white">
                 <div class="card-body py-2">
                     <h5 class="card-title mb-1"><i class="fas fa-plug"></i> Desconexiones Programadas (30 días)
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Desconexiones Programadas (30 días)" data-content="Solicitudes de tipo SDCN/SDCF en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Desconexiones Programadas (30 días)" data-content="Solicitudes en estado Programada cuyo inicio está dentro de los próximos 30 días."></i>
                     </h5>
                     <h2 class="mb-0">${resumenProceso.desconexionesProgramadas}</h2>
                 </div>
@@ -673,6 +690,26 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     
     // Luego los indicadores de estados en proceso
     resumenProcesoHtml += `
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Pendiente
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Pendiente" data-content="Solicitudes pendientes de revisión inicial."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenProceso.totalPendiente}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Por Aprobar
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Por Aprobar" data-content="Solicitudes esperando aprobación de los aprobadores asignados."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenProceso.totalPorAprobar}</h4>
+                </div>
+            </div>
+        </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
             <div class="card text-white bg-info h-100">
                 <div class="card-body py-2">
@@ -684,7 +721,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-warning h-100">
+            <div class="card text-white bg-info h-100">
                 <div class="card-body py-2">
                     <small class="d-block">Admin. Gestionando
                         <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Administrador Gestionando" data-content="Solicitudes que están siendo gestionadas por un administrador."></i>
@@ -697,14 +734,14 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             <div class="card text-white bg-success h-100">
                 <div class="card-body py-2">
                     <small class="d-block">Programada
-                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total Programado" data-content="Cantidad total de solicitudes en estado programado"></i>
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Programada" data-content="Solicitudes programadas para ejecución."></i>
                     </small>
                     <h4 class="mb-0">${resumenProceso.totalProgramada}</h4>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-primary h-100">
+            <div class="card text-white bg-success h-100">
                 <div class="card-body py-2">
                     <small class="d-block">Vigente
                         <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Vigente" data-content="Solicitudes actualmente vigentes según su periodo programado."></i>
@@ -714,12 +751,22 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             </div>
         </div>
         <div class="col-6 col-md-3 col-lg-2 mb-3">
-            <div class="card text-white bg-secondary h-100">
+            <div class="card text-white bg-dark h-100">
                 <div class="card-body py-2">
                     <small class="d-block">Extendida
                         <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Extendida" data-content="Solicitudes cuyo periodo de vigencia ha sido extendido."></i>
                     </small>
                     <h4 class="mb-0">${resumenProceso.totalExtendida}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-3">
+            <div class="card text-white bg-dark h-100">
+                <div class="card-body py-2">
+                    <small class="d-block">Suspendida
+                        <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Suspendida" data-content="Solicitudes suspendidas temporalmente en su ejecución."></i>
+                    </small>
+                    <h4 class="mb-0">${resumenProceso.totalSuspendida}</h4>
                 </div>
             </div>
         </div>
@@ -816,7 +863,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
                 <div class="card text-white bg-info h-100">
                     <div class="card-body py-2">
                         <h5 class="card-title mb-1">Total CEN
-                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total CEN ${anioSeleccionado}" data-content="Total de solicitudes no SODI (CEN) generadas en ${anioSeleccionado}."></i>
+                            <i class="fas fa-info-circle ml-1" data-toggle="popover" data-placement="top" title="Total CEN ${anioSeleccionado}" data-content="Total de solicitudes CEN generadas en ${anioSeleccionado}."></i>
                         </h5>
                         <h2 class="mb-0">${resumenHistorico.totalCEN}</h2>
                     </div>

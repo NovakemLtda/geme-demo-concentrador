@@ -86,7 +86,7 @@
                         <thead class="thead-light">
                             <tr>
                                 <th class="text-center" style="min-width: 80px;">Acciones</th>
-                                <th>ID Registro</th>
+                                <th>ID</th>
                                 <th>Tarea Identificador</th>
                                 <th>Tarea</th>
                                 <th>Tipo Tarea</th>
@@ -439,7 +439,7 @@ function gestionarSolicitudTarea(idRegistro, rol) {
 }
 
 function abrirBitacoraTarea(idRegistro) {
-    console.log('Abrir bitácora para ID Registro:', idRegistro);
+    console.log('Abrir bitácora para ID:', idRegistro);
     
     // Llamar a la función global de bitácora si existe
     if (typeof abrirBitacora === 'function') {

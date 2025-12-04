@@ -84,7 +84,7 @@ Abre el modal para crear una nueva solicitud.
 | Columna | Descripción | Índice |
 |---------|-------------|--------|
 | Acciones | Botones de acción (Ver, Editar, Clonar, Gestionar, Bitácora) | 0 |
-| ID Registro | Identificador único de la solicitud | 1 |
+| ID | Identificador único de la solicitud | 1 |
 | Fecha Prog. Inicio | Fecha programada de inicio | 2 |
 | Fecha Prog. Fin | Fecha programada de finalización | 3 |
 | Instalación GM | Instalación de GM donde se realizará la intervención | 4 |

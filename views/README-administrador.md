@@ -72,7 +72,7 @@ El administrador puede crear solicitudes directamente.
 | Columna | Descripción | Índice |
 |---------|-------------|--------|
 | Acciones | Botones de acción | 0 |
-| ID Registro | Identificador único interno | 1 |
+| ID | Identificador único interno | 1 |
 | ID Solicitud | ID de la solicitud (CEN, SODI, etc.) | 2 |
 | Tipo | Tipo de solicitud con badge | 3 |
 | Fecha Prog. Inicio | Fecha programada de inicio | 4 |
@@ -346,7 +346,7 @@ $('#table-solicitudes').DataTable({
     "pageLength": 10,
     "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "Mostrar todo"]],
     "responsive": true,
-    "order": [[1, "desc"]], // Ordenar por ID Registro descendente
+    "order": [[1, "desc"]], // Ordenar por ID descendente
     "columnDefs": [
         { "orderable": false, "targets": 0 } // Columna de acciones no ordenable
     ]
