@@ -1,38 +1,153 @@
-# Anexo 1. Despachador
+# 📋 Manual de Usuario - Modal Editar Solicitud (Despachador)
 
-El despachador puede editar los siguientes campos solo en estado Despachador Gestionando
+## 📖 ¿Qué es el Modal de Editar Solicitud?
 
-Header
-ver -> 1 - Nombre campo: ESTADO - label: Estado - Descripción: El administrador puede gestionar los estados de las solicitudes (Pendiente, En Análisis, Devuelta, Administrador Gestionando)
+El **Modal de Editar Solicitud** te permite modificar solicitudes que están bajo tu gestión operativa. Es tu herramienta para ajustar, completar o actualizar información de solicitudes en estado específico.
 
-Identificación
-editar -> 3 - Nombre campo: ID_SOLICITUD - label: ID Solicitud - Descripción: Id de la solicitud (CEN o SODI), Este será el número asignado por la solicitud del CEN o SODI, sirviendo como identificador del trabajo.
-editar -> 4 - Nombre campo: TIPO - label: Tipo - Descripción: Las solicitudes se clasificarán según el tipo de trabajo y/o solicitante, con las siguientes categorías: (SDCN, SDCF, SICN, SICF, IL, MM, SODI)
-editar -> 5 - RELACION_SODI_CEN - label: Relación SODI-CEN - Descripción: Campo de texto para saber con que solicitudes SODIs o CEN se relaciona esta solicitud.
+---
 
-Fechas Programadas
-editar -> 6 - Nombre campo: INICIO_PROGRAMADO - label: Fecha y hora programada de inicio - Descripción: En esté modulo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos.
-editar -> 7 - Nombre campo: FIN_PROGRAMADO - label: Fecha y hora programada de fin - Descripción: En esté modulo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos.
+## 🎯 ¿Cuándo puedes editar una solicitud?
 
-Empresas Involucradas
-editar -> 10 - Nombre campo: EMPRESA_SOLICITANTE - label: Empresa Solicitante - Descripción: Se identificará la empresa que solicita los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa)
-editar -> 11 - Nombre campo: EMPRESA_RECEPTORA - label: Empresa Receptora - Descripción: Se identificará la empresa receptora de los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa)
+### **Estado Editable:**
+- **"Despachador Gestionando"**: Solicitudes que estás coordinando operativamente
 
-Instalación y Equipos
-editar -> 12 - Nombre campo: INSTALACION_GM - label: Instalación GM - Descripción: Aquí se indicará la instalación coordinada por el CO de GM que está siendo afectada y/o para la cual se solicita la condición operacional. Las instalaciones incluidas son: (Santiago Solar, Nueva Renca, Los Vientos, Santa Lidia, CEME1)
-ver vacio -> 13 - Nombre campo: EQUIPOS - label: Instalaciones/equipos a intervenir - Descripción: En esté modulo se deberá ingresar lo que intervendrá para los trabajos, en los equipos que salen con varios, están sujeto a selección de otros subequipos internos: (Paños: Varios, Transformador: Varios, Secciones de barra: Varios, Scada, Medidores de facturación: Varios, Compensadores: Varios, Grupo de Emergencia, Batería, Tendido de Cable, Cargadores, Telecomunicación, Línea: Varios, Otros)
+### **¿Por qué solo este estado?**
+- Garantiza que no se modifiquen solicitudes en otros procesos
+- Mantiene la integridad del flujo operativo
+- Evita conflictos con otros roles del sistema
+- Asegura control operativo centralizado
 
-Características de la Intervención
-ver vacio -> 14 - Nombre campo: TIPO_INTERVENCION - label: Tipo de intervención - Descripción: En esté modulo se deberá si la aplica a una intervención o desconexión.
-ver vacio -> 15 - Nombre campo: RIESGOS - label: Descripción del Riesgo del Trabajo del Trabajo - Descripción: En esté modulo se deberá identificar el tipo de riesgo. (riesgo bajo, medio alto).
-ver vacio -> 16 - Nombre campo: SODI - label: SODI - Descripción: Aplica o no aplica.
-editar -> 17 - Nombre campo: POTENCIA - label: Potencia KwH - Descripción: campo numerico
+---
 
-Descripción y Condiciones
-editar -> 18 - Nombre campo: DESCRIPCION - label: Descripción del trabajo a realizar - Descripción: En esté modulo se deberá dejar la descripción del trabajo a realizar (libre para escribir).
-editar -> 19 - Nombre campo: CONDICIONES - label: Condiciones requeridas - Descripción: Se especificarán las condiciones necesarias para llevar a cabo los trabajos solicitados.
-ver vacio -> 20 - Nombre campo: AFECTACIONES - label: Afectaciones - Descripción: En esté modulo se deberá dejar indicado si afectar o no a lo siguiente: (SSCC, Protecciones, Medidores)
-editar -> 21 - Nombre campo: COMENTARIOS - label: Comentarios - Descripción: En esté modulo se podrá dejar comentarios adicionales.
+## ⚙️ ¿Qué puedes editar?
 
-Archivos Adjuntos
-editar -> 22 - Nombre campo: ADJUNTO - label: Carga de archivo - Descripción: Se permitirá cargar o borrar archivos útiles para los trabajos, en formatos PDF, Excel, Word, etc.
+### **Información Completamente Editable:**
+
+#### **Identificación**
+- **ID de Solicitud**: Número CEN o SODI (obligatorio)
+- **Tipo de Trabajo**: SDCN, SDCF, SICN, SICF, IL, MM, SODI (obligatorio)
+- **Relación SODI/CEN**: Vínculos con otras solicitudes (opcional)
+
+#### **Fechas Programadas**
+- **Fecha de Inicio**: Cuándo debe comenzar la intervención (obligatorio)
+- **Fecha de Fin**: Cuándo debe terminar (obligatorio)
+- **Validación**: La fecha de fin debe ser posterior al inicio
+
+#### **Empresas Involucradas**
+- **Empresa Solicitante**: Quién solicita (obligatorio)
+- **Empresa Receptora**: Quién ejecuta (obligatorio)
+- **Opciones**: CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa
+
+#### **Instalación y Equipos**
+- **Instalación GM**: Ubicación del trabajo (obligatorio)
+- **Equipos a Intervenir**: Qué se va a intervenir (obligatorio)
+- **Lógica**: Los equipos se cargan según la instalación seleccionada
+
+#### **Características de la Intervención**
+- **Tipo de Intervención**: Intervención o Desconexión (obligatorio)
+- **Potencia (MWH)**: Potencia involucrada (obligatorio)
+- **Aplica SODI**: Sí o No (obligatorio)
+- **Riesgo**: Bajo, Medio, Alto (obligatorio)
+- **Descripción del Riesgo**: Obligatorio solo si es Medio o Alto
+
+#### **Descripción y Condiciones**
+- **Descripción del Trabajo**: Qué se va a realizar (obligatorio)
+- **Condiciones Requeridas**: Condiciones necesarias (obligatorio)
+- **Comentarios**: Información adicional (opcional)
+- **Afectaciones**: SSCC, Protecciones, Medidores (opcional)
+- **Descripción de Afectaciones**: Obligatorio solo si seleccionas afectaciones
+
+#### **Archivos Adjuntos**
+- **Carga de Archivos**: PDF, Excel, Word, etc. (opcional)
+- **SODI Adjunta**: Marca si es documento SODI (opcional)
+
+### **Información de Solo Lectura:**
+- **Estado**: Permanece como "Despachador Gestionando"
+- **Información del Sistema**: ID, fechas de creación, responsables
+
+---
+
+## 📝 Validaciones y Lógicas Especiales
+
+### **Validaciones Operativas:**
+- **Fechas coherentes**: Fin posterior al inicio
+- **Campos obligatorios**: El sistema no permite guardar sin completarlos
+- **Riesgo y descripción**: Si seleccionas riesgo Medio/Alto, debes describir
+- **Afectaciones**: Si seleccionas afectaciones, debes describirlas
+
+### **Lógicas Operativas:**
+- **Equipos dinámicos**: Se actualizan según la instalación seleccionada
+- **Validación de ID**: Verifica que no esté duplicado en el sistema
+- **Formato de fechas**: Debe incluir fecha y hora para coordinación precisa
+
+---
+
+## 📚 Guía Paso a Paso
+
+### **¿Cómo editar una solicitud?**
+1. Desde la tabla de solicitudes, localiza una solicitud en estado "Despachador Gestionando"
+2. Haz clic en "Editar" en el menú de acciones
+3. Se abre el modal con toda la información actual
+4. **Modifica los campos** que necesites cambiar
+5. **Verifica las validaciones**:
+   - Campos obligatorios completados
+   - Fechas lógicas y coordinables
+   - Descripciones de riesgo/afectaciones si aplican
+6. Haz clic en "Guardar Cambios"
+7. La solicitud se actualiza manteniendo su estado actual
+
+### **¿Qué revisar antes de guardar?**
+- ✅ **Campos obligatorios**: Todos los marcados con (*) deben estar completos
+- ✅ **Fechas operativas**: Considera disponibilidad y recursos
+- ✅ **Información coherente**: Verifica que todo sea consistente
+- ✅ **Descripciones completas**: Especialmente para riesgos y afectaciones
+
+---
+
+## 💡 Consejos y Mejores Prácticas
+
+### **Para ediciones operativas efectivas:**
+- **Coordina fechas**: Verifica disponibilidad de recursos y personal
+- **Sé específico**: Usa descripciones claras para el equipo operativo
+- **Considera el impacto**: Piensa en cómo afectan los cambios a la coordinación
+- **Documenta cambios**: Usa el campo comentarios para explicar modificaciones importantes
+
+### **Para evitar errores operativos:**
+- **Verifica fechas**: Deben ser futuras y operativamente factibles
+- **Confirma empresas**: Asegúrate de que sean las correctas para la coordinación
+- **Valida equipos**: Que correspondan a la instalación seleccionada
+- **Revisa archivos**: Que sean relevantes y estén actualizados
+
+### **Para optimizar la coordinación:**
+- **Completa toda la información**: Evita dejar campos importantes vacíos
+- **Usa IDs únicos**: Verifica que no existan duplicados
+- **Actualiza regularmente**: No dejes solicitudes incompletas mucho tiempo
+- **Comunica cambios**: Informa a otros involucrados sobre modificaciones importantes
+
+---
+
+## ❓ Preguntas Frecuentes
+
+### **¿Por qué no puedo editar algunas solicitudes?**
+Solo puedes editar solicitudes en estado "Despachador Gestionando". Solicitudes en otros estados requieren usar "Gestionar" para cambiar el estado primero.
+
+### **¿Qué pasa si cambio las fechas programadas?**
+Los cambios se guardan inmediatamente. Asegúrate de coordinar con otros involucrados si las fechas afectan la planificación operativa.
+
+### **¿Puedo cambiar el tipo de trabajo después de crear la solicitud?**
+Sí, pero considera que esto puede afectar otros aspectos como equipos, riesgos y procedimientos operativos.
+
+### **¿Se notifica a alguien cuando edito una solicitud?**
+Los cambios se registran en el sistema, pero debes comunicar cambios importantes manualmente a los involucrados.
+
+### **¿Qué hago si el ID que quiero usar ya existe?**
+El sistema te alertará. Debes elegir un ID único o verificar si la solicitud existente es la que necesitas.
+
+### **¿Puedo agregar o quitar archivos adjuntos?**
+Sí, puedes gestionar archivos adjuntos libremente. Asegúrate de marcar correctamente si son documentos SODI.
+
+---
+
+*Manual de Usuario - Modal Editar Solicitud*  
+*Sistema de Gestión de Solicitudes de Intervención Eléctrica*  
+*Última actualización: Diciembre 2024*

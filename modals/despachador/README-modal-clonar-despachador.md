@@ -1,41 +1,142 @@
-# El despachador puede clonar cualquier solicitud los campos que se deben clonar son: 
+# 📋 Manual de Usuario - Modal Clonar Solicitud (Despachador)
 
-Estado por defecto al clonar una solicitud: "Despachador Gestionando"
+## 📖 ¿Qué es el Modal de Clonar Solicitud?
 
-Header
-1. Categoría: Estado - Nombre de Campo: ESTADO - Label: Estado - Tipo de Dato: Línea de Texto - Descripción: Se clona en estado "Despachador Gestionando" - Obligatoriedad: ✅ Lectura. Por defecto "Despachador Gestionando"
+El **Modal de Clonar Solicitud** te permite crear una nueva solicitud basándote en una existente, copiando la mayor parte de la información para optimizar tu trabajo operativo. Es ideal para solicitudes similares o trabajos recurrentes en las mismas instalaciones.
 
-Identificación
-3. Categoría: Identificación - Nombre de Campo: ID_SOLICITUD - Label: ID Solicitud - Tipo de Dato: Línea de Texto - Descripción: Id de la solicitud (CEN o SODI), Este será el número asignado por la solicitud del CEN o SODI, sirviendo como identificador del trabajo. - Obligatoriedad: ✅ Opcional. Se vacía el campo.
-4. Categoría: Identificación - Nombre de Campo: TIPO - Label: Tipo - Tipo de Dato: Elección - Descripción: Las solicitudes se clasificarán según el tipo de trabajo y/o solicitante, con las siguientes categorías: (SDCN, SDCF, SICN, SICF, IL, MM, SODI) - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-5. Categoría: Identificación - Nombre de Campo: RELACION_SODI_CEN - Label: Relación SODI/CEN - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Campo de texto para saber con que solicitudes SODIs o CEN se relaciona esta solicitud. - Obligatoriedad: ✅ Opcional. Se copia el campo
+---
 
-Fechas Programadas
-6. Categoría: Fechas Programadas - Nombre de Campo: INICIO_PROGRAMADO - Label: Fecha prog. Inicio - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos. - Obligatoriedad: ✅ Obligatorio. Se vacía el campo.
-7. Categoría: Fechas Programadas - Nombre de Campo: FIN_PROGRAMADO - Label: Fecha prog. fin - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos. - Obligatoriedad: ✅ Obligatorio. Se vacía el campo.
+## 🎯 ¿Cuándo usar esta función?
 
-Empresas Involucradas
-10. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_SOLICITANTE - Label: Empresa Solicitante - Tipo de Dato: Elección - Descripción: Se identificará la empresa que solicita los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa) - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-11. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_RECEPTORA - Label: Empresa Receptora - Tipo de Dato: Elección - Descripción: Se identificará la empresa receptora de los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa) - Obligatoriedad: ✅ Obligatorio. Se copia el campo
+### **Situaciones Ideales para Clonar:**
+- **Trabajos recurrentes**: Intervenciones que se repiten en las mismas instalaciones
+- **Solicitudes similares**: Trabajos con características operativas parecidas
+- **Plantillas operativas**: Usar solicitudes anteriores como base para nuevas intervenciones
+- **Eficiencia operativa**: Evitar completar toda la información técnica desde cero
 
-Instalación y Equipos
-12. Categoría: Instalación y Equipos - Nombre de Campo: INSTALACION_GM - Label: Instalación GM - Tipo de Dato: Elección - Descripción: Descripción: Aquí se indicará la instalación coordinada por el CO de GM que está siendo afectada y/o para la cual se solicita la condición operacional. Las instalaciones incluidas son: (Santiago Solar, Nueva Renca, Los Vientos, Santa Lidia, CEME1) - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-13. Categoría: Instalación y Equipos - Nombre de Campo: EQUIPOS - Label: Instalaciones/Equipos a intervenir - Tipo de Dato: Búsqueda (con filtrado) o Metadatos administrados - Descripción: En esté modulo se deberá ingresar lo que intervendrá para los trabajos, en los equipos que salen con varios, están sujeto a selección de otros subequipos internos: (Paños: Varios, Transformador: Varios, Secciones de barra: Varios, Scada, Medidores de facturación: Varios, Compensadores: Varios, Grupo de Emergencia, Batería, Tendido de Cable, Cargadores, Telecomunicación, Línea: Varios, Otros) - Obligatoriedad: ✅ Obligatorio. Se copia el campo
+---
 
-Características de la Intervención
-14. Categoría: Características de la Intervención - Nombre de Campo: TIPO_INTERVENCION - Label: Tipo de Intervención - Tipo de Dato: Elección - Descripción: En esté modulo se deberá si la aplica a una intervención o desconexión. - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-15. Categoría: Características de la Intervención - Nombre de Campo: POTENCIA - Label: Potencia MWH - Tipo de Dato: Número (configurado con 2 decimales) - Descripción: Se debe ingresar la potencia involucrada - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-16. Categoría: Características de la Intervención - Nombre de Campo: APLICA_SODI - Label: Aplica SODI - Tipo de Dato: Sí/No - Descripción: Aplica o no aplica SODI - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-17. Categoría: Características de la Intervención - Nombre de Campo: RIESGO - Label: Clasificación del Riesgo - Tipo de Dato: Elección - Descripción: En esté modulo se deberá identificar el tipo de riesgo. (riesgo bajo, medio alto). - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-18. Categoría: Características de la Intervención - Nombre de Campo: DESCRIPCION_RIESGO - Label: Descripción del Riesgo del Trabajo - Tipo de Dato: Múltiples Lineas de Texto. Dependiente de Clasificación de Riesgo - Descripción: En este campo se debera describir el riesgo de forma obligatoria en el caso que el riesgo se haya clasificado como medio o alto. - Obligatoriedad: ✅ Obligatorio. Para Riesgo Medio o Alto. Se copia el campo
+## ⚙️ ¿Cómo funciona el clonado?
 
-Descripción y condiciones
-19. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION - Label: Descripción del trabajo a realizar - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se deberá dejar la descripción del trabajo a realizar (libre para escribir). - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-20. Categoría: Descripción y condiciones - Nombre de Campo: CONDICIONES - Label: Condiciones requeridas - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Se especificarán las condiciones necesarias para llevar a cabo los trabajos solicitados. - Obligatoriedad: ✅ Obligatorio. Se copia el campo
-21. Categoría: Descripción y condiciones - Nombre de Campo: COMENTARIOS - Label: Comentarios - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se podrá dejar comentarios adicionales. - Obligatoriedad: ✅ Opcional. Se copia el campo
-22. Categoría: Descripción y condiciones - Nombre de Campo: AFECTACIONES - Label: Afectaciones - Tipo de Dato: Elección - Descripción: En esté modulo se deberá dejar indicado si afectar o no a lo siguiente: (SSCC, Protecciones, Medidores) - Obligatoriedad: ✅ Opcional. Se copia el campo
-23. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION_AFECTACION - Label: Descripción de la Afectación - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En este campo se deberá describir de forma obligatoria la afectación, en el caso que se haya seleccionado alguna de las opciones de la lista. - Obligatoriedad: ✅ Obligatorio. Solo si se selecciona una Afectación. Se copia el campo
+### **Estado de la Nueva Solicitud**
+- La solicitud clonada se crea automáticamente en estado **"Despachador Gestionando"**
+- Esto significa que queda bajo tu responsabilidad operativa para completar y coordinar
 
-Archivos Adjuntos
-24. Categoría: Archivos Adjuntos - Nombre de Campo: ADJUNTO - Label: Carga de archivo - Tipo de Dato: Adjunto - Descripción: Se permitirá cargar o borrar archivos útiles para los trabajos, en formatos PDF, Excel, Word, etc. - Obligatoriedad: ✅ Opcional. Se vacía el campo.
-25. Categoría: Archivos Adjuntos - Nombre de Campo: SODI Adjunto - Label: SODI Adjunta - Tipo de Dato: Sí/No - Descripción: Se marcará si se esta cargando una adjunto SODI o no. - Obligatoriedad: ✅ Opcional. Se vacía el campo.
+### **¿Qué información se copia automáticamente?**
+
+#### **✅ Se Copia (Información Reutilizable)**
+- **Tipo de Trabajo**: SDCN, SDCF, SICN, SICF, IL, MM, SODI
+- **Relación SODI/CEN**: Vínculos con otras solicitudes
+- **Empresas**: Solicitante y receptora
+- **Instalación GM**: Ubicación del trabajo
+- **Equipos**: Equipos a intervenir
+- **Características**: Tipo de intervención, potencia, aplica SODI, riesgo
+- **Descripciones**: Trabajo a realizar, condiciones, comentarios
+- **Afectaciones**: SSCC, Protecciones, Medidores y sus descripciones
+
+#### **🔄 Se Vacía (Debe Completarse)**
+- **ID de Solicitud**: Debe asignarse un nuevo número único
+- **Fechas Programadas**: Inicio y fin deben establecerse para la nueva intervención
+- **Archivos Adjuntos**: Deben subirse documentos específicos para esta solicitud
+
+---
+
+## 📝 ¿Qué debes hacer después de clonar?
+
+### **Campos Obligatorios que Completar:**
+1. **ID de Solicitud**: Asigna el nuevo número CEN o SODI
+2. **Fecha de Inicio Programada**: Cuándo comenzará esta nueva intervención
+3. **Fecha de Fin Programada**: Cuándo terminará
+4. **Archivos Adjuntos**: Sube documentación específica para esta solicitud
+
+### **Campos que Puedes Modificar:**
+- **Cualquier información copiada** puede editarse según las necesidades operativas específicas
+- **Fechas y horarios** para ajustar a la planificación operativa
+- **Condiciones específicas** según las circunstancias actuales
+
+---
+
+## 🔧 Funcionalidades Especiales
+
+### **Validaciones Operativas**
+- **Fechas coherentes**: El sistema valida que la fecha de fin sea posterior al inicio
+- **Campos obligatorios**: No permite guardar sin completar información esencial
+- **Riesgo y descripción**: Si seleccionas riesgo Medio/Alto, debes describir
+- **Afectaciones**: Si seleccionas afectaciones, debes describirlas
+- **Equipos dinámicos**: Se cargan automáticamente según la instalación
+
+### **Coordinación Operativa**
+- **Información técnica preservada**: Mantiene detalles técnicos de la solicitud original
+- **Flexibilidad de fechas**: Permite ajustar horarios según disponibilidad operativa
+- **Gestión de archivos**: Control sobre documentación específica de cada intervención
+
+---
+
+## 📚 Guía Paso a Paso
+
+### **¿Cómo clonar una solicitud?**
+1. Desde la tabla de solicitudes, haz clic en "Clonar" en la solicitud que quieres usar como base
+2. Se abre el modal con toda la información copiada
+3. **Revisa y modifica** la información según sea necesario
+4. **Completa los campos obligatorios**:
+   - Asigna nuevo ID de solicitud
+   - Establece nuevas fechas programadas
+   - Sube archivos específicos
+5. **Ajusta información operativa** si es necesario
+6. Haz clic en "Guardar Solicitud"
+7. La nueva solicitud se crea en estado "Despachador Gestionando"
+
+### **¿Qué revisar antes de guardar?**
+- ✅ **ID único**: Asegúrate de que el nuevo ID no esté duplicado
+- ✅ **Fechas operativas**: Verifica que sean realistas y coordinables
+- ✅ **Información específica**: Modifica cualquier detalle que sea diferente
+- ✅ **Archivos actualizados**: Que correspondan a esta intervención específica
+
+---
+
+## 💡 Consejos y Mejores Prácticas
+
+### **Para clonado eficiente:**
+- **Elige bien la solicitud base**: Usa solicitudes similares para minimizar cambios
+- **Revisa información técnica**: No asumas que todo está correcto
+- **Actualiza fechas realistas**: Considera disponibilidad operativa y recursos
+- **Modifica descripciones**: Asegúrate de que reflejen el nuevo trabajo
+
+### **Para coordinación operativa:**
+- **Verifica disponibilidad**: Confirma que las fechas sean factibles
+- **Coordina con equipos**: Asegúrate de que los recursos estén disponibles
+- **Valida instalaciones**: Que correspondan a la nueva intervención
+- **Actualiza condiciones**: Pueden ser diferentes para la nueva solicitud
+
+### **Para gestión de archivos:**
+- **Documentos específicos**: Sube archivos relevantes para esta intervención
+- **Elimina archivos obsoletos**: No mantengas documentación de la solicitud original
+- **Marca SODI correctamente**: Si corresponde a documentos SODI
+
+---
+
+## ❓ Preguntas Frecuentes
+
+### **¿Puedo clonar cualquier solicitud?**
+Sí, puedes clonar solicitudes en cualquier estado. La nueva solicitud siempre se crea en "Despachador Gestionando".
+
+### **¿Se copian los archivos adjuntos?**
+No, los archivos se vacían para que subas documentación específica para la nueva solicitud.
+
+### **¿Puedo modificar todo después de clonar?**
+Sí, todos los campos son editables excepto el estado, que se mantiene como "Despachador Gestionando".
+
+### **¿Cómo sé si el ID ya existe?**
+El sistema te alertará si intentas usar un ID que ya existe. Debes elegir uno único.
+
+### **¿Qué pasa con las fechas programadas?**
+Las fechas se vacían para que establezcas nuevas fechas específicas para esta intervención.
+
+### **¿Puedo clonar solicitudes de otras instalaciones?**
+Sí, pero debes revisar y ajustar toda la información técnica según la nueva instalación.
+
+---
+
+*Manual de Usuario - Modal Clonar Solicitud*  
+*Sistema de Gestión de Solicitudes de Intervención Eléctrica*  
+*Última actualización: Diciembre 2024*

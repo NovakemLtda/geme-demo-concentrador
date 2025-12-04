@@ -1,55 +1,180 @@
-# Estructura de visualización de modales de visualizacion de administrador
+# 📋 Manual de Usuario - Modal Ver Solicitud (Administrador)
 
-El administrador puede ver los siguientes estados, cuando el filtro (radio buton) está "En Proceso" -> "Pendiente", "Devuelta", "En Analisis", "Administrador Gestionando", "Programada", "Vigente", "Extendida"
-El administrador puede ver los siguientes estados, cuando el filtro (radio buton) está "Finalizadas" -> "Finalizada", "No Solicitada", "Rechazada", "Suspendida"
+## 📖 ¿Qué es el Modal de Ver Solicitud?
 
-Header
-1. Categoría: Estado - Nombre de Campo: ESTADO - Label: Estado - Tipo de Dato: Línea de Texto - Descripción: En esté modulo se deberá actualizar el estado en que está cada solicitud, estos estados serán los siguientes: (Pendiente, En Análisis, Devuelta, Administrador Gestionando, Programada, Vigente, Extendida, Finalizada, Rechazada, Suspendida, No solicitada)
-2. Categoría: Estado - Nombre de Campo: OBSERVACIONES - Label: Observaciones - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En cada cambio de estado se debe incluir una observacion obligatoria.
+El **Modal de Ver Solicitud** te permite consultar toda la información de cualquier solicitud en el sistema sin poder modificarla. Es tu herramienta de consulta para revisar detalles completos antes de tomar decisiones.
 
-Identificación
-3. Categoría: Identificación - Nombre de Campo: ID_SOLICITUD - Label: ID Solicitud - Tipo de Dato: Línea de Texto - Descripción: Id de la solicitud (CEN o SODI), Este será el número asignado por la solicitud del CEN o SODI, sirviendo como identificador del trabajo.
-4. Categoría: Identificación - Nombre de Campo: TIPO - Label: Tipo - Tipo de Dato: Elección - Descripción: Las solicitudes se clasificarán según el tipo de trabajo y/o solicitante, con las siguientes categorías: (SDCN, SDCF, SICN, SICF, IL, MM, SODI)
-5. Categoría: Identificación - Nombre de Campo: RELACION_SODI_CEN - Label: Relación SODI/CEN - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Campo de texto para saber con que solicitudes SODIs o CEN se relaciona esta solicitud.
+---
 
-Fechas Programadas
-6. Categoría: Fechas Programadas - Nombre de Campo: INICIO_PROGRAMADO - Label: Fecha prog. Inicio - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos.
-7. Categoría: Fechas Programadas - Nombre de Campo: FIN_PROGRAMADO - Label: Fecha prog. fin - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos.
+## 🎯 ¿Cuándo usar el modal de ver?
 
-Fechas Efectivas de Ejecución (Solo se ven en estado, Vigente, Extendida, Finalizada, Rechazada, Suspendida)
-8. Categoría: Fechas Efectivas de Ejecución - Nombre de Campo: INICIO_EFECTIVO - Label: Fecha efectiva inicio - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos.
-9. Categoría: Fechas Efectivas de Ejecución - Nombre de Campo: FIN_EFECTIVO - Label: Fecha efectiva fin - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos.
+### **Situaciones Ideales:**
+- **Revisar información**: Antes de gestionar o editar una solicitud
+- **Consultar detalles**: Para entender el contexto completo
+- **Verificar datos**: Antes de tomar decisiones administrativas
+- **Auditoría**: Para revisar el historial y estado actual
+- **Coordinación**: Para compartir información con otros involucrados
 
-Empresas Involucradas
-10. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_SOLICITANTE - Label: Empresa Solicitante - Tipo de Dato: Elección - Descripción: Se identificará la empresa que solicita los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa)
-11. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_RECEPTORA - Label: Empresa Receptora - Tipo de Dato: Elección - Descripción: Se identificará la empresa receptora de los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa)
+### **Estados que Puedes Ver:**
+Puedes ver solicitudes en **cualquier estado**, desde "Pendiente" hasta "Finalizada".
 
-Instalación y Equipos
-12. Categoría: Instalación y Equipos - Nombre de Campo: INSTALACION_GM - Label: Instalación GM - Tipo de Dato: Elección - Descripción: Descripción: Aquí se indicará la instalación coordinada por el CO de GM que está siendo afectada y/o para la cual se solicita la condición operacional. Las instalaciones incluidas son: (Santiago Solar, Nueva Renca, Los Vientos, Santa Lidia, CEME1)
-13. Categoría: Instalación y Equipos - Nombre de Campo: EQUIPOS - Label: Instalaciones/Equipos a intervenir - Tipo de Dato: Búsqueda (con filtrado) o Metadatos administrados - Descripción: En esté modulo se deberá ingresar lo que intervendrá para los trabajos, en los equipos que salen con varios, están sujeto a selección de otros subequipos internos: (Paños: Varios, Transformador: Varios, Secciones de barra: Varios, Scada, Medidores de facturación: Varios, Compensadores: Varios, Grupo de Emergencia, Batería, Tendido de Cable, Cargadores, Telecomunicación, Línea: Varios, Otros)
+---
 
-Características de la Intervención
-14. Categoría: Características de la Intervención - Nombre de Campo: TIPO_INTERVENCION - Label: Tipo de Intervención - Tipo de Dato: Elección - Descripción: En esté modulo se deberá si la aplica a una intervención o desconexión.
-15. Categoría: Características de la Intervención - Nombre de Campo: POTENCIA - Label: Potencia MWH - Tipo de Dato: Número (configurado con 2 decimales) - Descripción: Se debe ingresar la potencia involucrada
-16. Categoría: Características de la Intervención - Nombre de Campo: APLICA_SODI - Label: Aplica SODI - Tipo de Dato: Sí/No - Descripción: Aplica o no aplica SODI
-17. Categoría: Características de la Intervención - Nombre de Campo: RIESGO - Label: Clasificación del Riesgo - Tipo de Dato: Elección - Descripción: En esté modulo se deberá identificar el tipo de riesgo. (riesgo bajo, medio alto).
-18. Categoría: Características de la Intervención - Nombre de Campo: DESCRIPCION_RIESGO - Label: Descripción del Riesgo del Trabajo - Tipo de Dato: Múltiples Lineas de Texto. Dependiente de Clasificación de Riesgo - Descripción: En este campo se debera describir el riesgo de forma obligatoria en el caso que el riesgo se haya clasificado como medio o alto.
-19. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION - Label: Descripción del trabajo a realizar - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se deberá dejar la descripción del trabajo a realizar (libre para escribir).
+## 📊 ¿Qué información puedes consultar?
 
-Descripción y Condiciones
-20. Categoría: Descripción y condiciones - Nombre de Campo: CONDICIONES - Label: Condiciones requeridas - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Se especificarán las condiciones necesarias para llevar a cabo los trabajos solicitados.
-21. Categoría: Descripción y condiciones - Nombre de Campo: COMENTARIOS - Label: Comentarios - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se podrá dejar comentarios adicionales.
-22. Categoría: Descripción y condiciones - Nombre de Campo: AFECTACIONES - Label: Afectaciones - Tipo de Dato: Elección - Descripción: En esté modulo se deberá dejar indicado si afectar o no a lo siguiente: (SSCC, Protecciones, Medidores)
-23. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION_AFECTACION - Label: Descripción de la Afectación - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En este campo se deberá describir de forma obligatoria la afectación, en el caso que se haya seleccionado alguna de las opciones de la lista.
+### **Información Básica (Siempre Visible):**
 
-Archivos Adjuntos
-24. Categoría: Archivos Adjuntos - Nombre de Campo: ADJUNTO - Label: Carga de archivo - Tipo de Dato: Adjunto - Descripción: Se permitirá cargar o borrar archivos útiles para los trabajos, en formatos PDF, Excel, Word, etc.
-25. Categoría: Archivos Adjuntos - Nombre de Campo: SODI Adjunto - Label: SODI Adjunta - Tipo de Dato: Sí/No - Descripción: Se marcará si se esta cargando una adjunto SODI o no.
+#### **Estado y Observaciones**
+- **Estado actual** de la solicitud
+- **Historial de observaciones** de todos los cambios realizados
+- **Responsables** de cada cambio de estado
 
-Footer -> Información del Sistema
-26. Categoría: Metadata - Nombre de Campo: ID_REGISTRO - Label: ID - Tipo de Dato: Línea de Texto - Descripción: Id del registro de lista
-27. Categoría: Metadata - Nombre de Campo: CREADO - Label: Creado - Tipo de Dato: Línea de Texto - Descripción: Fecha de creación del registro
-28. Categoría: Metadata - Nombre de Campo: ACTUALIZADO - Label: Actualizado - Tipo de Dato: Línea de Texto - Descripción: Fecha de actualización del registro
-29. Categoría: Metadata - Nombre de Campo: SOLICITANTE - Label: Solicitante - Tipo de Dato: Línea de Texto - Descripción: Administrador que creó el registro
-30. Categoría: Metadata - Nombre de Campo: ADMINISTRADOR - Label: Administrador - Tipo de Dato: Línea de Texto - Descripción: Solicitante que creó el registro
-31. Categoría: Metadata - Nombre de Campo: CREADO_POR - Label: Creado por - Tipo de Dato: Línea de Texto - Descripción: Almacena que ROL creó el registro
+#### **Identificación**
+- **ID de Solicitud**: Número CEN o SODI asignado
+- **Tipo de Trabajo**: SDCN, SDCF, SICN, SICF, IL, MM, SODI
+- **Relación SODI/CEN**: Vínculos con otras solicitudes
+
+#### **Fechas Programadas**
+- **Fecha de Inicio Programada**: Cuándo debe comenzar
+- **Fecha de Fin Programada**: Cuándo debe terminar
+
+#### **Empresas Involucradas**
+- **Empresa Solicitante**: Quién solicita el trabajo
+- **Empresa Receptora**: Quién lo ejecutará
+
+#### **Instalación y Equipos**
+- **Instalación GM**: Ubicación del trabajo
+- **Equipos Involucrados**: Qué se va a intervenir
+
+#### **Características de la Intervención**
+- **Tipo de Intervención**: Intervención o Desconexión
+- **Potencia (MWH)**: Potencia involucrada
+- **Aplica SODI**: Si requiere SODI o no
+- **Riesgo**: Clasificación del riesgo (Bajo, Medio, Alto)
+- **Descripción del Riesgo**: Detalles si es Medio o Alto
+
+#### **Descripción y Condiciones**
+- **Descripción del Trabajo**: Qué se va a realizar
+- **Condiciones Requeridas**: Condiciones necesarias
+- **Comentarios**: Información adicional
+- **Afectaciones**: SSCC, Protecciones, Medidores
+- **Descripción de Afectaciones**: Detalles si hay afectaciones
+
+#### **Archivos Adjuntos**
+- **Documentos**: Archivos relacionados con la solicitud
+- **SODI Adjunta**: Indicación si hay documentos SODI
+
+#### **Información del Sistema**
+- **ID de Registro**: Identificador interno
+- **Fechas de Creación y Actualización**: Cuándo se creó y modificó
+- **Responsables**: Quién creó y quién administra
+
+### **Información Especial por Estado:**
+
+#### **Para Estados Avanzados (Vigente, Extendida, Finalizada, Rechazada, Suspendida):**
+Además de toda la información anterior, también puedes ver:
+
+- **Fecha Efectiva de Inicio**: Cuándo realmente comenzó el trabajo
+- **Fecha Efectiva de Fin**: Cuándo realmente terminó
+- **Duración Real**: Comparación entre lo programado y lo ejecutado
+
+---
+
+## 🔍 Funcionalidades Especiales
+
+### **Información Contextual**
+- **Estados en Proceso**: Muestra información de planificación y coordinación
+- **Estados Finalizados**: Incluye información de ejecución real
+- **Comparación de Fechas**: Programadas vs. efectivas cuando aplica
+
+### **Navegación Inteligente**
+- **Información organizada** en secciones claras
+- **Solo lectura**: No puedes modificar nada accidentalmente
+- **Acceso completo**: Ves toda la información disponible
+
+---
+
+## 📚 Guía Paso a Paso
+
+### **¿Cómo ver una solicitud?**
+1. Desde la tabla de solicitudes, localiza la solicitud que quieres consultar
+2. Haz clic en "Ver" en el menú de acciones
+3. Se abre el modal mostrando toda la información
+4. **Navega por las secciones** para revisar:
+   - Estado y observaciones
+   - Identificación y fechas
+   - Empresas e instalaciones
+   - Características y descripciones
+   - Archivos e información del sistema
+5. **Revisa fechas efectivas** si la solicitud está en estados avanzados
+6. Cierra el modal cuando termines la consulta
+
+### **¿Qué buscar según tu objetivo?**
+
+#### **Para Gestionar una Solicitud:**
+- ✅ **Estado actual** y observaciones previas
+- ✅ **Información completa** para tomar decisiones
+- ✅ **Fechas programadas** para planificación
+- ✅ **Empresas y equipos** para coordinación
+
+#### **Para Auditoría:**
+- ✅ **Historial de observaciones** y cambios
+- ✅ **Fechas de creación** y actualización
+- ✅ **Responsables** de cada etapa
+- ✅ **Comparación** entre fechas programadas y efectivas
+
+#### **Para Coordinación:**
+- ✅ **Empresas involucradas** y sus roles
+- ✅ **Instalación y equipos** específicos
+- ✅ **Fechas programadas** para planificación
+- ✅ **Archivos adjuntos** para documentación
+
+---
+
+## 💡 Consejos y Mejores Prácticas
+
+### **Para consultas efectivas:**
+- **Lee las observaciones**: Te dan contexto de las decisiones tomadas
+- **Verifica fechas**: Compara programadas vs. efectivas cuando aplique
+- **Revisa archivos**: Pueden contener información importante
+- **Entiende el flujo**: Observa cómo ha progresado la solicitud
+
+### **Para tomar decisiones:**
+- **Información completa**: Usa toda la información disponible
+- **Contexto histórico**: Considera las observaciones previas
+- **Estado actual**: Entiende en qué etapa se encuentra
+- **Próximos pasos**: Piensa en qué acción tomar después
+
+### **Para coordinación:**
+- **Identifica responsables**: Quién debe hacer qué
+- **Verifica fechas**: Para planificación y seguimiento
+- **Revisa requisitos**: Condiciones y afectaciones especiales
+- **Documenta**: Toma nota de información relevante para compartir
+
+---
+
+## ❓ Preguntas Frecuentes
+
+### **¿Puedo modificar algo en este modal?**
+No, el modal de "Ver" es solo de consulta. Para modificar usa "Editar" o "Gestionar".
+
+### **¿Por qué algunas solicitudes muestran fechas efectivas y otras no?**
+Las fechas efectivas solo aparecen en solicitudes que han comenzado o terminado su ejecución (Vigente, Extendida, Finalizada, etc.).
+
+### **¿Puedo ver solicitudes de otros usuarios?**
+Sí, como administrador puedes ver todas las solicitudes del sistema, independientemente de quién las creó.
+
+### **¿Cómo sé si la información está actualizada?**
+El modal siempre muestra la información más reciente. Puedes ver las fechas de "Actualizado" en la información del sistema.
+
+### **¿Puedo descargar archivos adjuntos desde aquí?**
+Sí, si hay archivos adjuntos, tendrás botones para descargarlos.
+
+### **¿Qué significa cada estado que veo?**
+Cada estado representa una etapa del flujo de trabajo. Las observaciones te dan contexto de por qué está en ese estado.
+
+---
+
+*Manual de Usuario - Modal Ver Solicitud*  
+*Sistema de Gestión de Solicitudes de Intervención Eléctrica*  
+*Última actualización: Diciembre 2024*

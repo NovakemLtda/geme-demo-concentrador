@@ -8,6 +8,16 @@
         z-index: 9999; /* asegurar que quede siempre sobre la botonera y otros elementos */
     }
     
+    /* Forzar z-index alto para el filtro Estado */
+    div[data-id="filtroEstadoSolic"] {
+        position: relative !important;
+        z-index: 1060 !important;
+    }
+    div[data-id="filtroEstadoSolic"] .dropdown-menu {
+        z-index: 1061 !important;
+        position: absolute !important;
+    }
+    
     /* Estilos para el dashboard del solicitante */
     .card-alcance {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -169,12 +179,28 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Riesgo</label>
-                            <select class="form-control" id="filtroRiesgoSolic">
+                            <label>Estado</label>
+                            <select
+                                class="form-control selectpicker"
+                                id="filtroEstadoSolic"
+                                multiple
+                                data-actions-box="true"
+                                data-live-search="true"
+                                data-container="body"
+                                data-none-selected-text="Todos los estados">
                                 <option value="">Todos</option>
-                                <option value="Bajo">Bajo</option>
-                                <option value="Medio">Medio</option>
-                                <option value="Alto">Alto</option>
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="Por Aprobar">Por Aprobar</option>
+                                <option value="Devuelta">Devuelta</option>
+                                <option value="En Análisis">En Análisis</option>
+                                <option value="Administrador Gestionando">Administrador Gestionando</option>
+                                <option value="Programada">Programada</option>
+                                <option value="Vigente">Vigente</option>
+                                <option value="Extendida">Extendida</option>
+                                <option value="Finalizada">Finalizada</option>
+                                <option value="No Solicitada">No Solicitada</option>
+                                <option value="Rechazada">Rechazada</option>
+                                <option value="Suspendida">Suspendida</option>
                             </select>
                         </div>
                     </div>
@@ -818,9 +844,10 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     // Variable local para el filtro actual
     let filtroActual = 'proceso';
     
-    // Inicializar selectpicker de Instalación GM
+    // Inicializar selectpicker de Instalación GM y Estado
     $(function() {
         $('#filtroInstalacionGMSolic').selectpicker();
+        $('#filtroEstadoSolic').selectpicker();
     });
     
     // Función para limpiar filtros (legacy)
@@ -837,7 +864,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         const filtroInstalacion = $('#filtroInstalacionGMSolic').val(); // ahora puede ser array
         const filtroEquipos = $('#filtroEquiposSolic').val().toLowerCase();
         const filtroTipoInterv = $('#filtroTipoIntervencionSolic').val();
-        const filtroRiesgo = $('#filtroRiesgoSolic').val();
+        const filtroEstado = $('#filtroEstadoSolic').val(); // array de estados seleccionados
         const filtroSODI = $('#filtroAplicaSODISolic').val();
         const filtroFechaDesde = $('#filtroFechaDesdeSolic').val();
         const filtroFechaHasta = $('#filtroFechaHastaSolic').val();
@@ -856,8 +883,13 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         // Aplicar búsqueda por Tipo Intervención (columna 6)
         table.column(6).search(filtroTipoInterv);
         
-        // Aplicar búsqueda por Riesgo (columna 7)
-        table.column(7).search(filtroRiesgo);
+        // Aplicar búsqueda por Estado (columna 11) - soporte multi selección
+        if (Array.isArray(filtroEstado) && filtroEstado.length > 0 && !filtroEstado.includes('')) {
+            const patternEstado = '(' + filtroEstado.join('|') + ')';
+            table.column(11).search(patternEstado, true, false);
+        } else {
+            table.column(11).search('');
+        }
         
         // Aplicar búsqueda por Aplica SODI (columna 8)
         table.column(8).search(filtroSODI);
@@ -865,7 +897,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         // Redibujar tabla
         table.draw();
         
-        console.log('Filtros aplicados:', {filtroInstalacion, filtroEquipos, filtroTipoInterv, filtroRiesgo, filtroSODI});
+        console.log('Filtros aplicados:', {filtroInstalacion, filtroEquipos, filtroTipoInterv, filtroEstado, filtroSODI});
     };
     
     // Función para limpiar filtros personalizados
@@ -874,12 +906,14 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         $('#filtroInstalacionGMSolic').val('');
         $('#filtroEquiposSolic').val('');
         $('#filtroTipoIntervencionSolic').val('');
-        $('#filtroRiesgoSolic').val('');
+        $('#filtroEstadoSolic').val('');
         $('#filtroAplicaSODISolic').val('');
         $('#filtroFechaDesdeSolic').val('');
         $('#filtroFechaHastaSolic').val('');
         
-        // Limpiar búsquedas de DataTable
+        // Reiniciar selectpicker
+        $('#filtroInstalacionGMSolic').selectpicker('deselectAll').selectpicker('refresh');
+        $('#filtroEstadoSolic').selectpicker('deselectAll').selectpicker('refresh');
         const table = $('#tablaSolicitudesSolicitante').DataTable();
         table.search('').columns().search('').draw();
         
@@ -909,10 +943,10 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $('.solicitud-finalizada').removeAttr('style');
     
     // Estados que se consideran "En Proceso" para Solicitante
-    const estadosEnProceso = ['Pendiente', 'Por Aprobar', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Programada'];
+    const estadosEnProceso = ['Pendiente', 'Por Aprobar', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida'];
     
     // Estados que se consideran "Finalizadas"
-    const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Suspendida'];
+    const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Anulada'];
     
     // Función de filtro personalizada
     $.fn.dataTable.ext.search.push(

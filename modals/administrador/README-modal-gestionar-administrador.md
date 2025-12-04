@@ -1,128 +1,176 @@
-# Anexo 1. Administrador
-# Las solicitudes de trabajos deben estar compuestas por los siguientes campos:
+# 📋 Manual de Usuario - Modal Gestionar Solicitud (Administrador)
 
-El administrador puede gestionar los estados de las solicitudes (Pendiente, En Análisis, Administrador Gestionando)
+## 📖 ¿Qué es el Modal de Gestionar Solicitud?
 
-Al gestionar puede visualizar y editar los siguientes campos:
+El **Modal de Gestionar Solicitud** es tu herramienta principal para cambiar estados y procesar solicitudes a través del flujo de trabajo. Te permite tomar decisiones administrativas y mover solicitudes entre diferentes etapas del proceso.
 
-Cuando el estado es "Pendiente" o "En Análisis" los campos de gestionar siguen las siguientes reglas de obligatoriedad y lectura:
+---
 
-Header
-1. Categoría: Estado - Nombre de Campo: ESTADO - Label: Estado - Tipo de Dato: Liena de Texto - Descripción: En esté modulo se deberá actualizar el estado en que está cada solicitud, los estados que puede gestionar el administrador son: (Pendiente, En Análisis) - Obligatoriedad: ✅ Lectura
-2. Categoría: Estado - Nombre de Campo: OBSERVACIONES - Label: Observaciones - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En cada cambio de estado se debe incluir una observacion obligatoria. - Obligatoriedad: ✅ Lectura
+## 🎯 ¿Cuándo usar el modal de gestionar?
 
-Identificación
-3. Categoría: Identificación - Nombre de Campo: ID_SOLICITUD - Label: ID Solicitud - Tipo de Dato: Liena de Texto - Descripción: Id de la solicitud (CEN o SODI), Este será el número asignado por la solicitud del CEN o SODI, sirviendo como identificador del trabajo. - Obligatoriedad: ✅ Opcional
-4. Categoría: Identificación - Nombre de Campo: TIPO - Label: Tipo - Tipo de Dato: Elección - Descripción: Las solicitudes se clasificarán según el tipo de trabajo y/o solicitante, con las siguientes categorías: (SDCN, SDCF, SICN, SICF, IL, MM, SODI) - Obligatoriedad: ✅ Opcional
-5. Categoría: Identificación - Nombre de Campo: RELACION_SODI_CEN - Label: Relación SODI/CEN - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Campo de texto para saber con que solicitudes SODIs o CEN se relaciona esta solicitud. - Obligatoriedad: ✅ Opcional
+### **Estados que Puedes Gestionar:**
+- **"Pendiente"**: Solicitudes recién creadas que necesitan tu revisión inicial
+- **"En Análisis"**: Solicitudes en revisión técnica que requieren tu decisión
+- **"Administrador Gestionando"**: Solicitudes que estás procesando activamente
 
-Fechas Programadas
-6. Categoría: Fechas Programadas - Nombre de Campo: INICIO_PROGRAMADO - Label: Fecha prog. Inicio - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos. - Obligatoriedad: ✅ Lectura
-7. Categoría: Fechas Programadas - Nombre de Campo: FIN_PROGRAMADO - Label: Fecha prog. fin - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos. - Obligatoriedad: ✅ Lectura
+### **¿Qué puedes hacer con cada estado?**
+- **Cambiar el estado** de la solicitud según el flujo de trabajo
+- **Agregar observaciones** obligatorias para justificar cada cambio
+- **Completar información** faltante según el estado
+- **Tomar decisiones** sobre el próximo paso del proceso
 
-Empresas Involucradas
-10. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_SOLICITANTE - Label: Empresa Solicitante - Tipo de Dato: Elección - Descripción: Se identificará la empresa que solicita los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa) - Obligatoriedad: ✅ Opcional
-11. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_RECEPTORA - Label: Empresa Receptora - Tipo de Dato: Elección - Descripción: Se identificará la empresa receptora de los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa) - Obligatoriedad: ✅ Opcional
+---
 
-Instalación y Equipos
-12. Categoría: Instalación y Equipos - Nombre de Campo: INSTALACION_GM - Label: Instalación GM - Tipo de Dato: Elección - Descripción: Descripción: Aquí se indicará la instalación coordinada por el CO de GM que está siendo afectada y/o para la cual se solicita la condición operacional. Las instalaciones incluidas son: (Santiago Solar, Nueva Renca, Los Vientos, Santa Lidia, CEME1) - Obligatoriedad: ✅ Lectura
-13. Categoría: Instalación y Equipos - Nombre de Campo: EQUIPOS - Label: Instalaciones/Equipos a intervenir - Tipo de Dato: Búsqueda (con filtrado) o Metadatos administrados - Descripción: En esté modulo se deberá ingresar lo que intervendrá para los trabajos, en los equipos que salen con varios, están sujeto a selección de otros subequipos internos: (Paños: Varios, Transformador: Varios, Secciones de barra: Varios, Scada, Medidores de facturación: Varios, Compensadores: Varios, Grupo de Emergencia, Batería, Tendido de Cable, Cargadores, Telecomunicación, Línea: Varios, Otros) - Obligatoriedad: ✅ Lectura
+## ⚙️ ¿Cómo funciona según el estado?
 
-Características de la Intervención
-14. Categoría: Características de la Intervención - Nombre de Campo: TIPO_INTERVENCION - Label: Tipo de Intervención - Tipo de Dato: Elección - Descripción: En esté modulo se deberá si la aplica a una intervención o desconexión. - Obligatoriedad: ✅ Lectura
-15. Categoría: Características de la Intervención - Nombre de Campo: POTENCIA - Label: Potencia MWH - Tipo de Dato: Número (configurado con 2 decimales) - Descripción: Se debe ingresar la potencia involucrada - Obligatoriedad: ✅ Lectura
-16. Categoría: Características de la Intervención - Nombre de Campo: APLICA_SODI - Label: Aplica SODI - Tipo de Dato: Sí/No - Descripción: Aplica o no aplica SODI - Obligatoriedad: ✅ Lectura
-17. Categoría: Características de la Intervención - Nombre de Campo: RIESGO - Label: Clasificación del Riesgo - Tipo de Dato: Elección - Descripción: En esté modulo se deberá identificar el tipo de riesgo. (riesgo bajo, medio alto). - Obligatoriedad: ✅ Lectura
-18. Categoría: Características de la Intervención - Nombre de Campo: DESCRIPCION_RIESGO - Label: Descripción del Riesgo del Trabajo - Tipo de Dato: Múltiples Lineas de Texto. Dependiente de Clasificación de Riesgo - Descripción: En este campo se debera describir el riesgo de forma obligatoria en el caso que el riesgo se haya clasificado como medio o alto. - Obligatoriedad: ✅ Lectura
+### **Para Solicitudes "Pendiente" o "En Análisis":**
 
-Descripción y condiciones
-19. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION - Label: Descripción del trabajo a realizar - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se deberá dejar la descripción del trabajo a realizar (libre para escribir). - Obligatoriedad: ✅ Lectura
-20. Categoría: Descripción y condiciones - Nombre de Campo: CONDICIONES - Label: Condiciones requeridas - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Se especificarán las condiciones necesarias para llevar a cabo los trabajos solicitados. - Obligatoriedad: ✅ Lectura
-21. Categoría: Descripción y condiciones - Nombre de Campo: COMENTARIOS - Label: Comentarios - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se podrá dejar comentarios adicionales. - Obligatoriedad: ✅ Lectura
-22. Categoría: Descripción y condiciones - Nombre de Campo: AFECTACIONES - Label: Afectaciones - Tipo de Dato: Elección - Descripción: En esté modulo se deberá dejar indicado si afectar o no a lo siguiente: (SSCC, Protecciones, Medidores) - Obligatoriedad: ✅ Lectura
-23. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION_AFECTACION - Label: Descripción de la Afectación - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En este campo se deberá describir de forma obligatoria la afectación, en el caso que se haya seleccionado alguna de las opciones de la lista. - Obligatoriedad: ✅ Lectura
+#### **Información que Puedes Ver (Solo Lectura):**
+- **Estado actual** y observaciones previas
+- **Fechas programadas** de inicio y fin
+- **Instalación y equipos** involucrados
+- **Características** de la intervención
+- **Descripciones** y condiciones del trabajo
+- **Archivos adjuntos** y documentación
 
-Archivos Adjuntos
-24. Categoría: Archivos Adjuntos - Nombre de Campo: ADJUNTO - Label: Carga de archivo - Tipo de Dato: Adjunto - Descripción: Se permitirá cargar o borrar archivos útiles para los trabajos, en formatos PDF, Excel, Word, etc. - Obligatoriedad: ✅ Opcional
-25. Categoría: Archivos Adjuntos - Nombre de Campo: SODI Adjunto - Label: SODI Adjunta - Tipo de Dato: Sí/No - Descripción: Se marcará si se esta cargando una adjunto SODI o no. - Obligatoriedad: ✅ Opcional
+#### **Información que Puedes Editar:**
+- **ID de Solicitud**: Si aún no está asignado (opcional)
+- **Tipo de Trabajo**: Clasificación SDCN, SDCF, SICN, SICF, IL, MM, SODI (opcional)
+- **Relación SODI/CEN**: Vínculos con otras solicitudes (opcional)
+- **Empresas**: Solicitante y receptora (opcional)
+- **Observaciones**: Comentarios sobre tu decisión (obligatorio)
 
-Footer-> Información del Sistema
-26. Categoría: Metadata - Nombre de Campo: ID_REGISTRO - Label: ID - Tipo de Dato: Liena de Texto - Descripción: Id del registro de lista - Obligatoriedad: ✅ Lectura
-27. Categoría: Metadata - Nombre de Campo: CREADO - Label: Creado - Tipo de Dato: Liena de Texto - Descripción: Fecha de creación del registro - Obligatoriedad: ✅ Lectura
-28. Categoría: Metadata - Nombre de Campo: ACTUALIZADO - Label: Actualizado - Tipo de Dato: Liena de Texto - Descripción: Fecha de actualización del registro - Obligatoriedad: ✅ Lectura
-29. Categoría: Metadata - Nombre de Campo: SOLICITANTE - Label: Solicitante - Tipo de Dato: Liena de Texto - Descripción: Administrador que creó el registro - Obligatoriedad: ✅ Lectura
-30. Categoría: Metadata - Nombre de Campo: ADMINISTRADOR - Label: Administrador - Tipo de Dato: Liena de Texto - Descripción: Solicitante que creó el registro - Obligatoriedad: ✅ Lectura
-31. Categoría: Metadata - Nombre de Campo: CREADO_POR - Label: Creado por - Tipo de Dato: Liena de Texto - Descripción: Almacena que ROL creó el registro - Obligatoriedad: ✅ Lectura
+### **Para Solicitudes "Administrador Gestionando":**
 
+#### **Control Total:**
+- **Todos los campos** son editables
+- **ID de Solicitud**: Debes asignarlo (obligatorio)
+- **Tipo de Trabajo**: Debes confirmarlo (obligatorio)
+- **Empresas**: Debes especificarlas (obligatorio)
+- **Archivos Adjuntos**: Debes subirlos (obligatorio)
+- **Observaciones**: Debes documentar el progreso (obligatorio)
 
-Cuando el estado es "Administrador Gestionando" los campos de gestionar siguen las siguientes reglas de obligatoriedad y lectura:
+---
 
-Header
-1. Categoría: Estado - Nombre de Campo: ESTADO - Label: Estado - Tipo de Dato: Liena de Texto - Descripción: En esté modulo se deberá actualizar el estado en que está cada solicitud, estos estados serán los siguientes: (Administrador Gestionando) - Obligatoriedad: ✅ Lectura
-2. Categoría: Estado - Nombre de Campo: OBSERVACIONES - Label: Observaciones - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En cada cambio de estado se debe incluir una observacion obligatoria. - Obligatoriedad: ✅ Lectura
+## 📝 Decisiones que Puedes Tomar
 
-Identificación
-3. Categoría: Identificación - Nombre de Campo: ID_SOLICITUD - Label: ID Solicitud - Tipo de Dato: Liena de Texto - Descripción: Id de la solicitud (CEN o SODI), Este será el número asignado por la solicitud del CEN o SODI, sirviendo como identificador del trabajo. - Obligatoriedad: ✅ Obligatorio
-4. Categoría: Identificación - Nombre de Campo: TIPO - Label: Tipo - Tipo de Dato: Elección - Descripción: Las solicitudes se clasificarán según el tipo de trabajo y/o solicitante, con las siguientes categorías: (SDCN, SDCF, SICN, SICF, IL, MM, SODI) - Obligatoriedad: ✅ Obligatorio
-5. Categoría: Identificación - Nombre de Campo: RELACION_SODI_CEN - Label: Relación SODI/CEN - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Campo de texto para saber con que solicitudes SODIs o CEN se relaciona esta solicitud. - Obligatoriedad: ✅ Opcional
+### **Desde Estado "Pendiente":**
+- **"Analizar Solicitud"** → Cambia a "En Análisis": Para revisión técnica detallada
+- **"Gestionar Solicitud"** → Cambia a "Administrador Gestionando": Para completar información
+- **"Devolver Solicitud"** → Cambia a "Devuelta": Para que el solicitante corrija
+- **"Anular Solicitud"** → Cambia a "Anulada": Si no cumple criterios
 
-Fechas Programadas
-6. Categoría: Fechas Programadas - Nombre de Campo: INICIO_PROGRAMADO - Label: Fecha prog. Inicio - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos. - Obligatoriedad: ✅ Lectura
-7. Categoría: Fechas Programadas - Nombre de Campo: FIN_PROGRAMADO - Label: Fecha prog. fin - Tipo de Dato: Fecha y hora - Descripción: En esté campo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos. - Obligatoriedad: ✅ Lectura
+### **Desde Estado "En Análisis":**
+- **"Gestionar Solicitud"** → Cambia a "Administrador Gestionando": Para gestión administrativa
+- **"Devolver Solicitud"** → Cambia a "Devuelta": Para correcciones
+- **"Anular Solicitud"** → Cambia a "Anulada": Si no es viable
 
-Empresas Involucradas
-10. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_SOLICITANTE - Label: Empresa Solicitante - Tipo de Dato: Elección - Descripción: Se identificará la empresa que solicita los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa) - Obligatoriedad: ✅ Obligatorio
-11. Categoría: Empresas Involucradas - Nombre de Campo: EMPRESA_RECEPTORA - Label: Empresa Receptora - Tipo de Dato: Elección - Descripción: Se identificará la empresa receptora de los trabajos, pudiendo ser: (CDC, GM, Transelec Norte, Transelec Sur, Chilquinta, Saesa) - Obligatoriedad: ✅ Obligatorio
+### **Desde Estado "Administrador Gestionando":**
+- **"Programar Solicitud"** → Cambia a "Programada": Cuando esté lista para ejecución
+- **"Anular Solicitud"** → Cambia a "Anulada": Si no debe continuar el proceso
 
-Instalación y Equipos
-12. Categoría: Instalación y Equipos - Nombre de Campo: INSTALACION_GM - Label: Instalación GM - Tipo de Dato: Elección - Descripción: Descripción: Aquí se indicará la instalación coordinada por el CO de GM que está siendo afectada y/o para la cual se solicita la condición operacional. Las instalaciones incluidas son: (Santiago Solar, Nueva Renca, Los Vientos, Santa Lidia, CEME1) - Obligatoriedad: ✅ Lectura
-13. Categoría: Instalación y Equipos - Nombre de Campo: EQUIPOS - Label: Instalaciones/Equipos a intervenir - Tipo de Dato: Búsqueda (con filtrado) o Metadatos administrados - Descripción: En esté modulo se deberá ingresar lo que intervendrá para los trabajos, en los equipos que salen con varios, están sujeto a selección de otros subequipos internos: (Paños: Varios, Transformador: Varios, Secciones de barra: Varios, Scada, Medidores de facturación: Varios, Compensadores: Varios, Grupo de Emergencia, Batería, Tendido de Cable, Cargadores, Telecomunicación, Línea: Varios, Otros) - Obligatoriedad: ✅ Lectura
+---
 
-Características de la Intervención
-14. Categoría: Características de la Intervención - Nombre de Campo: TIPO_INTERVENCION - Label: Tipo de Intervención - Tipo de Dato: Elección - Descripción: En esté modulo se deberá si la aplica a una intervención o desconexión. - Obligatoriedad: ✅ Lectura
-15. Categoría: Características de la Intervención - Nombre de Campo: POTENCIA - Label: Potencia MWH - Tipo de Dato: Número (configurado con 2 decimales) - Descripción: Se debe ingresar la potencia involucrada - Obligatoriedad: ✅ Lectura
-16. Categoría: Características de la Intervención - Nombre de Campo: APLICA_SODI - Label: Aplica SODI - Tipo de Dato: Sí/No - Descripción: Aplica o no aplica SODI - Obligatoriedad: ✅ Lectura
-17. Categoría: Características de la Intervención - Nombre de Campo: RIESGO - Label: Clasificación del Riesgo - Tipo de Dato: Elección - Descripción: En esté modulo se deberá identificar el tipo de riesgo. (riesgo bajo, medio alto). - Obligatoriedad: ✅ Lectura
-18. Categoría: Características de la Intervención - Nombre de Campo: DESCRIPCION_RIESGO - Label: Descripción del Riesgo del Trabajo - Tipo de Dato: Múltiples Lineas de Texto. Dependiente de Clasificación de Riesgo - Descripción: En este campo se debera describir el riesgo de forma obligatoria en el caso que el riesgo se haya clasificado como medio o alto. - Obligatoriedad: ✅ Lectura
+## 🔧 Validaciones y Lógicas Especiales
 
-Descripción y condiciones
-19. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION - Label: Descripción del trabajo a realizar - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se deberá dejar la descripción del trabajo a realizar (libre para escribir). - Obligatoriedad: ✅ Lectura
-20. Categoría: Descripción y condiciones - Nombre de Campo: CONDICIONES - Label: Condiciones requeridas - Tipo de Dato: Múltiples Lineas de Texto - Descripción: Se especificarán las condiciones necesarias para llevar a cabo los trabajos solicitados. - Obligatoriedad: ✅ Lectura
-21. Categoría: Descripción y condiciones - Nombre de Campo: COMENTARIOS - Label: Comentarios - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En esté modulo se podrá dejar comentarios adicionales. - Obligatoriedad: ✅ Lectura
-22. Categoría: Descripción y condiciones - Nombre de Campo: AFECTACIONES - Label: Afectaciones - Tipo de Dato: Elección - Descripción: En esté modulo se deberá dejar indicado si afectar o no a lo siguiente: (SSCC, Protecciones, Medidores) - Obligatoriedad: ✅ Lectura
-23. Categoría: Descripción y condiciones - Nombre de Campo: DESCRIPCION_AFECTACION - Label: Descripción de la Afectación - Tipo de Dato: Múltiples Lineas de Texto - Descripción: En este campo se deberá describir de forma obligatoria la afectación, en el caso que se haya seleccionado alguna de las opciones de la lista. - Obligatoriedad: ✅ Lectura
+### **Observaciones Obligatorias:**
+- **Siempre debes agregar observaciones** al cambiar de estado
+- Explica claramente el motivo del cambio
+- Proporciona orientación para el siguiente paso
+- Las observaciones son visibles para todos los involucrados
 
-Archivos Adjuntos
-24. Categoría: Archivos Adjuntos - Nombre de Campo: ADJUNTO - Label: Carga de archivo - Tipo de Dato: Adjunto - Descripción: Se permitirá cargar o borrar archivos útiles para los trabajos, en formatos PDF, Excel, Word, etc. - Obligatoriedad: ✅ Obligatorio
-25. Categoría: Archivos Adjuntos - Nombre de Campo: SODI Adjunto - Label: SODI Adjunta - Tipo de Dato: Sí/No - Descripción: Se marcará si se esta cargando una adjunto SODI o no. - Obligatoriedad: ✅ Obligatorio
+### **Validaciones por Estado:**
+- **"Administrador Gestionando"**: Requiere información completa
+- **"Programada"**: Necesita fechas, empresas y documentación
+- **Cambios de estado**: Deben seguir la lógica del flujo de trabajo
 
+### **Campos Dependientes:**
+- **Riesgo Medio/Alto**: Requiere descripción del riesgo
+- **Afectaciones**: Requiere descripción si se seleccionan
+- **Archivos SODI**: Deben marcarse correctamente
 
-Footer-> Información del Sistema
-26. Categoría: Metadata - Nombre de Campo: ID_REGISTRO - Label: ID - Tipo de Dato: Liena de Texto - Descripción: Id del registro de lista - Obligatoriedad: ✅ Lectura
-27. Categoría: Metadata - Nombre de Campo: CREADO - Label: Creado - Tipo de Dato: Liena de Texto - Descripción: Fecha de creación del registro - Obligatoriedad: ✅ Lectura
-28. Categoría: Metadata - Nombre de Campo: ACTUALIZADO - Label: Actualizado - Tipo de Dato: Liena de Texto - Descripción: Fecha de actualización del registro - Obligatoriedad: ✅ Lectura
-29. Categoría: Metadata - Nombre de Campo: SOLICITANTE - Label: Solicitante - Tipo de Dato: Liena de Texto - Descripción: Administrador que creó el registro - Obligatoriedad: ✅ Lectura
-30. Categoría: Metadata - Nombre de Campo: ADMINISTRADOR - Label: Administrador - Tipo de Dato: Liena de Texto - Descripción: Solicitante que creó el registro - Obligatoriedad: ✅ Lectura
-31. Categoría: Metadata - Nombre de Campo: CREADO_POR - Label: Creado por - Tipo de Dato: Liena de Texto - Descripción: Almacena que ROL creó el registro - Obligatoriedad: ✅ Lectura
+---
 
-Se debe agregar una sección para avanzar al siguiente estado
+## 📚 Guía Paso a Paso
 
-Opciones para avanzar:
-1. Pendiente
-    Si la solicitud es "Pendiente", el administrador puede enviar a "En Análisis", el nombre de la transición es: "Analizar Solicitud"
-    Si la solicitud es "Pendiente", el administrador puede enviar a "Devuelta", el nombre de la transición es: "Devolver Solicitud"
-    Si la solicitud es "Pendiente", el administrador puede enviar a "Administrador Gestionando", el nombre de la transición es: "Gestionar Solicitud"
-    Si la solicitud es "Pendiente", el administrador puede enviar a "Anular", el nombre de la transición es: "Anular solicitud"
+### **¿Cómo gestionar una solicitud?**
+1. Desde la tabla de solicitudes, haz clic en "Gestionar" en una solicitud
+2. Se abre el modal mostrando el estado actual
+3. **Revisa toda la información** disponible
+4. **Decide el próximo estado** según el flujo de trabajo
+5. **Completa campos** según los requisitos del nuevo estado
+6. **Agrega observaciones obligatorias** explicando tu decisión
+7. Haz clic en "Guardar Cambios"
+8. La solicitud cambia al nuevo estado
 
-2. En Análisis
-    Si la solicitud es "En Análisis", el administrador puede enviar a "Devuelta", el nombre de la transición es: "Devolver Solicitud"
-    Si la solicitud es "En Análisis", el administrador puede enviar a "Administrador Gestionando", el nombre de la transición es: "Gestionar Solicitud"
-    Si la solicitud es "En Análisis", el administrador puede enviar a "Anular", el nombre de la transición es: "Anular solicitud"
+### **¿Cómo completar una solicitud "Administrador Gestionando"?**
+1. Abre el modal de gestionar
+2. **Completa información obligatoria**:
+   - Asigna ID de solicitud único
+   - Confirma tipo de trabajo
+   - Especifica empresas involucradas
+   - Sube archivos necesarios
+3. **Revisa información opcional** pero importante
+4. **Agrega observaciones** sobre el progreso
+5. **Decide el próximo estado** usando "Programar Solicitud" (usualmente)
+6. Guarda los cambios
 
-3. Administrador Gestionando
-    Si la solicitud es "Administrador Gestionando", el administrador puede enviar a "Programada", el nombre de la transición es: "Programar Solicitud"
-    Si la solicitud es "Administrador Gestionando", el administrador puede enviar a "Anular", el nombre de la transición es: "Anular solicitud"
+### **¿Cómo devolver una solicitud para correcciones?**
+1. Selecciona la transición **"Devolver Solicitud"**
+2. **Escribe observaciones específicas** indicando:
+   - Qué necesita ser corregido
+   - Por qué no cumple los criterios actuales
+   - Qué debe hacer el solicitante
+3. Guarda los cambios
+4. El solicitante recibirá la solicitud para editar
 
-Campo de OBSERVACIONES obligatorio
+---
 
-Añadir leyenda de obligatorio
+## 💡 Consejos y Mejores Prácticas
+
+### **Para gestión efectiva:**
+- **Lee el historial**: Revisa observaciones anteriores antes de decidir
+- **Sé claro**: Usa observaciones específicas y orientativas
+- **Mantén el flujo**: No detengas solicitudes innecesariamente
+- **Documenta decisiones**: Explica siempre el motivo de los cambios
+
+### **Para completar información:**
+- **Verifica datos**: Asegúrate de que toda la información sea correcta
+- **Usa IDs únicos**: Confirma que no existan duplicados
+- **Coordina fechas**: Considera disponibilidad y recursos
+- **Valida archivos**: Que sean relevantes y estén actualizados
+
+### **Para comunicación clara:**
+- **Observaciones descriptivas**: Ayudan a otros a entender las decisiones
+- **Orientación constructiva**: Especialmente al devolver solicitudes
+- **Información de contacto**: Si se necesita coordinación adicional
+- **Próximos pasos**: Indica qué se espera después del cambio
+
+---
+
+## ❓ Preguntas Frecuentes
+
+### **¿Qué diferencia hay entre "Gestionar" y "Editar"?**
+- **Gestionar**: Cambia estados y toma decisiones del flujo de trabajo
+- **Editar**: Modifica información sin cambiar el estado
+
+### **¿Puedo cambiar cualquier solicitud a cualquier estado?**
+No, debes seguir la lógica del flujo de trabajo. Algunos cambios de estado no son válidos.
+
+### **¿Qué pasa si no agrego observaciones?**
+El sistema no te permitirá guardar cambios sin observaciones. Son obligatorias para mantener trazabilidad.
+
+### **¿Puedo deshacer un cambio de estado?**
+Puedes cambiar el estado nuevamente, pero todos los cambios quedan registrados en la bitácora.
+
+### **¿Cómo sé qué información es obligatoria?**
+Depende del estado. Los campos obligatorios están marcados con (*) y el sistema te alertará si faltan.
+
+### **¿Se notifica automáticamente a otros usuarios?**
+Los cambios se registran en el sistema, pero debes coordinar manualmente con otros involucrados cuando sea necesario.
+
+---
+
+*Manual de Usuario - Modal Gestionar Solicitud*  
+*Sistema de Gestión de Solicitudes de Intervención Eléctrica*  
+*Última actualización: Diciembre 2024*

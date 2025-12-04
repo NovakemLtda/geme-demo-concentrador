@@ -1289,10 +1289,10 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $('.solicitud-finalizada').removeAttr('style');
     
     // Estados que se consideran "En Proceso" para Administrador
-    const estadosEnProceso = ['Pendiente', 'Por Aprobar', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Programada', 'Vigente', 'Extendida'];
+    const estadosEnProceso = ['Pendiente', 'Por Aprobar', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida'];
     
     // Estados que se consideran "Finalizadas"
-    const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Suspendida'];
+    const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Anulada'];
     
     // Función de filtro personalizada
     $.fn.dataTable.ext.search.push(

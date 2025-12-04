@@ -1,50 +1,177 @@
-# Anexo 1. Solicitante
-# Las solicitudes de trabajos deben estar compuestas por los siguientes campos:
+# 📋 Manual de Usuario - Modal Gestionar Solicitud (Solicitante)
 
-Header
-ver -> 1 - Nombre campo: ESTADO - label: Estado - Descripción: Se crea en estado Pendiente
-ver -> 2 - Nombre campo: OBSERVACIONES - label: Observaciones - Descripción: Visualiza las observaciones del administrador
+## 📖 ¿Qué es el Modal de Gestionar Solicitud?
 
-Fechas Programadas
-editar -> 6 - Nombre campo: INICIO_PROGRAMADO - label: Fecha y hora programada de inicio - Descripción: En esté modulo se deberá ingresar la fecha y hora en que está programado el inicio de los trabajos.
-editar -> 7 - Nombre campo: FIN_PROGRAMADO - label: Fecha y hora programada de fin - Descripción: En esté modulo se deberá ingresar la fecha y hora en que está programado el termino de los trabajos.
+El **Modal de Gestionar Solicitud** te permite revisar y tomar decisiones sobre solicitudes que están bajo tu responsabilidad. Es tu herramienta para consultar información completa y realizar acciones específicas según el estado de la solicitud.
 
-Instalación y Equipos
-editar -> 12 - Nombre campo: INSTALACION_GM - label: Instalación GM - Descripción: Aquí se indicará la instalación coordinada por el CO de GM que está siendo afectada y/o para la cual se solicita la condición operacional. Las instalaciones incluidas son: (Santiago Solar, Nueva Renca, Los Vientos, Santa Lidia, CEME1)
-editar -> 13 - Nombre campo: EQUIPOS - label: Instalaciones/equipos a intervenir - Descripción: En esté modulo se deberá ingresar lo que intervendrá para los trabajos, en los equipos que salen con varios, están sujeto a selección de otros subequipos internos: (Paños: Varios, Transformador: Varios, Secciones de barra: Varios, Scada, Medidores de facturación: Varios, Compensadores: Varios, Grupo de Emergencia, Batería, Tendido de Cable, Cargadores, Telecomunicación, Línea: Varios, Otros)
+---
 
-Características de la Intervención
-editar -> 14 - Nombre campo: TIPO_INTERVENCION - label: Tipo de intervención - Descripción: En esté modulo se deberá si la aplica a una intervención o desconexión.
-editar -> 15 - Nombre campo: POTENCIA - label: Potencia MWH - Descripción: campo numerico dos decimales
-editar -> 16 - Nombre campo: APLICA_SODI - label: SODI - Descripción: Aplica o no aplica.
-editar -> 17 - Nombre campo: RIESGO - label: Clasificación del Riesgo - Descripción: En este campo se deberá identificar el tipo de riesgo. (riesgo bajo, medio alto).
-editar -> 18 - Nombre campo: DESCRIPCION_RIESGO - label: Descripción del Riesgo del Trabajo - Descripción: En este campo se debera describir el riesgo de forma obligatoria en el caso que el riesgo se haya clasificado como medio o alto.
+## 🎯 ¿Cuándo usar el modal de gestionar?
 
-Descripción y Condiciones
-editar -> 19 - Nombre campo: DESCRIPCION - label: Descripción del trabajo a realizar - Descripción: En esté modulo se deberá dejar la descripción del trabajo a realizar (libre para escribir).
-editar -> 20 - Nombre campo: CONDICIONES - label: Condiciones requeridas - Descripción: Se especificarán las condiciones necesarias para llevar a cabo los trabajos solicitados.
-editar -> 21 - Nombre campo: COMENTARIOS - label: Comentarios - Descripción: En este modulo se podrá dejar comentarios adicionales.
-editar -> 22 - Nombre campo: AFECTACIONES - label: Afectaciones - Descripción: En este modulo se deberá dejar indicado si afectar o no a lo siguiente: (SSCC, Protecciones, Medidores)
-editar -> 23 - Nombre campo: DESCRIPCION_AFECTACION - label: Descripción de la afectación - Descripción: En este campo se deberá describir de forma obligatoria la afectación, en el caso que se haya seleccionado alguna de las opciones de la lista.
+### **Estados que Puedes Gestionar:**
+- **"Devuelta"**: Solicitudes devueltas que requieren tu atención
+- **Otros estados**: Para consulta y seguimiento de tus solicitudes
 
-Archivos Adjuntos
-editar -> 24 - Nombre campo: ADJUNTO - label: Carga de archivo - Descripción: Se permitirá cargar o borrar archivos útiles para los trabajos, en formatos PDF, Excel, Word, etc.
+### **¿Qué puedes hacer?**
+- **Consultar información completa** de cualquiera de tus solicitudes
+- **Ver observaciones** y comentarios del proceso
+- **Entender el estado actual** y próximos pasos
+- **Acceder a información detallada** para seguimiento
 
-Footer->
-Información del Sistema
-ver -> 25 - Nombre campo: ID_REGISTRO - label: ID - Descripción: Id del registro de lista
-ver -> 26 - Nombre campo: CREADO - label: Creado - Descripción: Fecha de creación del registro
-ver -> 27 - Nombre campo: ACTUALIZADO - label: Actualizado - Descripción: Fecha de actualización del registro
-ver -> 28 - Nombre campo: ADMINISTRADOR - label: Administrador - Descripción: Administrador que creó el registro
-ver -> 29 - Nombre campo: SOLICITANTE - label: Solicitante - Descripción: Solicitante que creó el registro
-ver -> 30 - Nombre campo: CREADO_POR - label: Creado por - Descripción: Creado por quién el registro
+---
 
+## 📊 ¿Qué información puedes consultar?
 
-Se debe agregar una seccion para avanzar al siguiente estado
+### **Información Siempre Visible:**
 
-Opciones para avanzar (radio buton):
-1. Estado Devuelta
-    Si la solicitud es Devuelta, el solicitante puede enviar a Pendiente, el nombre de la transición es: "Enviar a Pendiente"
-    Si la solicitud es Devuelta, el solicitante puede enviar a Anular, el nombre de la transición es: "Anular solicitud"
+#### **Estado y Observaciones**
+- **Estado actual** de la solicitud
+- **Historial de observaciones** de todos los cambios realizados
+- **Comentarios** de administradores y aprobadores
+- **Próximos pasos** sugeridos
 
-Campo de OBSERVACIONES obligatorio
+#### **Identificación**
+- **ID de Solicitud**: Número único asignado
+- **Tipo de Trabajo**: SDCN, SDCF, SICN, SICF, IL, MM, SODI
+- **Relación SODI/CEN**: Vínculos con otras solicitudes
+
+#### **Fechas Programadas**
+- **Fecha de Inicio Programada**: Cuándo debe comenzar
+- **Fecha de Fin Programada**: Cuándo debe terminar
+- **Estado de las fechas**: Si son factibles o necesitan ajuste
+
+#### **Empresas Involucradas**
+- **Empresa Solicitante**: Quién solicita el trabajo
+- **Empresa Receptora**: Quién lo ejecutará
+
+#### **Instalación y Equipos**
+- **Instalación GM**: Ubicación del trabajo
+- **Equipos Involucrados**: Qué se va a intervenir
+- **Detalles técnicos**: Especificaciones de la intervención
+
+#### **Características de la Intervención**
+- **Tipo de Intervención**: Intervención o Desconexión
+- **Potencia (MWH)**: Potencia involucrada
+- **Aplica SODI**: Si requiere SODI o no
+- **Riesgo**: Clasificación del riesgo y descripción
+
+#### **Descripción y Condiciones**
+- **Descripción del Trabajo**: Qué se va a realizar
+- **Condiciones Requeridas**: Condiciones necesarias
+- **Comentarios**: Información adicional
+- **Afectaciones**: Sistemas que pueden verse afectados
+
+#### **Archivos Adjuntos**
+- **Documentos**: Archivos relacionados con la solicitud
+- **Estado de archivos**: Si están completos o necesitan actualización
+
+#### **Información del Sistema**
+- **Fechas de Creación y Actualización**: Historial de cambios
+- **Responsables**: Quién ha participado en el proceso
+- **Trazabilidad**: Seguimiento completo del proceso
+
+---
+
+## 🔍 Funcionalidades Especiales
+
+### **Seguimiento de Estado**
+- **Progreso visual**: Entiendes en qué etapa está tu solicitud
+- **Próximos pasos**: Sabes qué esperar a continuación
+- **Tiempo estimado**: Información sobre duración del proceso
+
+### **Información Contextual**
+- **Observaciones detalladas**: Entiendes las decisiones tomadas
+- **Historial completo**: Ves todo lo que ha pasado con tu solicitud
+- **Responsables**: Sabes quién está a cargo en cada etapa
+
+---
+
+## 📚 Guía Paso a Paso
+
+### **¿Cómo gestionar una solicitud?**
+1. Desde la tabla de solicitudes, haz clic en "Gestionar" en cualquier solicitud
+2. Se abre el modal mostrando toda la información
+3. **Revisa el estado actual** y las observaciones más recientes
+4. **Consulta la información** que necesites:
+   - Estado y próximos pasos
+   - Observaciones y comentarios
+   - Información técnica completa
+   - Archivos y documentación
+5. **Toma la acción apropiada** según el estado:
+   - Si está "Devuelta": Usa "Editar" para corregir
+   - Si está en proceso: Haz seguimiento
+   - Si está finalizada: Revisa resultados
+6. Cierra el modal cuando termines la consulta
+
+### **¿Qué buscar según el estado?**
+
+#### **Para Solicitudes "Devuelta":**
+- ✅ **Observaciones**: Qué necesita corrección
+- ✅ **Campos específicos**: Qué información revisar
+- ✅ **Fechas**: Si necesitan ajuste
+- ✅ **Documentación**: Si faltan archivos
+
+#### **Para Solicitudes "En Proceso":**
+- ✅ **Estado actual**: En qué etapa está
+- ✅ **Tiempo estimado**: Cuánto puede demorar
+- ✅ **Responsable actual**: Quién la está procesando
+- ✅ **Próximos pasos**: Qué esperar
+
+#### **Para Solicitudes "Finalizadas":**
+- ✅ **Resultado**: Cómo se resolvió
+- ✅ **Fechas efectivas**: Cuándo se ejecutó realmente
+- ✅ **Observaciones finales**: Comentarios del proceso
+- ✅ **Documentación final**: Archivos generados
+
+---
+
+## 💡 Consejos y Mejores Prácticas
+
+### **Para seguimiento efectivo:**
+- **Revisa regularmente**: Mantente al día con el estado de tus solicitudes
+- **Lee las observaciones**: Te dan información valiosa sobre el proceso
+- **Entiende los tiempos**: Cada estado tiene su duración típica
+- **Mantén comunicación**: Contacta responsables si tienes dudas
+
+### **Para solicitudes devueltas:**
+- **Actúa rápido**: Corrige las observaciones tan pronto como sea posible
+- **Entiende completamente**: Asegúrate de entender qué necesita corrección
+- **Corrige todo**: No dejes correcciones parciales
+- **Comunica dudas**: Pregunta si algo no está claro
+
+### **Para planificación:**
+- **Considera tiempos**: Planifica considerando el tiempo de aprobación
+- **Anticipa necesidades**: Prepara documentación con anticipación
+- **Mantén flexibilidad**: Las fechas pueden necesitar ajustes
+- **Documenta cambios**: Registra modificaciones importantes
+
+---
+
+## ❓ Preguntas Frecuentes
+
+### **¿Puedo modificar algo desde este modal?**
+No, el modal de "Gestionar" es principalmente de consulta. Para modificar usa "Editar" (solo disponible para solicitudes devueltas).
+
+### **¿Por qué no veo algunas opciones de gestión?**
+Las opciones disponibles dependen del estado de la solicitud y tu rol como solicitante.
+
+### **¿Cómo sé si mi solicitud necesita mi atención?**
+Las solicitudes en estado "Devuelta" requieren tu acción. Otras están en proceso normal.
+
+### **¿Puedo ver solicitudes de otros usuarios?**
+No, solo puedes gestionar tus propias solicitudes.
+
+### **¿Cómo sé cuánto tiempo tomará el proceso?**
+Los tiempos varían según el tipo de solicitud y la carga de trabajo. Las observaciones pueden dar indicaciones.
+
+### **¿Qué hago si mi solicitud está demorada?**
+Puedes contactar al responsable actual (visible en la información del sistema) para consultar sobre el estado.
+
+### **¿Se me notifica cuando cambia el estado?**
+Depende de la configuración de tu organización. Es recomendable revisar regularmente tus solicitudes.
+
+---
+
+*Manual de Usuario - Modal Gestionar Solicitud*  
+*Sistema de Gestión de Solicitudes de Intervención Eléctrica*  
+*Última actualización: Diciembre 2024*
