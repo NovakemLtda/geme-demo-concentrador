@@ -11,8 +11,30 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Leyenda de campos obligatorios -->
-                <div class="alert alert-info mb-3" role="alert">
+                <!-- Tabs Navigation Principal -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="gestionarDespMainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="gestionarDesp-solicitud-tab" data-toggle="tab" href="#gestionarDesp-solicitud" role="tab" aria-controls="gestionarDesp-solicitud" aria-selected="true">
+                            <i class="fas fa-file-alt mr-2"></i>Detalle de Solicitud
+                        </a>
+                    </li>
+                    <li class="nav-item" id="gestionarDesp-aprobadores-tab-li" style="display: none;">
+                        <a class="nav-link" id="gestionarDesp-aprobadores-tab" data-toggle="tab" href="#gestionarDesp-aprobadores" role="tab" aria-controls="gestionarDesp-aprobadores" aria-selected="false">
+                            <i class="fas fa-user-check mr-2"></i>Aprobadores
+                        </a>
+                    </li>
+                    <li class="nav-item" id="gestionarDesp-distribucion-tab-li" style="display: none;">
+                        <a class="nav-link" id="gestionarDesp-distribucion-tab" data-toggle="tab" href="#gestionarDesp-distribucion" role="tab" aria-controls="gestionarDesp-distribucion" aria-selected="false">
+                            <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content Principal -->
+                <div class="tab-content" id="gestionarDespMainTabsContent">
+                    <!-- Tab: Detalle de Solicitud -->
+                    <div class="tab-pane fade show active" id="gestionarDesp-solicitud" role="tabpanel" aria-labelledby="gestionarDesp-solicitud-tab">
+                        <div class="alert alert-info mb-3" role="alert">
                     <i class="fas fa-info-circle mr-2"></i>
                     <strong>Leyenda:</strong>
                     <span class="ml-3"><span class="text-danger">*</span> Campos obligatorios</span>
@@ -424,7 +446,56 @@
                             <p class="mb-0" id="gestionarDespCreadoPor">-</p>
                         </div>
                     </div>
+                </div>                    </div>
+                    <!-- Fin Tab: Detalle de Solicitud -->
+
+                    <!-- Tab: Aprobadores -->
+                    <div class="tab-pane fade" id="gestionarDesp-aprobadores" role="tabpanel" aria-labelledby="gestionarDesp-aprobadores-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Aprobadores:</strong> Personas que deben aprobar esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-success text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-user-check mr-2"></i>Aprobadores Asignados</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="gestionarDesp-listaAprobadores" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <p>No hay aprobadores asignados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Aprobadores -->
+
+                    <!-- Tab: Lista de Distribución -->
+                    <div class="tab-pane fade" id="gestionarDesp-distribucion" role="tabpanel" aria-labelledby="gestionarDesp-distribucion-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Distribución:</strong> Personas que reciben notificaciones sobre esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-info text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-share-alt mr-2"></i>Lista de Distribución</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="gestionarDesp-listaDistribucion" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-envelope fa-2x mb-2"></i>
+                                        <p>No hay usuarios en la lista de distribución</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Lista de Distribución -->
                 </div>
+                <!-- Fin Tabs Content Principal -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -439,6 +510,8 @@
 </div>
 
 <!-- JavaScript para gestión de transiciones de estado -->
+<!-- COMENTADO: Funcionalidad movida a despachador-modals.js -->
+<!--
 <script>
 // Variables globales para el modal de gestión
 let estadoActualSolicitud = '';
@@ -725,3 +798,4 @@ function confirmarGestionSolicitudDespachador() {
     $('#modalGestionarSolicitudDesp').modal('hide');
 }
 </script>
+-->

@@ -1095,8 +1095,13 @@ function poblarModalClonarAdmin(solicitud) {
     
     // Identificación - ID Solicitud queda vacío, Tipo y Relación se copian
     $(`${modalContext} #clonarAdminIDSolicitud`).val('');
-    $(`${modalContext} #clonarAdminTipo`).val(solicitud.TIPO || '');
+    $(`${modalContext} #clonarAdminTipo`).val(solicitud.TIPO_TRABAJO || '');
     $(`${modalContext} #clonarAdminRelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '');
+    
+    // Fechas Programadas
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('clonarAdmin', solicitud);
     
     // Fechas Programadas - quedan vacías
     $(`${modalContext} #clonarAdminInicioProgramado`).val('');
@@ -1196,7 +1201,7 @@ function poblarModalGestionar(solicitud) {
     
     // Identificación (EDITABLE)
     $(`${modalContext} #gestionarIDSolicitud`).val(solicitud.ID_SOLICITUD || '');
-    $(`${modalContext} #gestionarTipo`).val(solicitud.TIPO || '');
+    $(`${modalContext} #gestionarTipo`).val(solicitud.TIPO_TRABAJO || '');
     $(`${modalContext} #gestionarRelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '');
     
     // Fechas Programadas (SOLO LECTURA)
@@ -1270,6 +1275,9 @@ function poblarModalGestionar(solicitud) {
     
     // Aplicar reglas de editabilidad según estado
     aplicarReglasEditabilidadGestion(solicitud.ESTADO);
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('gestionar', solicitud);
 }
 
 // Función para aplicar reglas de editabilidad según el estado
@@ -1597,7 +1605,7 @@ function poblarModalEditar(solicitud) {
     
     // Identificación
     $(`${modalContext} #editarIDSolicitud`).val(solicitud.ID_SOLICITUD || '').prop('readonly', false);
-    $(`${modalContext} #editarTipo`).val(solicitud.TIPO || '').prop('disabled', false);
+    $(`${modalContext} #editarTipo`).val(solicitud.TIPO_TRABAJO || '').prop('disabled', false);
     $(`${modalContext} #editarRelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '').prop('readonly', false);
     
     // Fechas Programadas - EDITABLE
@@ -1873,7 +1881,7 @@ function poblarModalVerAdmin(solicitud) {
     
     // Identificación
     $('#verAdminIDSolicitud').val(solicitud.ID_SOLICITUD || '');
-    $('#verAdminTipo').val(solicitud.TIPO || '');
+    $('#verAdminTipo').val(solicitud.TIPO_TRABAJO || '');
     $('#verAdminRelacionSODICEN').val(solicitud.RELACION_SODI_CEN || '');
     
     // Fechas Programadas
@@ -1957,6 +1965,9 @@ function poblarModalVerAdmin(solicitud) {
     $('#verAdminAdministrador').text(solicitud.ADMINISTRADOR || '-');
     $('#verAdminSolicitante').text(solicitud.SOLICITANTE || '-');
     $('#verAdminCreadoPor').text(solicitud.CREADO_POR || '-');
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('verAdmin', solicitud);
 }
 
 // ============================================
@@ -2004,7 +2015,7 @@ function poblarModalEditarDesp(solicitud) {
     
     // Identificación (EDITABLE)
     $(`${modalContext} #editarDespIDSolicitud`).val(solicitud.ID_SOLICITUD || '').prop('readonly', false);
-    $(`${modalContext} #editarDespTipo`).val(solicitud.TIPO || '').prop('disabled', false);
+    $(`${modalContext} #editarDespTipo`).val(solicitud.TIPO_TRABAJO || '').prop('disabled', false);
     $(`${modalContext} #editarDespRelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '').prop('readonly', false);
     
     // Fechas Programadas (EDITABLE)
@@ -2167,7 +2178,7 @@ function poblarModalGestionarDespachador(solicitud) {
     
     // Identificación (EDITABLE)
     $('#gestionarDespIDSolicitud').val(solicitud.ID_SOLICITUD || '');
-    $('#gestionarDespTipo').val(solicitud.TIPO || '');
+    $('#gestionarDespTipo').val(solicitud.TIPO_TRABAJO || '');
     $('#gestionarDespRelacionSODICEN').val(solicitud.RELACION_SODI_CEN || '');
     
     // Fechas Programadas (EDITABLE)
@@ -2251,6 +2262,12 @@ function poblarModalGestionarDespachador(solicitud) {
     
     // Configurar transiciones de estado según el estado actual
     configurarTransicionesEstadoDesp(solicitud.ESTADO);
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('gestionar', solicitud);
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('gestionarDesp', solicitud);
     
     console.log('Modal gestionar despachador poblado correctamente');
 }
@@ -2680,7 +2697,7 @@ function poblarModalVerDespachador(solicitud) {
     
     // Identificación
     $(`${modalContext} #verDespIDSolicitud`).val(solicitud.ID_SOLICITUD || '-');
-    $(`${modalContext} #verDespTipo`).val(solicitud.TIPO || '-');
+    $(`${modalContext} #verDespTipo`).val(solicitud.TIPO_TRABAJO || '-');
     $(`${modalContext} #verDespRelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '-');
     
     // Fechas Programadas
@@ -2727,6 +2744,9 @@ function poblarModalVerDespachador(solicitud) {
     $(`${modalContext} #verDespAdministrador`).val(solicitud.ADMINISTRADOR || '-');
     $(`${modalContext} #verDespSolicitante`).val(solicitud.SOLICITANTE || '-');
     $(`${modalContext} #verDespCreadoPor`).val(solicitud.CREADO_POR || '-');
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('verDesp', solicitud);
 }
 
 // NOTA: Funciones antiguas eliminadas - ahora se usa verSolicitudDesp() unificada
@@ -2913,22 +2933,19 @@ function poblarModalEditarSolic(solicitud) {
         $(`${modalContext} #editarSolicDescripcionAfectacion`).val(solicitud.DESCRIPCION_AFECTACION);
         $(`${modalContext} #editarSolicDescripcionAfectacionContainer`).show();
     } else {
-        $(`${modalContext} #editarSolicDescripcionAfectacionContainer`).hide();
+        $(`${modalContext} #verAdminDescripcionAfectacionContainer`).hide();
     }
     
     // ID oculto
-    $(`${modalContext} #editarSolicID`).val(solicitud.ID_REGISTRO || '');
+    $(`${modalContext} #verAdminID`).val(solicitud.ID_REGISTRO || '');
     
-    console.log('Modal editar solicitante poblado correctamente');
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('verAdmin', solicitud);
+    // - verSolicitudDevueltaSolic()
+    // - verSolicitudEnAnalisisSolic()
+    // - verSolicitudProgramadaSolic()
+    // - verSolicitudAdminGestionandoSolic()
 }
-
-// NOTA: Funciones antiguas eliminadas - ahora se usa verSolicitudSolic() unificada
-// Las siguientes funciones ya no son necesarias:
-// - verSolicitudPendienteSolic()
-// - verSolicitudDevueltaSolic()
-// - verSolicitudEnAnalisisSolic()
-// - verSolicitudProgramadaSolic()
-// - verSolicitudAdminGestionandoSolic()
 
 // Función para clonar solicitud - Solicitante
 function clonarSolicitudSolic(solicitudId) {
@@ -3085,7 +3102,7 @@ function poblarModalGestionarSolicitante(solicitud) {
     
     // Identificación (SOLO LECTURA)
     $('#gestionarSolIDSolicitud').val(solicitud.ID_SOLICITUD || '');
-    $('#gestionarSolTipo').val(solicitud.TIPO || '');
+    $('#gestionarSolTipo').val(solicitud.TIPO_TRABAJO || '');
     $('#gestionarSolRelacionSODICEN').val(solicitud.RELACION_SODI_CEN || '');
     
     // Fechas Programadas (EDITABLE)
@@ -3158,6 +3175,9 @@ function poblarModalGestionarSolicitante(solicitud) {
     $('#gestionarSolAdministrador').text(solicitud.ADMINISTRADOR || '-');
     $('#gestionarSolSolicitante').text(solicitud.SOLICITANTE || '-');
     $('#gestionarSolCreadoPor').text(solicitud.CREADO_POR || '-');
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('gestionarSol', solicitud);
 }
 
 // Función auxiliar para formatear fecha para input datetime-local
@@ -3274,7 +3294,7 @@ function poblarModalVerSolicitante(solicitud) {
     
     // Identificación
     $(`${modalContext} #verSolicIDSolicitud`).val(solicitud.ID_SOLICITUD || '-');
-    $(`${modalContext} #verSolicTipo`).val(solicitud.TIPO || '-');
+    $(`${modalContext} #verSolicTipo`).val(solicitud.TIPO_TRABAJO || '-');
     $(`${modalContext} #verSolicRelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '-');
     
     // Fechas Programadas
@@ -3340,6 +3360,9 @@ function poblarModalVerSolicitante(solicitud) {
     
     // Configurar visibilidad de secciones según el estado
     configurarVisibilidadVerSolicitud(solicitud.ESTADO);
+    
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion('verSolic', solicitud);
 }
 
 // ============================================
@@ -3356,7 +3379,7 @@ function poblarModalClonar(solicitud, tipo) {
     
     // Identificación - ID Solicitud queda vacío, Tipo y Relación se copian
     $(`${modalContext} #${prefix}IDSolicitud`).val('');
-    $(`${modalContext} #${prefix}Tipo`).val(solicitud.TIPO || '');
+    $(`${modalContext} #${prefix}Tipo`).val(solicitud.TIPO_TRABAJO || '');
     $(`${modalContext} #${prefix}RelacionSODICEN`).val(solicitud.RELACION_SODI_CEN || '');
     
     // Fechas Programadas - quedan vacías
@@ -3410,5 +3433,122 @@ function poblarModalClonar(solicitud, tipo) {
     $(`${modalContext} #${prefix}SODIAdjunto`).val('');
     $(`${modalContext} .custom-file-label`).text('Seleccionar archivo...');
     
+    // Configurar tabs de Aprobadores y Distribución
+    configurarTabsAprobadoresDistribucion(prefix, solicitud);
+    
     console.log('Modal clonar ' + tipo + ' poblado correctamente');
+}
+
+// ========================================
+// FUNCIONES PARA TABS DE APROBADORES Y DISTRIBUCIÓN
+// ========================================
+
+/**
+ * Configurar tabs de aprobadores y distribución en modales
+ * @param {string} prefijo - Prefijo del modal (ej: 'verAdmin', 'gestionarDesp')
+ * @param {object} solicitud - Objeto de solicitud con datos
+ */
+function configurarTabsAprobadoresDistribucion(prefijo, solicitud) {
+    // Mostrar/ocultar tab de Aprobadores
+    if (solicitud.TIENE_APROBACION && solicitud.APROBADORES && solicitud.APROBADORES.length > 0) {
+        $(`#${prefijo}-aprobadores-tab-li`).show();
+        poblarListaAprobadores(prefijo, solicitud.APROBADORES);
+    } else {
+        $(`#${prefijo}-aprobadores-tab-li`).hide();
+    }
+    
+    // Mostrar/ocultar tab de Lista de Distribución
+    if (solicitud.TIENE_DISTRIBUCION && solicitud.LISTA_DISTRIBUCION && solicitud.LISTA_DISTRIBUCION.length > 0) {
+        $(`#${prefijo}-distribucion-tab-li`).show();
+        poblarListaDistribucion(prefijo, solicitud.LISTA_DISTRIBUCION);
+    } else {
+        $(`#${prefijo}-distribucion-tab-li`).hide();
+    }
+}
+
+/**
+ * Poblar lista de aprobadores en el tab correspondiente
+ * @param {string} prefijo - Prefijo del modal
+ * @param {array} aprobadores - Array de aprobadores
+ */
+function poblarListaAprobadores(prefijo, aprobadores) {
+    const container = $(`#${prefijo}-listaAprobadores`);
+    
+    if (!aprobadores || aprobadores.length === 0) {
+        container.html(`
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <p>No hay aprobadores asignados</p>
+            </div>
+        `);
+        return;
+    }
+    
+    container.empty();
+    aprobadores.forEach((aprobador, index) => {
+        const item = $(`
+            <div class="border-bottom py-3 ${index === aprobadores.length - 1 ? 'border-bottom-0' : ''}">
+                <div class="d-flex align-items-center">
+                    <div class="mr-3">
+                        <span class="badge badge-success badge-pill">${index + 1}</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 text-primary">
+                            <i class="fas fa-user mr-2"></i>${aprobador.NOMBRE}
+                        </h6>
+                        <p class="mb-0 text-muted">
+                            <i class="fas fa-envelope mr-2"></i>${aprobador.EMAIL}
+                        </p>
+                    </div>
+                    <div>
+                        <span class="badge badge-outline-success">Aprobador</span>
+                    </div>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
+}
+
+/**
+ * Poblar lista de distribución en el tab correspondiente
+ * @param {string} prefijo - Prefijo del modal
+ * @param {array} distribucion - Array de usuarios de distribución
+ */
+function poblarListaDistribucion(prefijo, distribucion) {
+    const container = $(`#${prefijo}-listaDistribucion`);
+    
+    if (!distribucion || distribucion.length === 0) {
+        container.html(`
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-envelope fa-2x mb-2"></i>
+                <p>No hay usuarios en la lista de distribución</p>
+            </div>
+        `);
+        return;
+    }
+    
+    container.empty();
+    distribucion.forEach((usuario, index) => {
+        const esUsuarioSistema = usuario.USUARIO_SISTEMA === true;
+        const item = $(`
+            <div class="border-bottom py-3 ${index === distribucion.length - 1 ? 'border-bottom-0' : ''}">
+                <div class="d-flex align-items-center">
+                    <div class="mr-3">
+                        <i class="fas ${esUsuarioSistema ? 'fa-user-cog text-primary' : 'fa-user text-secondary'} fa-lg"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1">
+                            ${usuario.NOMBRE}
+                            ${esUsuarioSistema ? '<span class="badge badge-primary ml-2">Sistema</span>' : '<span class="badge badge-secondary ml-2">Externo</span>'}
+                        </h6>
+                        <p class="mb-0 text-muted">
+                            <i class="fas fa-envelope mr-2"></i>${usuario.EMAIL}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `);
+        container.append(item);
+    });
 }

@@ -19,13 +19,15 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="aprobadores-tab" data-toggle="tab" href="#aprobadores" role="tab" aria-controls="aprobadores" aria-selected="false">
+                        <a class="nav-link disabled" id="aprobadores-tab" data-toggle="tab" href="#aprobadores" role="tab" aria-controls="aprobadores" aria-selected="false" tabindex="-1" aria-disabled="true">
                             <i class="fas fa-user-check mr-2"></i>Aprobadores
+                            <small class="d-block text-muted" style="font-size: 0.7em;">Marque "Requiere Aprobadores" para habilitar</small>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="distribucion-tab" data-toggle="tab" href="#distribucion" role="tab" aria-controls="distribucion" aria-selected="false">
+                        <a class="nav-link disabled" id="distribucion-tab" data-toggle="tab" href="#distribucion" role="tab" aria-controls="distribucion" aria-selected="false" tabindex="-1" aria-disabled="true">
                             <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                            <small class="d-block text-muted" style="font-size: 0.7em;">Marque "Requiere Distribución" para habilitar</small>
                         </a>
                     </li>
                 </ul>
@@ -46,6 +48,53 @@
                                 </div>
                             </div>
 
+                            <!-- Sección de Configuración de Aprobación y Distribución -->
+                            <div class="card mb-3 border-info">
+                                <div class="card-header bg-info text-white py-2">
+                                    <h6 class="mb-0"><i class="fas fa-cogs mr-2"></i>Configuración de Aprobación y Distribución</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="alert alert-light mb-3" role="alert">
+                                        <i class="fas fa-info-circle mr-2"></i>
+                                        <strong>Importante:</strong> Configure los requisitos de aprobación antes de completar el formulario. Esto habilitará las pestañas correspondientes.
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input type="checkbox" class="custom-control-input" id="requiereAprobadores" onchange="toggleRequiereAprobadores()">
+                                                <label class="custom-control-label" for="requiereAprobadores">
+                                                    <i class="fas fa-user-check mr-2 text-primary"></i>
+                                                    <strong>Requiere Aprobadores</strong>
+                                                    <small class="d-block text-muted">La solicitud necesita aprobación antes de continuar</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="custom-control custom-checkbox mb-3">
+                                                <input type="checkbox" class="custom-control-input" id="requiereDistribucion" onchange="toggleRequiereDistribucion()">
+                                                <label class="custom-control-label" for="requiereDistribucion">
+                                                    <i class="fas fa-share-alt mr-2 text-success"></i>
+                                                    <strong>Requiere Lista de Distribución</strong>
+                                                    <small class="d-block text-muted">La solicitud debe ser notificada a usuarios específicos</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Alertas de validación -->
+                                    <div id="alertaAprobadores" class="alert alert-warning d-none" role="alert">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                                        <strong>Configuración requerida:</strong> Debe configurar al menos un aprobador en la pestaña "Aprobadores" antes de guardar.
+                                    </div>
+                                    
+                                    <div id="alertaDistribucion" class="alert alert-warning d-none" role="alert">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                                        <strong>Configuración requerida:</strong> Debe configurar al menos un usuario en la "Lista de Distribución" antes de guardar.
+                                    </div>
+                                </div>
+                            </div>
+
                     <!-- Header: Estado -->
                     <div class="card mb-3">
                         <div class="card-header bg-light py-2">
@@ -56,8 +105,8 @@
                                 <div class="col-md-12">
                                     <div class="alert alert-warning mb-0" role="alert">
                                         <i class="fas fa-clock mr-2"></i>
-                                        <strong>Estado por defecto:</strong> <span class="badge badge-warning ml-2">Pendiente</span>
-                                        <small class="d-block mt-1 text-muted">Las solicitudes creadas por el solicitante inician en este estado</small>
+                                        <strong>Estado por defecto:</strong> <span id="estadoPorDefecto" class="badge badge-warning ml-2">Pendiente</span>
+                                        <small id="descripcionEstado" class="d-block mt-1 text-muted">Las solicitudes creadas por el solicitante inician en este estado</small>
                                     </div>
                                 </div>
                             </div>
@@ -427,11 +476,23 @@
 
 <!-- Script para lógica del formulario y gestión de aprobadores/distribución -->
 <script>
-// Variables globales para gestión de listas
-let aprobadoresDisponibles = [];
-let aprobadoresSeleccionados = [];
-let distribucionDisponible = [];
-let distribucionSeleccionada = [];
+// Variables globales para gestión de listas - usar GEME_GLOBALS para evitar conflictos
+// Asegurar que GEME_GLOBALS existe
+if (typeof window.GEME_GLOBALS === 'undefined') {
+    window.GEME_GLOBALS = {
+        aprobadoresDisponibles: [],
+        aprobadoresSeleccionados: [],
+        distribucionDisponible: [],
+        distribucionSeleccionada: [],
+        initialized: false
+    };
+}
+
+// Referencias locales a las variables globales (sin redeclarar)
+var aprobadoresDisponibles = window.GEME_GLOBALS.aprobadoresDisponibles;
+var aprobadoresSeleccionados = window.GEME_GLOBALS.aprobadoresSeleccionados;
+var distribucionDisponible = window.GEME_GLOBALS.distribucionDisponible;
+var distribucionSeleccionada = window.GEME_GLOBALS.distribucionSeleccionada;
 
 $(document).ready(function() {
     // Inicializar datos
@@ -494,7 +555,9 @@ $(document).ready(function() {
 
 // Inicializar datos de aprobadores
 function inicializarAprobadores() {
-    aprobadoresDisponibles = [
+    // Solo inicializar si no están ya inicializados
+    if (window.GEME_GLOBALS.aprobadoresDisponibles.length === 0) {
+        window.GEME_GLOBALS.aprobadoresDisponibles = [
         {id: 1, nombre: 'Juan Pérez', cargo: 'Administrador Senior', email: 'juan.perez@empresa.com', departamento: 'Administración'},
         {id: 2, nombre: 'María González', cargo: 'Jefe de Operaciones', email: 'maria.gonzalez@empresa.com', departamento: 'Operaciones'},
         {id: 3, nombre: 'Carlos Rodríguez', cargo: 'Supervisor Técnico', email: 'carlos.rodriguez@empresa.com', departamento: 'Técnico'},
@@ -505,12 +568,17 @@ function inicializarAprobadores() {
         {id: 8, nombre: 'Lucía Castro', cargo: 'Especialista Senior', email: 'lucia.castro@empresa.com', departamento: 'Técnico'},
         {id: 9, nombre: 'Miguel Torres', cargo: 'Técnico Especialista', email: 'miguel.torres@empresa.com', departamento: 'Técnico'},
         {id: 10, nombre: 'Carmen Ruiz', cargo: 'Ingeniera de Procesos', email: 'carmen.ruiz@empresa.com', departamento: 'Ingeniería'}
-    ];
+        ];
+    }
+    // Actualizar referencia local
+    aprobadoresDisponibles = window.GEME_GLOBALS.aprobadoresDisponibles;
 }
 
 // Inicializar datos de distribución
 function inicializarDistribucion() {
-    distribucionDisponible = [
+    // Solo inicializar si no están ya inicializados
+    if (window.GEME_GLOBALS.distribucionDisponible.length === 0) {
+        window.GEME_GLOBALS.distribucionDisponible = [
         {id: 1, nombre: 'Elena Vargas', cargo: 'Coordinadora General', email: 'elena.vargas@empresa.com', departamento: 'Coordinación'},
         {id: 2, nombre: 'Ricardo Jiménez', cargo: 'Jefe de Planificación', email: 'ricardo.jimenez@empresa.com', departamento: 'Planificación'},
         {id: 3, nombre: 'Mónica Delgado', cargo: 'Supervisora de Operaciones', email: 'monica.delgado@empresa.com', departamento: 'Operaciones'},
@@ -521,7 +589,10 @@ function inicializarDistribucion() {
         {id: 8, nombre: 'Andrés Mendoza', cargo: 'Supervisor de Seguridad', email: 'andres.mendoza@empresa.com', departamento: 'Seguridad'},
         {id: 9, nombre: 'Departamento de Informática', cargo: 'Equipo IT', email: 'informatica@empresa.com', departamento: 'Informática'},
         {id: 10, nombre: 'Recursos Humanos', cargo: 'Equipo RRHH', email: 'rrhh@empresa.com', departamento: 'RRHH'}
-    ];
+        ];
+    }
+    // Actualizar referencia local
+    distribucionDisponible = window.GEME_GLOBALS.distribucionDisponible;
 }
 
 // Cargar últimos aprobadores utilizados
@@ -669,6 +740,7 @@ function agregarAprobador(id) {
     if (aprobador && !aprobadoresSeleccionados.find(s => s.id === id)) {
         aprobadoresSeleccionados.push(aprobador);
         actualizarListaAprobadoresSeleccionados();
+        actualizarAlertasConfiguracion();
         cargarAprobadoresDisponibles();
         filtrarAprobadores($('#buscarAprobadores').val());
     }
@@ -678,6 +750,7 @@ function agregarAprobador(id) {
 function removerAprobador(id) {
     aprobadoresSeleccionados = aprobadoresSeleccionados.filter(a => a.id !== id);
     actualizarListaAprobadoresSeleccionados();
+    actualizarAlertasConfiguracion();
     cargarAprobadoresDisponibles();
     filtrarAprobadores($('#buscarAprobadores').val());
 }
@@ -688,6 +761,7 @@ function agregarDistribucion(id) {
     if (usuario && !distribucionSeleccionada.find(s => s.id === id)) {
         distribucionSeleccionada.push(usuario);
         actualizarListaDistribucionSeleccionada();
+        actualizarAlertasConfiguracion();
         cargarDistribucionDisponible();
         filtrarDistribucion($('#buscarDistribucion').val());
     }
@@ -697,6 +771,7 @@ function agregarDistribucion(id) {
 function removerDistribucion(id) {
     distribucionSeleccionada = distribucionSeleccionada.filter(d => d.id !== id);
     actualizarListaDistribucionSeleccionada();
+    actualizarAlertasConfiguracion();
     cargarDistribucionDisponible();
     filtrarDistribucion($('#buscarDistribucion').val());
 }
@@ -812,6 +887,7 @@ function agregarUsuarioExterno() {
     
     distribucionSeleccionada.push(usuarioExterno);
     actualizarListaDistribucionSeleccionada();
+    actualizarAlertasConfiguracion();
     
     // Limpiar campos
     $('#nombreExterno').val('');
@@ -853,5 +929,256 @@ function limpiarFormulario() {
     // Actualizar vistas
     actualizarListaAprobadoresSeleccionados();
     actualizarListaDistribucionSeleccionada();
+    
+    // Resetear checkboxes de configuración
+    $('#requiereAprobadores').prop('checked', false);
+    $('#requiereDistribucion').prop('checked', false);
+    $('#alertaAprobadores').addClass('d-none');
+    $('#alertaDistribucion').addClass('d-none');
+    
+    // Deshabilitar tabs y resetear mensajes
+    $('#aprobadores-tab').addClass('disabled')
+                        .attr('tabindex', '-1')
+                        .attr('aria-disabled', 'true')
+                        .find('small').text('Marque "Requiere Aprobadores" para habilitar');
+    
+    $('#distribucion-tab').addClass('disabled')
+                         .attr('tabindex', '-1')
+                         .attr('aria-disabled', 'true')
+                         .find('small').text('Marque "Requiere Distribución" para habilitar');
+    
+    // Resetear estado mostrado
+    actualizarEstadoPorDefecto();
+}
+
+// ============================================
+// FUNCIONES PARA CHECKBOXES DE CONFIGURACIÓN
+// ============================================
+
+// Toggle para checkbox de aprobadores
+function toggleRequiereAprobadores() {
+    const requiere = $('#requiereAprobadores').is(':checked');
+    const alertaAprobadores = $('#alertaAprobadores');
+    const tabAprobadores = $('#aprobadores-tab');
+    
+    if (requiere) {
+        // Habilitar tab de aprobadores
+        tabAprobadores.removeClass('disabled')
+                     .removeAttr('tabindex')
+                     .removeAttr('aria-disabled')
+                     .find('small').text('Configurar aprobadores para la solicitud');
+        
+        // Si se marca, mostrar alerta si no hay aprobadores configurados
+        if (GEME_GLOBALS.aprobadoresSeleccionados.length === 0) {
+            alertaAprobadores.removeClass('d-none');
+        } else {
+            alertaAprobadores.addClass('d-none');
+        }
+        
+        // Actualizar estado mostrado
+        actualizarEstadoPorDefecto();
+    } else {
+        // Deshabilitar tab de aprobadores
+        tabAprobadores.addClass('disabled')
+                     .attr('tabindex', '-1')
+                     .attr('aria-disabled', 'true')
+                     .find('small').text('Marque "Requiere Aprobadores" para habilitar');
+        
+        // Volver al tab de formulario si estaba en aprobadores
+        if ($('#aprobadores').hasClass('show')) {
+            $('#mainTabs a[href="#formulario"]').tab('show');
+        }
+        
+        // Ocultar alerta
+        alertaAprobadores.addClass('d-none');
+        
+        // Actualizar estado mostrado
+        actualizarEstadoPorDefecto();
+    }
+}
+
+// Toggle para checkbox de distribución
+function toggleRequiereDistribucion() {
+    const requiere = $('#requiereDistribucion').is(':checked');
+    const alertaDistribucion = $('#alertaDistribucion');
+    const tabDistribucion = $('#distribucion-tab');
+    
+    if (requiere) {
+        // Habilitar tab de distribución
+        tabDistribucion.removeClass('disabled')
+                      .removeAttr('tabindex')
+                      .removeAttr('aria-disabled')
+                      .find('small').text('Configurar lista de distribución para notificaciones');
+        
+        // Si se marca, mostrar alerta si no hay distribución configurada
+        if (GEME_GLOBALS.distribucionSeleccionada.length === 0) {
+            alertaDistribucion.removeClass('d-none');
+        } else {
+            alertaDistribucion.addClass('d-none');
+        }
+    } else {
+        // Deshabilitar tab de distribución
+        tabDistribucion.addClass('disabled')
+                      .attr('tabindex', '-1')
+                      .attr('aria-disabled', 'true')
+                      .find('small').text('Marque "Requiere Distribución" para habilitar');
+        
+        // Volver al tab de formulario si estaba en distribución
+        if ($('#distribucion').hasClass('show')) {
+            $('#mainTabs a[href="#formulario"]').tab('show');
+        }
+        
+        // Ocultar alerta
+        alertaDistribucion.addClass('d-none');
+    }
+}
+
+// Función para actualizar el estado por defecto mostrado
+function actualizarEstadoPorDefecto() {
+    const requiereAprobadores = $('#requiereAprobadores').is(':checked');
+    const estadoBadge = $('#estadoPorDefecto');
+    const descripcionEstado = $('#descripcionEstado');
+    
+    if (requiereAprobadores) {
+        // Cambiar a "Por Aprobar"
+        estadoBadge.removeClass('badge-warning')
+                   .addClass('badge-info')
+                   .text('Por Aprobar');
+        
+        descripcionEstado.text('La solicitud requerirá aprobación antes de continuar el proceso');
+    } else {
+        // Volver a "Pendiente"
+        estadoBadge.removeClass('badge-info')
+                   .addClass('badge-warning')
+                   .text('Pendiente');
+        
+        descripcionEstado.text('Las solicitudes creadas por el solicitante inician en este estado');
+    }
+}
+
+// Función para validar configuración antes de guardar
+function validarConfiguracionAprobacion() {
+    const requiereAprobadores = $('#requiereAprobadores').is(':checked');
+    const requiereDistribucion = $('#requiereDistribucion').is(':checked');
+    let errores = [];
+    
+    // Validar aprobadores si es requerido
+    if (requiereAprobadores && GEME_GLOBALS.aprobadoresSeleccionados.length === 0) {
+        errores.push('Debe configurar al menos un aprobador');
+        $('#alertaAprobadores').removeClass('d-none');
+    } else {
+        $('#alertaAprobadores').addClass('d-none');
+    }
+    
+    // Validar distribución si es requerida
+    if (requiereDistribucion && GEME_GLOBALS.distribucionSeleccionada.length === 0) {
+        errores.push('Debe configurar al menos un usuario en la lista de distribución');
+        $('#alertaDistribucion').removeClass('d-none');
+    } else {
+        $('#alertaDistribucion').addClass('d-none');
+    }
+    
+    return errores;
+}
+
+// Función para guardar solicitud con validaciones
+function guardarSolicitud() {
+    console.log('Guardando nueva solicitud...');
+    
+    // Validar formulario básico
+    const form = document.getElementById('formNuevaSolicitud');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    // Validar configuración de aprobación
+    const erroresConfiguracion = validarConfiguracionAprobacion();
+    if (erroresConfiguracion.length > 0) {
+        alert('Error de configuración:\n\n' + erroresConfiguracion.join('\n') + '\n\nPor favor, complete la configuración requerida antes de guardar.');
+        return;
+    }
+    
+    // Recopilar datos del formulario
+    const datosFormulario = {
+        // Datos básicos
+        idSolicitud: $('#nuevaSolicIDSolicitud').val(),
+        tipoTrabajo: $('#nuevaSolicTipo').val(),
+        relacionSODICEN: $('#nuevaSolicRelacionSODICEN').val(),
+        inicioProgramado: $('#nuevaSolicInicioProgramado').val(),
+        finProgramado: $('#nuevaSolicFinProgramado').val(),
+        empresaSolicitante: $('#nuevaSolicEmpresaSolicitante').val(),
+        empresaReceptora: $('#nuevaSolicEmpresaReceptora').val(),
+        instalacionGM: $('#nuevaSolicInstalacionGM').val(),
+        equipos: $('#nuevaSolicEquipos').val(),
+        descripcionTrabajo: $('#nuevaSolicDescripcionTrabajo').val(),
+        riesgo: $('#nuevaSolicRiesgo').val(),
+        afectaciones: $('#nuevaSolicAfectaciones').val(),
+        descripcionRiesgo: $('#nuevaSolicDescripcionRiesgo').val(),
+        descripcionAfectacion: $('#nuevaSolicDescripcionAfectacion').val(),
+        
+        // Configuración de aprobación
+        requiereAprobadores: $('#requiereAprobadores').is(':checked'),
+        requiereDistribucion: $('#requiereDistribucion').is(':checked'),
+        aprobadores: GEME_GLOBALS.aprobadoresSeleccionados,
+        distribucion: GEME_GLOBALS.distribucionSeleccionada,
+        
+        // Metadata
+        solicitante: 'Demo Novakem 10',
+        fechaCreacion: new Date().toISOString(),
+        estado: datosFormulario.requiereAprobadores ? 'Por Aprobar' : 'Pendiente'
+    };
+    
+    console.log('Datos de la solicitud:', datosFormulario);
+    
+    // Aquí se enviarían los datos al servidor
+    // Por ahora, mostrar mensaje de confirmación
+    let mensaje = '✅ Solicitud guardada exitosamente!\n\n';
+    mensaje += `ID: ${datosFormulario.idSolicitud}\n`;
+    mensaje += `Tipo: ${datosFormulario.tipoTrabajo}\n`;
+    mensaje += `Estado: ${datosFormulario.estado}\n\n`;
+    
+    // Mensaje específico según el estado
+    if (datosFormulario.estado === 'Por Aprobar') {
+        mensaje += `🔍 La solicitud requiere aprobación y ha sido enviada a los aprobadores configurados.\n`;
+        mensaje += `📋 Aprobadores: ${datosFormulario.aprobadores.length} configurados\n`;
+        mensaje += `⏳ Próximo paso: Los aprobadores revisarán y tomarán una decisión sobre la solicitud.\n\n`;
+    } else {
+        mensaje += `📋 La solicitud no requiere aprobación previa y pasa directamente al proceso de análisis.\n`;
+        mensaje += `⏳ Próximo paso: El administrador revisará la solicitud.\n\n`;
+    }
+    
+    if (datosFormulario.requiereDistribucion) {
+        mensaje += `📧 Lista de distribución: ${datosFormulario.distribucion.length} usuarios serán notificados\n`;
+    }
+    
+    alert(mensaje);
+    
+    // Cerrar modal y limpiar formulario
+    $('#modalNuevaSolicitud').modal('hide');
+    setTimeout(() => {
+        limpiarFormulario();
+    }, 500);
+}
+
+// Actualizar alertas cuando cambian las listas
+function actualizarAlertasConfiguracion() {
+    // Actualizar alerta de aprobadores
+    if ($('#requiereAprobadores').is(':checked')) {
+        if (GEME_GLOBALS.aprobadoresSeleccionados.length > 0) {
+            $('#alertaAprobadores').addClass('d-none');
+        } else {
+            $('#alertaAprobadores').removeClass('d-none');
+        }
+    }
+    
+    // Actualizar alerta de distribución
+    if ($('#requiereDistribucion').is(':checked')) {
+        if (GEME_GLOBALS.distribucionSeleccionada.length > 0) {
+            $('#alertaDistribucion').addClass('d-none');
+        } else {
+            $('#alertaDistribucion').removeClass('d-none');
+        }
+    }
 }
 </script>

@@ -389,7 +389,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
 
     solicitudes.forEach(sol => {
         const estado = sol.ESTADO;
-        const tipo = sol.TIPO;
+        const tipo = sol.TIPO_TRABAJO;
         
         // Conteo por estados en proceso
         if (estado === 'En Análisis') resumenProceso.totalEnAnalisis++;
@@ -509,7 +509,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             
             if (pertenece) {
                 const estado = sol.ESTADO;
-                const tipo = sol.TIPO;
+                const tipo = sol.TIPO_TRABAJO;
                 
                 // Incrementar total general
                 resumenHistorico.totalGeneradas++;
@@ -524,7 +524,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
                 // Conteo por estado
                 if (estado === 'Devuelta') resumenHistorico.totalDevueltas++;
                 if (estado === 'No Solicitada') resumenHistorico.totalAnuladas++;
-                if (['En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumenHistorico.totalEnProceso++;
+                if (['Por Aprobar', 'En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumenHistorico.totalEnProceso++;
                 if (estado === 'Vigente') resumenHistorico.totalVigentes++;
                 if (estado === 'Rechazada') resumenHistorico.totalRechazadas++;
                 if (estado === 'Extendida') resumenHistorico.totalExtendidas++;
@@ -672,6 +672,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         let badgeEstado = 'badge-secondary';
         switch(solicitud.ESTADO) {
             case 'Pendiente': badgeEstado = 'badge-warning'; break;
+            case 'Por Aprobar': badgeEstado = 'badge-info'; break;
             case 'Devuelta': badgeEstado = 'badge-danger'; break;
             case 'En Análisis': badgeEstado = 'badge-info'; break;
             case 'Administrador Gestionando': badgeEstado = 'badge-warning text-dark'; break;
@@ -851,7 +852,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $('.solicitud-finalizada').removeAttr('style');
     
     // Estados que se consideran "En Proceso" para Solicitante
-    const estadosEnProceso = ['Pendiente', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Programada'];
+    const estadosEnProceso = ['Pendiente', 'Por Aprobar', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Programada'];
     
     // Estados que se consideran "Finalizadas"
     const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada', 'Suspendida'];
@@ -905,4 +906,4 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
 </script>
 
 <!-- Cargar modales del solicitante -->
-<script src="modals/solicitante/modals-loader.js?v=4" defer></script>
+<script src="modals/solicitante/modals-loader.js?v=7" defer></script>

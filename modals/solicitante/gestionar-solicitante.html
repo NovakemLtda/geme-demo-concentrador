@@ -11,8 +11,30 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Leyenda de campos obligatorios -->
-                <div class="alert alert-info mb-3" role="alert">
+                <!-- Tabs Navigation Principal -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="gestionarSolMainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="gestionarSol-solicitud-tab" data-toggle="tab" href="#gestionarSol-solicitud" role="tab" aria-controls="gestionarSol-solicitud" aria-selected="true">
+                            <i class="fas fa-file-alt mr-2"></i>Detalle de Solicitud
+                        </a>
+                    </li>
+                    <li class="nav-item" id="gestionarSol-aprobadores-tab-li" style="display: none;">
+                        <a class="nav-link" id="gestionarSol-aprobadores-tab" data-toggle="tab" href="#gestionarSol-aprobadores" role="tab" aria-controls="gestionarSol-aprobadores" aria-selected="false">
+                            <i class="fas fa-user-check mr-2"></i>Aprobadores
+                        </a>
+                    </li>
+                    <li class="nav-item" id="gestionarSol-distribucion-tab-li" style="display: none;">
+                        <a class="nav-link" id="gestionarSol-distribucion-tab" data-toggle="tab" href="#gestionarSol-distribucion" role="tab" aria-controls="gestionarSol-distribucion" aria-selected="false">
+                            <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content Principal -->
+                <div class="tab-content" id="gestionarSolMainTabsContent">
+                    <!-- Tab: Detalle de Solicitud -->
+                    <div class="tab-pane fade show active" id="gestionarSol-solicitud" role="tabpanel" aria-labelledby="gestionarSol-solicitud-tab">
+                        <div class="alert alert-info mb-3" role="alert">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-info-circle mr-2"></i>
                         <div>
@@ -413,7 +435,56 @@
                             <p class="mb-0" id="gestionarSolCreadoPor">-</p>
                         </div>
                     </div>
+                </div>                    </div>
+                    <!-- Fin Tab: Detalle de Solicitud -->
+
+                    <!-- Tab: Aprobadores -->
+                    <div class="tab-pane fade" id="gestionarSol-aprobadores" role="tabpanel" aria-labelledby="gestionarSol-aprobadores-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Aprobadores:</strong> Personas que deben aprobar esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-success text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-user-check mr-2"></i>Aprobadores Asignados</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="gestionarSol-listaAprobadores" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <p>No hay aprobadores asignados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Aprobadores -->
+
+                    <!-- Tab: Lista de Distribución -->
+                    <div class="tab-pane fade" id="gestionarSol-distribucion" role="tabpanel" aria-labelledby="gestionarSol-distribucion-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Distribución:</strong> Personas que reciben notificaciones sobre esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-info text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-share-alt mr-2"></i>Lista de Distribución</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="gestionarSol-listaDistribucion" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-envelope fa-2x mb-2"></i>
+                                        <p>No hay usuarios en la lista de distribución</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Lista de Distribución -->
                 </div>
+                <!-- Fin Tabs Content Principal -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">

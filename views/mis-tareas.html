@@ -118,6 +118,14 @@ $('#zona-filtro-tareas').on('hide.bs.collapse', function () {
 // ============================================
 // CARGAR DATOS DINÁMICAMENTE
 // ============================================
+
+// Cargar datos de solicitudes si no están disponibles
+if (typeof solicitudesData === 'undefined') {
+    console.warn('solicitudesData no está disponible, cargando desde archivo...');
+    // En un entorno real, esto se cargaría dinámicamente
+    // Por ahora, asumimos que se carga desde el archivo global
+}
+
 (function() {
     console.log('🔄 Cargando Mis Tareas...');
     
@@ -134,6 +142,7 @@ $('#zona-filtro-tareas').on('hide.bs.collapse', function () {
         let badgeEstado = 'badge-secondary';
         switch(tarea.ESTADO_INICIAL) {
             case 'Pendiente': badgeEstado = 'badge-warning'; break;
+            case 'Por Aprobar': badgeEstado = 'badge-info'; break;
             case 'En Análisis': badgeEstado = 'badge-info'; break;
             case 'Devuelta': badgeEstado = 'badge-danger'; break;
             case 'Programada': badgeEstado = 'badge-success'; break;
@@ -164,7 +173,7 @@ $('#zona-filtro-tareas').on('hide.bs.collapse', function () {
                 <td>${tarea.ID_REGISTRO}</td>
                 <td>${tarea.TAREA_IDENTIFICADOR}</td>
                 <td>${tarea.TAREA}</td>
-                <td>${tarea.TIPO_TAREA}</td>
+                <td>${tarea.TIPO_TRABAJO_TAREA}</td>
                 <td>${fechaFormateada}</td>
                 <td><span class="badge ${badgeEstado}">${tarea.ESTADO_INICIAL}</span></td>
                 <td>${tarea.RESPONSABLE}</td>
@@ -174,69 +183,106 @@ $('#zona-filtro-tareas').on('hide.bs.collapse', function () {
         tbody.append(fila);
     });
     
-    console.log('✅ Mis Tareas cargadas correctamente');
+    console.log(' Mis Tareas cargadas correctamente');
 })();
 
 function obtenerTareasMock() {
-    // Datos de ejemplo - en producción, obtener de SharePoint/API
-    // El correlativo -01, -02, etc. representa el número de plazo en el flujo según el estado
-    return [
-        {
-            ID: 1,
-            ID_REGISTRO: 101,
-            TAREA_IDENTIFICADOR: 'CEN-2025-001-01',
-            TAREA: 'Revisar Solicitud',
-            TIPO_TAREA: 'Solicitud de Intervención',
-            FECHA_INICIAL: '2025-01-15',
-            ESTADO_INICIAL: 'Pendiente',
-            RESPONSABLE: 'Demo Novakem 10',
-            ROL: 'administrador'
-        },
-        {
-            ID: 2,
-            ID_REGISTRO: 102,
-            TAREA_IDENTIFICADOR: 'CEN-2025-002-02',
-            TAREA: 'Aprobar Desconexión',
-            TIPO_TAREA: 'Solicitud de Desconexión',
-            FECHA_INICIAL: '2025-01-20',
-            ESTADO_INICIAL: 'En Análisis',
-            RESPONSABLE: 'Demo Novakem 10',
-            ROL: 'despachador'
-        },
-        {
-            ID: 3,
-            ID_REGISTRO: 103,
-            TAREA_IDENTIFICADOR: 'CEN-2025-003-03',
-            TAREA: 'Validar Información',
-            TIPO_TAREA: 'Solicitud de Intervención',
-            FECHA_INICIAL: '2025-01-18',
-            ESTADO_INICIAL: 'Programada',
-            RESPONSABLE: 'Demo Novakem 10',
-            ROL: 'administrador'
-        },
-        {
-            ID: 4,
-            ID_REGISTRO: 104,
-            TAREA_IDENTIFICADOR: 'CEN-2025-004-01',
-            TAREA: 'Completar Datos',
-            TIPO_TAREA: 'Solicitud de Intervención',
-            FECHA_INICIAL: '2025-01-22',
-            ESTADO_INICIAL: 'Devuelta',
-            RESPONSABLE: 'Demo Novakem 10',
-            ROL: 'solicitante'
-        },
-        {
-            ID: 5,
-            ID_REGISTRO: 105,
-            TAREA_IDENTIFICADOR: 'CEN-2025-005-04',
-            TAREA: 'Confirmar Ejecución',
-            TIPO_TAREA: 'Solicitud de Desconexión',
-            FECHA_INICIAL: '2025-01-10',
-            ESTADO_INICIAL: 'Vigente',
-            RESPONSABLE: 'Demo Novakem 10',
-            ROL: 'administrador'
+    // Obtener las primeras 10 solicitudes reales del sistema
+    if (typeof solicitudesData === 'undefined') {
+        console.warn('solicitudesData no está disponible, usando datos vacíos');
+        return [];
+    }
+    
+    // Tomar las primeras 10 solicitudes y convertirlas a formato de tareas
+    const solicitudes = solicitudesData.slice(0, 10);
+    
+    return solicitudes.map((solicitud, index) => {
+        // Determinar el rol responsable según el estado
+        let rol = 'administrador'; // Por defecto
+        let tarea = 'Revisar Solicitud';
+        
+        switch(solicitud.ESTADO) {
+            case 'Pendiente':
+                rol = 'administrador';
+                tarea = 'Revisar Solicitud';
+                break;
+            case 'Por Aprobar':
+                rol = 'administrador';
+                tarea = 'Aprobar Solicitud';
+                break;
+            case 'Devuelta':
+                rol = 'solicitante';
+                tarea = 'Completar Datos';
+                break;
+            case 'En Análisis':
+                rol = 'administrador';
+                tarea = 'Analizar Solicitud';
+                break;
+            case 'Administrador Gestionando':
+                rol = 'administrador';
+                tarea = 'Gestionar Solicitud';
+                break;
+            case 'Despachador Gestionando':
+                rol = 'despachador';
+                tarea = 'Gestionar Despacho';
+                break;
+            case 'Programada':
+                rol = 'despachador';
+                tarea = 'Validar Programación';
+                break;
+            case 'Vigente':
+                rol = 'despachador';
+                tarea = 'Supervisar Ejecución';
+                break;
+            case 'Extendida':
+                rol = 'despachador';
+                tarea = 'Gestionar Extensión';
+                break;
+            default:
+                rol = 'administrador';
+                tarea = 'Revisar Solicitud';
         }
-    ];
+        
+        // Determinar tipo de tarea según TIPO_TRABAJO
+        let tipoTarea = 'Solicitud de Intervención';
+        switch(solicitud.TIPO_TRABAJO) {
+            case 'SODI':
+                tipoTarea = 'Solicitud SODI';
+                break;
+            case 'SICF':
+                tipoTarea = 'Solicitud de Intervención CEN-Facturación';
+                break;
+            case 'SICN':
+                tipoTarea = 'Solicitud de Intervención CEN-No Facturación';
+                break;
+            case 'SDCF':
+                tipoTarea = 'Solicitud de Desconexión CEN-Facturación';
+                break;
+            case 'SDCN':
+                tipoTarea = 'Solicitud de Desconexión CEN-No Facturación';
+                break;
+            case 'IL':
+                tipoTarea = 'Solicitud de Intervención en Línea';
+                break;
+            case 'MM':
+                tipoTarea = 'Solicitud de Migración de Medidor';
+                break;
+            default:
+                tipoTarea = 'Solicitud de Intervención';
+        }
+        
+        return {
+            ID: index + 1,
+            ID_REGISTRO: solicitud.ID_REGISTRO,
+            TAREA_IDENTIFICADOR: solicitud.ID_SOLICITUD || `TAREA-${solicitud.ID_REGISTRO}`,
+            TAREA: tarea,
+            TIPO_TRABAJO_TAREA: tipoTarea,
+            FECHA_INICIAL: solicitud.INICIO_PROGRAMADO || new Date().toISOString().split('T')[0],
+            ESTADO_INICIAL: solicitud.ESTADO,
+            RESPONSABLE: 'Demo Novakem 10',
+            ROL: rol
+        };
+    });
 }
 
 // Función para renderizar tareas en la tabla
@@ -254,6 +300,7 @@ function renderizarTareas(tareas) {
         let badgeEstado = 'badge-secondary';
         switch(tarea.ESTADO_INICIAL) {
             case 'Pendiente': badgeEstado = 'badge-warning'; break;
+            case 'Por Aprobar': badgeEstado = 'badge-info'; break;
             case 'En Análisis': badgeEstado = 'badge-info'; break;
             case 'Devuelta': badgeEstado = 'badge-danger'; break;
             case 'Programada': badgeEstado = 'badge-success'; break;
@@ -284,7 +331,7 @@ function renderizarTareas(tareas) {
                 <td>${tarea.ID_REGISTRO}</td>
                 <td>${tarea.TAREA_IDENTIFICADOR}</td>
                 <td>${tarea.TAREA}</td>
-                <td>${tarea.TIPO_TAREA}</td>
+                <td>${tarea.TIPO_TRABAJO_TAREA}</td>
                 <td>${fechaFormateada}</td>
                 <td><span class="badge ${badgeEstado}">${tarea.ESTADO_INICIAL}</span></td>
                 <td>${tarea.RESPONSABLE}</td>
@@ -306,7 +353,7 @@ function filtrarTareas() {
         tareas = tareas.filter(t => t.ROL === rol);
     }
     if (estado === 'pendiente') {
-        tareas = tareas.filter(t => ['Pendiente', 'En Análisis', 'Devuelta'].includes(t.ESTADO_INICIAL));
+        tareas = tareas.filter(t => ['Pendiente', 'Por Aprobar', 'En Análisis', 'Devuelta'].includes(t.ESTADO_INICIAL));
     }
 
     renderizarTareas(tareas);
@@ -355,7 +402,15 @@ function verSolicitudTarea(id, rol) {
 function gestionarSolicitudTarea(idRegistro, rol) {
     console.log('Gestionar solicitud:', idRegistro, 'Rol:', rol);
     
-    // Llamar a la función correspondiente según el rol
+    // Verificar si la solicitud está en estado "Por Aprobar"
+    const solicitud = solicitudesData.find(s => s.ID_REGISTRO === idRegistro);
+    if (solicitud && solicitud.ESTADO === 'Por Aprobar') {
+        // Usar modal específico para aprobador
+        gestionarSolicitudPorAprobar(idRegistro);
+        return;
+    }
+    
+    // Llamar a la función correspondiente según el rol para otros estados
     switch(rol) {
         case 'administrador':
             if (typeof gestionarSolicitudAdmin === 'function') {
@@ -392,6 +447,195 @@ function abrirBitacoraTarea(idRegistro) {
     } else {
         console.error('Función abrirBitacora no encontrada');
         alert('Abrir bitácora para registro: ' + idRegistro);
+    }
+}
+
+// ============================================
+// FUNCIONES PARA GESTIÓN DE SOLICITUDES "POR APROBAR"
+// ============================================
+
+function gestionarSolicitudPorAprobar(idRegistro) {
+    console.log('Gestionar solicitud Por Aprobar (Aprobador):', idRegistro);
+    
+    // Obtener la solicitud
+    const solicitud = solicitudesData.find(s => s.ID_REGISTRO === idRegistro);
+    if (!solicitud) {
+        console.error('Solicitud no encontrada:', idRegistro);
+        return;
+    }
+    
+    // Limpiar cualquier modal anterior que pueda existir
+    $('#modalGestionarSolicitudAprobador').remove();
+    $('#modalAprobadorPorAprobar').remove(); // Limpiar modal anterior si existe
+    
+    // Cargar modal aprobador dinámicamente
+    console.log('Cargando modal desde: modals/aprobador/gestionar-aprobador.html');
+    $.get('modals/aprobador/gestionar-aprobador.html?v=' + Date.now(), function(modalHtml) {
+        console.log('Modal cargado exitosamente');
+        $('body').append(modalHtml);
+        
+        // Poblar modal con datos de la solicitud
+        if (typeof poblarModalGestionarAprobador === 'function') {
+            poblarModalGestionarAprobador(solicitud);
+        } else {
+            console.error('Función poblarModalGestionarAprobador no encontrada');
+        }
+        
+        // Mostrar modal
+        $('#modalGestionarSolicitudAprobador').modal('show');
+    }).fail(function(xhr, status, error) {
+        console.error('Error al cargar modal gestionar-aprobador.html:', status, error);
+        console.error('Response:', xhr.responseText);
+        alert('Error al cargar el modal de aprobación: ' + error + '\nPor favor, intente nuevamente.');
+    });
+}
+
+// ============================================
+// FUNCIONES DEL MODAL APROBADOR (MOVIDAS AQUÍ PARA EVITAR CONFLICTOS)
+// ============================================
+
+// Función para poblar el modal con datos de la solicitud
+window.poblarModalGestionarAprobador = function(solicitud) {
+    console.log('Poblando modal gestionar aprobador:', solicitud);
+    
+    // Header: Estado y Observaciones
+    $('#gestionarAprobObservacionesHeader').text(solicitud.OBSERVACIONES || 'Sin observaciones');
+    
+    // Identificación
+    $('#gestionarAprobIDSolicitud').val(solicitud.ID_SOLICITUD || '');
+    $('#gestionarAprobTipo').val(solicitud.TIPO_TRABAJO || '');
+    $('#gestionarAprobRelacionSODICEN').val(solicitud.RELACION_SODI_CEN || '');
+    
+    // Fechas Programadas
+    $('#gestionarAprobInicioProgramado').val(solicitud.INICIO_PROGRAMADO ? formatDateTimeForDisplay(solicitud.INICIO_PROGRAMADO) : '');
+    $('#gestionarAprobFinProgramado').val(solicitud.FIN_PROGRAMADO ? formatDateTimeForDisplay(solicitud.FIN_PROGRAMADO) : '');
+    
+    // Empresas Involucradas
+    $('#gestionarAprobEmpresaSolicitante').val(solicitud.EMPRESA_SOLICITANTE || '');
+    $('#gestionarAprobEmpresaReceptora').val(solicitud.EMPRESA_RECEPTORA || '');
+    
+    // Instalación y Equipos
+    $('#gestionarAprobInstalacionGM').val(solicitud.INSTALACION_GM || '');
+    $('#gestionarAprobEquipos').val(solicitud.EQUIPOS || '');
+    
+    // Descripción del Trabajo
+    $('#gestionarAprobDescripcionTrabajo').val(solicitud.DESCRIPCION_TRABAJO || '');
+    
+    // Riesgos y Afectaciones
+    $('#gestionarAprobRiesgo').val(solicitud.RIESGO || '');
+    $('#gestionarAprobAfectaciones').val(solicitud.AFECTACIONES || '');
+    $('#gestionarAprobDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO || '');
+    $('#gestionarAprobDescripcionAfectacion').val(solicitud.DESCRIPCION_AFECTACION || '');
+    
+    // Archivo Adjunto
+    if (solicitud.ADJUNTO && solicitud.ADJUNTO !== '-') {
+        $('#gestionarAprobAdjuntoActual').text(solicitud.ADJUNTO);
+        $('#gestionarAprobDescargarAdjunto').show();
+    } else {
+        $('#gestionarAprobAdjuntoActual').text('Sin archivo adjunto');
+        $('#gestionarAprobDescargarAdjunto').hide();
+    }
+    
+    // Metadata del Sistema
+    $('#gestionarAprobIDRegistro').text(solicitud.ID_REGISTRO || '-');
+    $('#gestionarAprobCreado').text(solicitud.CREADO || '-');
+    $('#gestionarAprobActualizado').text(solicitud.ACTUALIZADO || '-');
+    $('#gestionarAprobAdministrador').text(solicitud.ADMINISTRADOR || '-');
+    $('#gestionarAprobSolicitante').text(solicitud.SOLICITANTE || '-');
+    $('#gestionarAprobCreadoPor').text(solicitud.CREADO_POR || '-');
+    
+    // Limpiar campos de decisión
+    $('input[name="aprobadorAccion"]').prop('checked', false);
+    $('#aprobadorComentarios').val('');
+    
+    // Guardar ID para posterior uso
+    $('#modalGestionarSolicitudAprobador').data('solicitudId', solicitud.ID_REGISTRO);
+};
+
+// Función para confirmar la decisión del aprobador
+window.confirmarDecisionAprobador = function() {
+    const solicitudId = $('#modalGestionarSolicitudAprobador').data('solicitudId');
+    const accion = $('input[name="aprobadorAccion"]:checked').val();
+    const comentarios = $('#aprobadorComentarios').val().trim();
+    
+    // Validaciones
+    if (!accion) {
+        alert('Por favor seleccione una acción a realizar');
+        $('#gestionarAprob-decision-tab').tab('show');
+        return;
+    }
+    
+    if (!comentarios) {
+        alert('Por favor ingrese comentarios sobre la decisión.\nLos comentarios son obligatorios para justificar su decisión.');
+        $('#aprobadorComentarios').focus();
+        return;
+    }
+    
+    if (comentarios.length < 10) {
+        alert('Los comentarios deben tener al menos 10 caracteres para ser descriptivos.');
+        $('#aprobadorComentarios').focus();
+        return;
+    }
+    
+    // Determinar nuevo estado y mensaje
+    let nuevoEstado = '';
+    let mensaje = '';
+    let icono = '';
+    
+    switch(accion) {
+        case 'aprobar':
+            nuevoEstado = 'En Análisis';
+            icono = '✅';
+            mensaje = 'Solicitud aprobada exitosamente.\n\nLa solicitud pasa a estado "En Análisis" para continuar el proceso de revisión técnica.';
+            break;
+        case 'devolver':
+            nuevoEstado = 'Devuelta';
+            icono = '↩️';
+            mensaje = 'Solicitud devuelta al solicitante.\n\nEl solicitante recibirá una notificación y podrá realizar las correcciones necesarias según sus comentarios.';
+            break;
+        case 'anular':
+            nuevoEstado = 'No Solicitada';
+            icono = '❌';
+            mensaje = 'Solicitud anulada.\n\nLa solicitud ha sido marcada como "No Solicitada" y no continuará el proceso.';
+            break;
+    }
+    
+    console.log('Decisión del aprobador:', {
+        solicitudId,
+        accion,
+        nuevoEstado,
+        comentarios,
+        aprobador: 'Demo Novakem 10',
+        fecha: new Date().toISOString()
+    });
+    
+    // Aquí se actualizaría el estado en la base de datos
+    // Por ahora solo mostramos el mensaje de confirmación
+    alert(`${icono} ${mensaje}\n\nComentarios registrados:\n"${comentarios}"\n\nAprobador: Demo Novakem 10\nFecha: ${new Date().toLocaleString()}`);
+    
+    // Cerrar modal
+    $('#modalGestionarSolicitudAprobador').modal('hide');
+    
+    // Recargar vista
+    setTimeout(() => {
+        location.reload();
+    }, 1000);
+};
+
+// Función auxiliar para formatear fechas
+function formatDateTimeForDisplay(dateTimeString) {
+    if (!dateTimeString) return '';
+    try {
+        const date = new Date(dateTimeString);
+        return date.toLocaleString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (error) {
+        return dateTimeString;
     }
 }
 </script>

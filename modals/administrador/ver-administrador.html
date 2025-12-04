@@ -11,7 +11,30 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Header: Estado y Observaciones -->
+                <!-- Tabs Navigation Principal -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="verAdminMainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="verAdmin-solicitud-tab" data-toggle="tab" href="#verAdmin-solicitud" role="tab" aria-controls="verAdmin-solicitud" aria-selected="true">
+                            <i class="fas fa-file-alt mr-2"></i>Detalle de Solicitud
+                        </a>
+                    </li>
+                    <li class="nav-item" id="verAdmin-aprobadores-tab-li" style="display: none;">
+                        <a class="nav-link" id="verAdmin-aprobadores-tab" data-toggle="tab" href="#verAdmin-aprobadores" role="tab" aria-controls="verAdmin-aprobadores" aria-selected="false">
+                            <i class="fas fa-user-check mr-2"></i>Aprobadores
+                        </a>
+                    </li>
+                    <li class="nav-item" id="verAdmin-distribucion-tab-li" style="display: none;">
+                        <a class="nav-link" id="verAdmin-distribucion-tab" data-toggle="tab" href="#verAdmin-distribucion" role="tab" aria-controls="verAdmin-distribucion" aria-selected="false">
+                            <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content Principal -->
+                <div class="tab-content" id="verAdminMainTabsContent">
+                    <!-- Tab: Detalle de Solicitud -->
+                    <div class="tab-pane fade show active" id="verAdmin-solicitud" role="tabpanel" aria-labelledby="verAdmin-solicitud-tab">
+                        <!-- Header: Estado y Observaciones -->
                 <div class="card mb-3">
                     <div class="card-header bg-light py-2">
                         <h6 class="mb-0 text-primary"><i class="fas fa-info-circle mr-2"></i>Estado y Observaciones</h6>
@@ -355,6 +378,56 @@
                         </div>
                     </div>
                 </div>
+                    </div>
+                    <!-- Fin Tab: Detalle de Solicitud -->
+
+                    <!-- Tab: Aprobadores -->
+                    <div class="tab-pane fade" id="verAdmin-aprobadores" role="tabpanel" aria-labelledby="verAdmin-aprobadores-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Aprobadores:</strong> Personas que deben aprobar esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-success text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-user-check mr-2"></i>Aprobadores Asignados</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="verAdmin-listaAprobadores" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <p>No hay aprobadores asignados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Aprobadores -->
+
+                    <!-- Tab: Lista de Distribución -->
+                    <div class="tab-pane fade" id="verAdmin-distribucion" role="tabpanel" aria-labelledby="verAdmin-distribucion-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Distribución:</strong> Personas que reciben notificaciones sobre esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-info text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-share-alt mr-2"></i>Lista de Distribución</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="verAdmin-listaDistribucion" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-envelope fa-2x mb-2"></i>
+                                        <p>No hay usuarios en la lista de distribución</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Lista de Distribución -->
+                </div>
+                <!-- Fin Tabs Content Principal -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">

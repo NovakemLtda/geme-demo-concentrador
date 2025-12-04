@@ -11,17 +11,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formEditarSolicitudSolic">
-                    <!-- Leyenda de campos obligatorios -->
-                    <div class="alert alert-info mb-3" role="alert">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            <div>
-                                <strong>Leyenda:</strong>
-                                <span class="ml-3"><span class="text-danger">*</span> Campos obligatorios</span>
+                <!-- Tabs Navigation Principal -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="editarSolicMainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="editarSolic-formulario-tab" data-toggle="tab" href="#editarSolic-formulario" role="tab" aria-controls="editarSolic-formulario" aria-selected="true">
+                            <i class="fas fa-edit mr-2"></i>Formulario de Solicitud
+                        </a>
+                    </li>
+                    <li class="nav-item" id="editarSolic-aprobadores-tab-li" style="display: none;">
+                        <a class="nav-link" id="editarSolic-aprobadores-tab" data-toggle="tab" href="#editarSolic-aprobadores" role="tab" aria-controls="editarSolic-aprobadores" aria-selected="false">
+                            <i class="fas fa-user-check mr-2"></i>Aprobadores
+                        </a>
+                    </li>
+                    <li class="nav-item" id="editarSolic-distribucion-tab-li" style="display: none;">
+                        <a class="nav-link" id="editarSolic-distribucion-tab" data-toggle="tab" href="#editarSolic-distribucion" role="tab" aria-controls="editarSolic-distribucion" aria-selected="false">
+                            <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content Principal -->
+                <div class="tab-content" id="editarSolicMainTabsContent">
+                    <!-- Tab: Formulario de Solicitud -->
+                    <div class="tab-pane fade show active" id="editarSolic-formulario" role="tabpanel" aria-labelledby="editarSolic-formulario-tab">
+                        <form id="formEditarSolicitudSolic">
+                            <!-- Leyenda de campos obligatorios -->
+                            <div class="alert alert-info mb-3" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <div>
+                                        <strong>Leyenda:</strong>
+                                        <span class="ml-3"><span class="text-danger">*</span> Campos obligatorios</span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
                     <!-- Header: Estado (SOLO LECTURA) -->
                     <div class="card mb-3">
@@ -246,9 +269,125 @@
                         </div>
                     </div>
 
-                    <!-- ID oculto de la solicitud -->
-                    <input type="hidden" id="editarSolicID" name="solicitudId">
-                </form>
+                            <!-- ID oculto de la solicitud -->
+                            <input type="hidden" id="editarSolicID" name="solicitudId">
+                        </form>
+                    </div>
+                    <!-- Fin Tab: Formulario de Solicitud -->
+
+                    <!-- Tab: Aprobadores -->
+                    <div class="tab-pane fade" id="editarSolic-aprobadores" role="tabpanel" aria-labelledby="editarSolic-aprobadores-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Aprobadores:</strong> Seleccione las personas que deben aprobar esta solicitud.
+                        </div>
+
+                        <div class="row">
+                            <!-- Panel Izquierdo: Búsqueda y Lista de Aprobadores Disponibles -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light py-2">
+                                        <h6 class="mb-0 text-primary"><i class="fas fa-search mr-2"></i>Buscar Aprobadores</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Campo de búsqueda -->
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="editarSolic-buscarAprobador" placeholder="Buscar por nombre o email...">
+                                        </div>
+
+                                        <!-- Lista de Últimos Aprobadores Utilizados -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Últimos aprobadores utilizados:</small>
+                                        </div>
+                                        <div id="editarSolic-listaAprobadoresDisponibles" class="border rounded p-2" style="height: 300px; overflow-y: auto;">
+                                            <!-- Se llenará dinámicamente -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel Derecho: Aprobadores Seleccionados -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-success text-white py-2">
+                                        <h6 class="mb-0"><i class="fas fa-user-check mr-2"></i>Aprobadores Seleccionados</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Lista de Aprobadores Seleccionados -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Lista de aprobación (<span id="editarSolic-contadorAprobadores">0</span>):</small>
+                                        </div>
+                                        <div id="editarSolic-listaAprobadoresSeleccionados" class="border rounded p-2" style="height: 300px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="fas fa-users fa-2x mb-2"></i>
+                                                <p>No hay aprobadores seleccionados</p>
+                                                <small>Seleccione aprobadores de la lista de la izquierda</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Aprobadores -->
+
+                    <!-- Tab: Lista de Distribución -->
+                    <div class="tab-pane fade" id="editarSolic-distribucion" role="tabpanel" aria-labelledby="editarSolic-distribucion-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Distribución:</strong> Seleccione las personas que recibirán notificaciones sobre esta solicitud.
+                        </div>
+
+                        <div class="row">
+                            <!-- Panel Izquierdo: Búsqueda y Lista de Usuarios Disponibles -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-light py-2">
+                                        <h6 class="mb-0 text-primary"><i class="fas fa-search mr-2"></i>Buscar Usuarios</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Campo de búsqueda -->
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="editarSolic-buscarUsuario" placeholder="Buscar por nombre o email...">
+                                        </div>
+
+                                        <!-- Lista de Usuarios Disponibles -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Usuarios disponibles:</small>
+                                        </div>
+                                        <div id="editarSolic-listaDistribucionDisponible" class="border rounded p-2" style="height: 350px; overflow-y: auto;">
+                                            <!-- Se llenará dinámicamente -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Panel Derecho: Lista de Distribución Seleccionada -->
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header bg-info text-white py-2">
+                                        <h6 class="mb-0"><i class="fas fa-share-alt mr-2"></i>Lista de Distribución</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Lista de Distribución Seleccionada -->
+                                        <div class="mb-2">
+                                            <small class="text-muted">Usuarios en lista (<span id="editarSolic-contadorDistribucion">0</span>):</small>
+                                        </div>
+                                        <div id="editarSolic-listaDistribucionSeleccionada" class="border rounded p-2" style="height: 350px; overflow-y: auto;">
+                                            <div class="text-center text-muted py-4">
+                                                <i class="fas fa-envelope fa-2x mb-2"></i>
+                                                <p>No hay usuarios en la lista</p>
+                                                <small>Seleccione usuarios de la lista de la izquierda</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Lista de Distribución -->
+                </div>
+                <!-- Fin Tabs Content Principal -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
@@ -262,15 +401,35 @@
     </div>
 </div>
 
-<!-- Script para lógica condicional del formulario de edición -->
+<!-- Script para lógica del formulario y gestión de aprobadores/distribución -->
 <script>
+// Variables globales para gestión de listas - usar GEME_GLOBALS_EDITAR para evitar conflictos
+if (typeof window.GEME_GLOBALS_EDITAR === 'undefined') {
+    window.GEME_GLOBALS_EDITAR = {
+        aprobadoresDisponibles: [],
+        aprobadoresSeleccionados: [],
+        distribucionDisponible: [],
+        distribucionSeleccionada: [],
+        initialized: false
+    };
+}
+
+// Referencias locales a las variables globales
+var editarAprobadoresDisponibles = window.GEME_GLOBALS_EDITAR.aprobadoresDisponibles;
+var editarAprobadoresSeleccionados = window.GEME_GLOBALS_EDITAR.aprobadoresSeleccionados;
+var editarDistribucionDisponible = window.GEME_GLOBALS_EDITAR.distribucionDisponible;
+var editarDistribucionSeleccionada = window.GEME_GLOBALS_EDITAR.distribucionSeleccionada;
+
 $(document).ready(function() {
-    // Lógica condicional para DESCRIPCION_RIESGO - Ahora se muestra siempre
+    // Inicializar datos para modal editar
+    inicializarAprobadoresEditar();
+    inicializarDistribucionEditar();
+    
+    // Lógica condicional para DESCRIPCION_RIESGO
     $('#editarSolicRiesgo').on('change', function() {
         const riesgo = $(this).val();
         const textarea = $('#editarSolicDescripcionRiesgo');
         
-        // El campo siempre es obligatorio cuando se selecciona un riesgo
         if (riesgo && riesgo !== '') {
             textarea.prop('required', true);
         } else {
@@ -290,8 +449,20 @@ $(document).ready(function() {
         } else {
             container.slideUp(300);
             textarea.prop('required', false);
-            textarea.val(''); // Limpiar el campo
+            textarea.val('');
         }
+    });
+    
+    // Búsqueda de aprobadores
+    $('#editarSolic-buscarAprobador').on('input', function() {
+        const termino = $(this).val().toLowerCase();
+        filtrarAprobadoresEditar(termino);
+    });
+    
+    // Búsqueda de usuarios para distribución
+    $('#editarSolic-buscarUsuario').on('input', function() {
+        const termino = $(this).val().toLowerCase();
+        filtrarDistribucionEditar(termino);
     });
     
     // Limpiar campos condicionales al cerrar el modal
@@ -299,6 +470,281 @@ $(document).ready(function() {
         $('#editarSolicDescripcionRiesgo').prop('required', false).val('');
         $('#editarSolicDescripcionAfectacionContainer').hide();
         $('#editarSolicDescripcionAfectacion').prop('required', false).val('');
+        
+        // Limpiar listas de aprobadores y distribución
+        editarAprobadoresSeleccionados.length = 0;
+        editarDistribucionSeleccionada.length = 0;
+        actualizarListaAprobadoresSeleccionadosEditar();
+        actualizarListaDistribucionSeleccionadaEditar();
     });
 });
+
+// ============================================
+// FUNCIONES PARA GESTIÓN DE APROBADORES - MODAL EDITAR
+// ============================================
+
+function inicializarAprobadoresEditar() {
+    // Lista de aprobadores disponibles (simulada)
+    editarAprobadoresDisponibles.length = 0;
+    editarAprobadoresDisponibles.push(
+        { nombre: 'Ignacio Soto', email: 'ignacio.soto@empresa.cl' },
+        { nombre: 'Daniela Campos', email: 'daniela.campos@empresa.cl' },
+        { nombre: 'Francisca Vega', email: 'francisca.vega@empresa.cl' },
+        { nombre: 'Carlos Rojas', email: 'carlos.rojas@empresa.cl' },
+        { nombre: 'Ana Martínez', email: 'ana.martinez@empresa.cl' },
+        { nombre: 'Pedro Silva', email: 'pedro.silva@empresa.cl' }
+    );
+    
+    mostrarAprobadoresDisponiblesEditar();
+}
+
+function mostrarAprobadoresDisponiblesEditar() {
+    const container = $('#editarSolic-listaAprobadoresDisponibles');
+    container.empty();
+    
+    editarAprobadoresDisponibles.forEach((aprobador, index) => {
+        const isSelected = editarAprobadoresSeleccionados.some(sel => sel.email === aprobador.email);
+        const html = `
+            <div class="aprobador-disponible-item p-2 mb-2 border rounded ${isSelected ? 'bg-light' : 'bg-white'}" 
+                 style="cursor: ${isSelected ? 'not-allowed' : 'pointer'};" 
+                 onclick="${isSelected ? '' : `seleccionarAprobadorEditar(${index})`}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="${isSelected ? 'text-muted' : 'text-dark'}">${aprobador.nombre}</strong>
+                        <br><small class="${isSelected ? 'text-muted' : 'text-secondary'}">${aprobador.email}</small>
+                    </div>
+                    <div>
+                        ${isSelected ? 
+                            '<i class="fas fa-check-circle text-success"></i>' : 
+                            '<i class="fas fa-plus-circle text-primary"></i>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+        container.append(html);
+    });
+}
+
+function seleccionarAprobadorEditar(index) {
+    const aprobador = editarAprobadoresDisponibles[index];
+    
+    // Verificar si ya está seleccionado
+    if (!editarAprobadoresSeleccionados.some(sel => sel.email === aprobador.email)) {
+        editarAprobadoresSeleccionados.push({ ...aprobador });
+        actualizarListaAprobadoresSeleccionadosEditar();
+        mostrarAprobadoresDisponiblesEditar();
+    }
+}
+
+function removerAprobadorEditar(index) {
+    editarAprobadoresSeleccionados.splice(index, 1);
+    actualizarListaAprobadoresSeleccionadosEditar();
+    mostrarAprobadoresDisponiblesEditar();
+}
+
+function actualizarListaAprobadoresSeleccionadosEditar() {
+    const container = $('#editarSolic-listaAprobadoresSeleccionados');
+    const contador = $('#editarSolic-contadorAprobadores');
+    
+    contador.text(editarAprobadoresSeleccionados.length);
+    
+    if (editarAprobadoresSeleccionados.length === 0) {
+        container.html(`
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-users fa-2x mb-2"></i>
+                <p>No hay aprobadores seleccionados</p>
+                <small>Seleccione aprobadores de la lista de la izquierda</small>
+            </div>
+        `);
+        return;
+    }
+    
+    container.empty();
+    editarAprobadoresSeleccionados.forEach((aprobador, index) => {
+        const html = `
+            <div class="aprobador-seleccionado-item p-2 mb-2 border rounded bg-light">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="text-success">${aprobador.nombre}</strong>
+                        <br><small class="text-secondary">${aprobador.email}</small>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerAprobadorEditar(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.append(html);
+    });
+}
+
+function filtrarAprobadoresEditar(termino) {
+    const items = $('#editarSolic-listaAprobadoresDisponibles .aprobador-disponible-item');
+    
+    items.each(function() {
+        const texto = $(this).text().toLowerCase();
+        if (texto.includes(termino)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+// ============================================
+// FUNCIONES PARA GESTIÓN DE DISTRIBUCIÓN - MODAL EDITAR
+// ============================================
+
+function inicializarDistribucionEditar() {
+    // Lista de usuarios disponibles para distribución (simulada)
+    editarDistribucionDisponible.length = 0;
+    editarDistribucionDisponible.push(
+        { nombre: 'Fernando Castro', email: 'fernando.castro@empresa.cl', usuarioSistema: true },
+        { nombre: 'Javiera Rojas', email: 'javiera.rojas@empresa.cl', usuarioSistema: true },
+        { nombre: 'Sofía Parra', email: 'sofia.parra@empresa.cl', usuarioSistema: false },
+        { nombre: 'Andrés Muñoz', email: 'andres.munoz@empresa.cl', usuarioSistema: false },
+        { nombre: 'Carmen López', email: 'carmen.lopez@empresa.cl', usuarioSistema: true },
+        { nombre: 'Ricardo Herrera', email: 'ricardo.herrera@empresa.cl', usuarioSistema: false }
+    );
+    
+    mostrarDistribucionDisponibleEditar();
+}
+
+function mostrarDistribucionDisponibleEditar() {
+    const container = $('#editarSolic-listaDistribucionDisponible');
+    container.empty();
+    
+    editarDistribucionDisponible.forEach((usuario, index) => {
+        const isSelected = editarDistribucionSeleccionada.some(sel => sel.email === usuario.email);
+        const html = `
+            <div class="distribucion-disponible-item p-2 mb-2 border rounded ${isSelected ? 'bg-light' : 'bg-white'}" 
+                 style="cursor: ${isSelected ? 'not-allowed' : 'pointer'};" 
+                 onclick="${isSelected ? '' : `seleccionarDistribucionEditar(${index})`}">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="${isSelected ? 'text-muted' : 'text-dark'}">${usuario.nombre}</strong>
+                        <br><small class="${isSelected ? 'text-muted' : 'text-secondary'}">${usuario.email}</small>
+                        <br><span class="badge badge-${usuario.usuarioSistema ? 'primary' : 'secondary'} badge-sm">
+                            ${usuario.usuarioSistema ? 'Usuario Sistema' : 'Externo'}
+                        </span>
+                    </div>
+                    <div>
+                        ${isSelected ? 
+                            '<i class="fas fa-check-circle text-success"></i>' : 
+                            '<i class="fas fa-plus-circle text-primary"></i>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+        container.append(html);
+    });
+}
+
+function seleccionarDistribucionEditar(index) {
+    const usuario = editarDistribucionDisponible[index];
+    
+    // Verificar si ya está seleccionado
+    if (!editarDistribucionSeleccionada.some(sel => sel.email === usuario.email)) {
+        editarDistribucionSeleccionada.push({ ...usuario });
+        actualizarListaDistribucionSeleccionadaEditar();
+        mostrarDistribucionDisponibleEditar();
+    }
+}
+
+function removerDistribucionEditar(index) {
+    editarDistribucionSeleccionada.splice(index, 1);
+    actualizarListaDistribucionSeleccionadaEditar();
+    mostrarDistribucionDisponibleEditar();
+}
+
+function actualizarListaDistribucionSeleccionadaEditar() {
+    const container = $('#editarSolic-listaDistribucionSeleccionada');
+    const contador = $('#editarSolic-contadorDistribucion');
+    
+    contador.text(editarDistribucionSeleccionada.length);
+    
+    if (editarDistribucionSeleccionada.length === 0) {
+        container.html(`
+            <div class="text-center text-muted py-4">
+                <i class="fas fa-envelope fa-2x mb-2"></i>
+                <p>No hay usuarios en la lista</p>
+                <small>Seleccione usuarios de la lista de la izquierda</small>
+            </div>
+        `);
+        return;
+    }
+    
+    container.empty();
+    editarDistribucionSeleccionada.forEach((usuario, index) => {
+        const html = `
+            <div class="distribucion-seleccionada-item p-2 mb-2 border rounded bg-light">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong class="text-info">${usuario.nombre}</strong>
+                        <br><small class="text-secondary">${usuario.email}</small>
+                        <br><span class="badge badge-${usuario.usuarioSistema ? 'primary' : 'secondary'} badge-sm">
+                            ${usuario.usuarioSistema ? 'Usuario Sistema' : 'Externo'}
+                        </span>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerDistribucionEditar(${index})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        container.append(html);
+    });
+}
+
+function filtrarDistribucionEditar(termino) {
+    const items = $('#editarSolic-listaDistribucionDisponible .distribucion-disponible-item');
+    
+    items.each(function() {
+        const texto = $(this).text().toLowerCase();
+        if (texto.includes(termino)) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    });
+}
+
+// ============================================
+// FUNCIÓN PARA CARGAR DATOS EXISTENTES
+// ============================================
+
+function cargarDatosExistentesEditar(solicitud) {
+    // Limpiar selecciones previas
+    editarAprobadoresSeleccionados.length = 0;
+    editarDistribucionSeleccionada.length = 0;
+    
+    // Cargar aprobadores existentes
+    if (solicitud.APROBADORES && solicitud.APROBADORES.length > 0) {
+        solicitud.APROBADORES.forEach(aprobador => {
+            editarAprobadoresSeleccionados.push({
+                nombre: aprobador.NOMBRE,
+                email: aprobador.EMAIL
+            });
+        });
+    }
+    
+    // Cargar distribución existente
+    if (solicitud.LISTA_DISTRIBUCION && solicitud.LISTA_DISTRIBUCION.length > 0) {
+        solicitud.LISTA_DISTRIBUCION.forEach(usuario => {
+            editarDistribucionSeleccionada.push({
+                nombre: usuario.NOMBRE,
+                email: usuario.EMAIL,
+                usuarioSistema: usuario.USUARIO_SISTEMA
+            });
+        });
+    }
+    
+    // Actualizar las listas
+    actualizarListaAprobadoresSeleccionadosEditar();
+    actualizarListaDistribucionSeleccionadaEditar();
+    mostrarAprobadoresDisponiblesEditar();
+    mostrarDistribucionDisponibleEditar();
+}
 </script>

@@ -9,15 +9,27 @@
         font-weight: bold;
         border-bottom-color: white;
     }
-    .nav-tabs .nav-link:not(.active) {
+    /* Estilos solo para tabs principales de la vista, no para modales */
+    .main-tabs .nav-tabs .nav-link:not(.active) {
         color: white; /* Mejorar contraste */
         font-weight: 600; /* Hacer más visible */
         text-shadow: 0 0 1px rgba(0,0,0,0.3); /* Añadir sombra para mejor legibilidad */
     }
-    .nav-tabs .nav-link:not(.active):hover {
+    .main-tabs .nav-tabs .nav-link:not(.active):hover {
         color: white;
         border-color: rgba(255, 255, 255, 0.5);
         background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Estilos específicos para tabs de modales - letras negras */
+    .modal .nav-tabs .nav-link:not(.active) {
+        color: #333 !important; /* Letras negras para mejor legibilidad */
+        font-weight: 600;
+    }
+    .modal .nav-tabs .nav-link:not(.active):hover {
+        color: #333 !important;
+        border-color: rgba(0, 0, 0, 0.2);
+        background-color: rgba(0, 0, 0, 0.05);
     }
     
     /* Estilos para las tarjetas */
@@ -69,7 +81,7 @@
 <div class="row mb-4">
     <div class="col-12">
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header bg-primary text-white main-tabs">
                 <ul class="nav nav-tabs card-header-tabs" id="dashboard-tabs-desp" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link active bg-white text-dark font-weight-bold" id="proceso-tab-desp" data-toggle="tab" href="#proceso-content-desp" role="tab" aria-controls="proceso-content-desp" aria-selected="true">
@@ -449,7 +461,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
 
     solicitudes.forEach(sol => {
         const estado = sol.ESTADO;
-        const tipo = sol.TIPO;
+        const tipo = sol.TIPO_TRABAJO;
         
         // Conteo por estados en proceso
         if (estado === 'En Análisis') resumenProceso.totalEnAnalisis++;
@@ -603,7 +615,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
             
             if (pertenece) {
                 const estado = sol.ESTADO;
-                const tipo = sol.TIPO;
+                const tipo = sol.TIPO_TRABAJO;
                 
                 // Incrementar total general
                 resumenHistorico.totalGeneradas++;
@@ -618,7 +630,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
                 // Conteo por estado
                 if (estado === 'Devuelta') resumenHistorico.totalDevueltas++;
                 if (estado === 'No Solicitada') resumenHistorico.totalAnuladas++;
-                if (['En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumenHistorico.totalEnProceso++;
+                if (['Por Aprobar', 'En Análisis', 'Administrador Gestionando', 'Programada'].includes(estado)) resumenHistorico.totalEnProceso++;
                 if (estado === 'Vigente') resumenHistorico.totalVigentes++;
                 if (estado === 'Rechazada') resumenHistorico.totalRechazadas++;
                 if (estado === 'Extendida') resumenHistorico.totalExtendidas++;
@@ -776,7 +788,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         
         // Determinar badge de tipo
         let badgeTipo = 'badge-secondary';
-        switch(solicitud.TIPO) {
+        switch(solicitud.TIPO_TRABAJO) {
             case 'SDCN': badgeTipo = 'badge-primary'; break;
             case 'SICF': badgeTipo = 'badge-success'; break;
             case 'SODI': badgeTipo = 'badge-danger'; break;
@@ -791,6 +803,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         let claseFinalizad = '';
         switch(solicitud.ESTADO) {
             case 'Pendiente': badgeEstado = 'badge-warning'; break;
+            case 'Por Aprobar': badgeEstado = 'badge-info'; break;
             case 'Devuelta': badgeEstado = 'badge-danger'; break;
             case 'En Análisis': badgeEstado = 'badge-info'; break;
             case 'Administrador Gestionando': badgeEstado = 'badge-warning text-dark'; break;
@@ -866,7 +879,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
                 <td class="text-center">${acciones}</td>
                 <td>${solicitud.ID_REGISTRO}</td>
                 <td>${solicitud.ID_SOLICITUD}</td>
-                <td>${solicitud.TIPO_INTERVENCION || solicitud.TIPO}</td>
+                <td>${solicitud.TIPO_INTERVENCION}</td>
                 <td>${solicitud.INSTALACION_GM}</td>
                 <td>${solicitud.DESCRIPCION || ''}</td>
                 <td>${solicitud.CONDICIONES || ''}</td>
@@ -1037,7 +1050,7 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $('.solicitud-finalizada').removeAttr('style');
     
     // Estados que se consideran "En Proceso" para Despachador
-    const estadosEnProceso = ['Pendiente', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Despachador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida'];
+    const estadosEnProceso = ['Pendiente', 'Por Aprobar', 'Devuelta', 'En Análisis', 'Administrador Gestionando', 'Despachador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida'];
     
     // Estados que se consideran "Finalizadas"
     const estadosFinalizadas = ['Finalizada', 'No Solicitada', 'Rechazada'];
@@ -1091,4 +1104,4 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
 </script>
 
 <!-- Cargar modales del despachador -->
-<script src="modals/despachador/modals-loader.js?v=3" defer></script>
+<script src="modals/despachador/modals-loader.js?v=4" defer></script>

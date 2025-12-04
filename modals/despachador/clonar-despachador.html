@@ -11,7 +11,30 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formClonarSolicitudDesp">
+                <!-- Tabs Navigation Principal -->
+                <ul class="nav nav-tabs nav-justified mb-4" id="clonarDespMainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="clonarDesp-solicitud-tab" data-toggle="tab" href="#clonarDesp-solicitud" role="tab" aria-controls="clonarDesp-solicitud" aria-selected="true">
+                            <i class="fas fa-file-alt mr-2"></i>Detalle de Solicitud
+                        </a>
+                    </li>
+                    <li class="nav-item" id="clonarDesp-aprobadores-tab-li" style="display: none;">
+                        <a class="nav-link" id="clonarDesp-aprobadores-tab" data-toggle="tab" href="#clonarDesp-aprobadores" role="tab" aria-controls="clonarDesp-aprobadores" aria-selected="false">
+                            <i class="fas fa-user-check mr-2"></i>Aprobadores
+                        </a>
+                    </li>
+                    <li class="nav-item" id="clonarDesp-distribucion-tab-li" style="display: none;">
+                        <a class="nav-link" id="clonarDesp-distribucion-tab" data-toggle="tab" href="#clonarDesp-distribucion" role="tab" aria-controls="clonarDesp-distribucion" aria-selected="false">
+                            <i class="fas fa-share-alt mr-2"></i>Lista de Distribución
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content Principal -->
+                <div class="tab-content" id="clonarDespMainTabsContent">
+                    <!-- Tab: Detalle de Solicitud -->
+                    <div class="tab-pane fade show active" id="clonarDesp-solicitud" role="tabpanel" aria-labelledby="clonarDesp-solicitud-tab">
+                        <form id="formClonarSolicitudDesp">
                 <!-- Leyenda de Colores -->
                 <div class="alert alert-info mb-3" role="alert">
                     <div class="row">
@@ -331,7 +354,56 @@
                         </div>
                     </div>
                 </div>
-                </form>
+                </form>                    </div>
+                    <!-- Fin Tab: Detalle de Solicitud -->
+
+                    <!-- Tab: Aprobadores -->
+                    <div class="tab-pane fade" id="clonarDesp-aprobadores" role="tabpanel" aria-labelledby="clonarDesp-aprobadores-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Aprobadores:</strong> Personas que deben aprobar esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-success text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-user-check mr-2"></i>Aprobadores Asignados</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="clonarDesp-listaAprobadores" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-users fa-2x mb-2"></i>
+                                        <p>No hay aprobadores asignados</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Aprobadores -->
+
+                    <!-- Tab: Lista de Distribución -->
+                    <div class="tab-pane fade" id="clonarDesp-distribucion" role="tabpanel" aria-labelledby="clonarDesp-distribucion-tab">
+                        <div class="alert alert-info mb-3" role="alert">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            <strong>Lista de Distribución:</strong> Personas que reciben notificaciones sobre esta solicitud.
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header bg-info text-white py-2">
+                                <h6 class="mb-0"><i class="fas fa-share-alt mr-2"></i>Lista de Distribución</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="clonarDesp-listaDistribucion" class="border rounded p-3" style="min-height: 200px;">
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-envelope fa-2x mb-2"></i>
+                                        <p>No hay usuarios en la lista de distribución</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Fin Tab: Lista de Distribución -->
+                </div>
+                <!-- Fin Tabs Content Principal -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
