@@ -218,13 +218,9 @@ $(document).ready(function() {
         $('#verAdminAplicaSODI').val(solicitud.APLICA_SODI || '');
         $('#verAdminRiesgo').val(solicitud.RIESGO || '');
         
-        // Campo condicional - DESCRIPCION_RIESGO
-        if (solicitud.DESCRIPCION_RIESGO && (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto')) {
-            $('#verAdminDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO);
-            $('#verAdminDescripcionRiesgoContainer').show();
-        } else {
-            $('#verAdminDescripcionRiesgoContainer').hide();
-        }
+        // Campo DESCRIPCION_RIESGO - siempre se muestra
+        $('#verAdminDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO || '');
+        $('#verAdminDescripcionRiesgoContainer').show();
         
         // SODI Adjunto (mostrar solo si aplica SODI)
         if (solicitud.APLICA_SODI === 'Sí') {
@@ -309,13 +305,9 @@ $(document).ready(function() {
         $(`${modalContext} #gestionarAplicaSODI`).val(solicitud.APLICA_SODI || '');
         $(`${modalContext} #gestionarRiesgo`).val(solicitud.RIESGO || '');
         
-        // Descripción del Riesgo del Trabajo (condicional - solo si es Medio o Alto)
-        if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-            $(`${modalContext} #gestionarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
-            $(`${modalContext} #gestionarDescripcionRiesgoContainer`).show();
-        } else {
-            $(`${modalContext} #gestionarDescripcionRiesgoContainer`).hide();
-        }
+        // Descripción del Riesgo del Trabajo - siempre se muestra
+        $(`${modalContext} #gestionarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+        $(`${modalContext} #gestionarDescripcionRiesgoContainer`).show();
         
         // Descripción y Condiciones (SOLO LECTURA)
         $(`${modalContext} #gestionarDescripcion`).val(solicitud.DESCRIPCION || '');
@@ -399,15 +391,10 @@ $(document).ready(function() {
         $(`${modalContext} #clonarAdminAplicaSODI`).val(solicitud.APLICA_SODI || '');
         $(`${modalContext} #clonarAdminRiesgo`).val(solicitud.RIESGO || '');
         
-        // Descripción del Riesgo del Trabajo (condicional) - se copia
-        if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-            $(`${modalContext} #clonarAdminDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
-            $(`${modalContext} #clonarAdminDescripcionRiesgoContainer`).show();
-            $(`${modalContext} #clonarAdminDescripcionRiesgo`).attr('required', 'required');
-        } else {
-            $(`${modalContext} #clonarAdminDescripcionRiesgoContainer`).hide();
-            $(`${modalContext} #clonarAdminDescripcionRiesgo`).val('').removeAttr('required');
-        }
+        // Descripción del Riesgo del Trabajo - siempre se copia y es obligatoria
+        $(`${modalContext} #clonarAdminDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+        $(`${modalContext} #clonarAdminDescripcionRiesgoContainer`).show();
+        $(`${modalContext} #clonarAdminDescripcionRiesgo`).attr('required', 'required');
         
         // Descripción y Condiciones - se copian
         $(`${modalContext} #clonarAdminDescripcion`).val(solicitud.DESCRIPCION || '');
@@ -692,14 +679,9 @@ $(document).ready(function() {
         $(`${modalContext} #editarAplicaSODI`).val(solicitud.APLICA_SODI || '').prop('disabled', false);
         $(`${modalContext} #editarRiesgo`).val(solicitud.RIESGO || '').prop('disabled', false);
         
-        // Descripción del Riesgo del Trabajo (condicional) - EDITABLE
-        if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-            $(`${modalContext} #editarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '').prop('readonly', false);
-            $(`${modalContext} #editarDescripcionRiesgoContainer`).show();
-        } else {
-            $(`${modalContext} #editarDescripcionRiesgoContainer`).hide();
-            $(`${modalContext} #editarDescripcionRiesgo`).val('');
-        }
+        // Descripción del Riesgo del Trabajo - siempre EDITABLE
+        $(`${modalContext} #editarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '').prop('readonly', false);
+        $(`${modalContext} #editarDescripcionRiesgoContainer`).show();
         
         // Descripción y Condiciones - EDITABLE
         $(`${modalContext} #editarDescripcion`).val(solicitud.DESCRIPCION || '').prop('readonly', false);

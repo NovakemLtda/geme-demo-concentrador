@@ -848,6 +848,9 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
     $(function() {
         $('#filtroInstalacionGMSolic').selectpicker();
         $('#filtroEstadoSolic').selectpicker();
+        
+        // Configurar filtro de estado inicial (por defecto "En Proceso" está seleccionado)
+        actualizarFiltroEstado('proceso');
     });
     
     // Función para limpiar filtros (legacy)
@@ -920,10 +923,43 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         console.log('Filtros limpiados');
     };
     
+    // Función para actualizar opciones del filtro de estado
+    function actualizarFiltroEstado(tipo) {
+        const filtroEstado = $('#filtroEstadoSolic');
+        
+        // Limpiar opciones actuales
+        filtroEstado.empty();
+        
+        // Agregar opción "Todos"
+        filtroEstado.append('<option value="">Todos</option>');
+        
+        let estadosAMostrar = [];
+        
+        if (tipo === 'proceso') {
+            estadosAMostrar = estadosEnProceso;
+        } else if (tipo === 'finalizadas') {
+            estadosAMostrar = estadosFinalizadas;
+        } else if (tipo === 'todas') {
+            // Mostrar todos los estados
+            estadosAMostrar = [...estadosEnProceso, ...estadosFinalizadas];
+        }
+        
+        // Agregar opciones según el tipo seleccionado
+        estadosAMostrar.forEach(estado => {
+            filtroEstado.append(`<option value="${estado}">${estado}</option>`);
+        });
+        
+        // Refrescar el selectpicker
+        filtroEstado.selectpicker('refresh');
+    }
+
     // Función para filtrar por estado
     window.filtrarPorEstado = function(tipo) {
         console.log('Filtrando por:', tipo);
         filtroActual = tipo;
+        
+        // Actualizar opciones del filtro de estado
+        actualizarFiltroEstado(tipo);
         
         const table = $('#tablaSolicitudesSolicitante').DataTable();
         

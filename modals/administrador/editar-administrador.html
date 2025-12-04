@@ -39,7 +39,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label class="text-muted small mb-1">ID Solicitud</label>
+                                        <label class="text-muted small mb-1">ID</label>
                                         <input type="text" class="form-control" id="editarIDSolicitud" name="idSolicitud" placeholder="Ej: CEN-2025-001">
                                     </div>
                                 </div>
@@ -352,19 +352,9 @@
 $(document).ready(function() {
     // Lógica condicional para DESCRIPCION_RIESGO
     // Obligatorio solo para Riesgo Medio o Alto
-    $('#editarRiesgo').on('change', function() {
-        const riesgo = $(this).val();
-        const descripcionRiesgo = $('#editarDescripcionRiesgo');
-        const asterisco = $('#editarDescripcionRiesgoAsterisco');
-        
-        if (riesgo === 'Medio' || riesgo === 'Alto') {
-            descripcionRiesgo.attr('required', 'required');
-            asterisco.show();
-        } else {
-            descripcionRiesgo.removeAttr('required');
-            asterisco.hide();
-        }
-    });
+    // Descripción de riesgo siempre es obligatoria
+    $('#editarDescripcionRiesgo').attr('required', 'required');
+    $('#editarDescripcionRiesgoAsterisco').show();
     
     // Lógica condicional para DESCRIPCION_AFECTACION
     // Obligatorio si se selecciona una afectación

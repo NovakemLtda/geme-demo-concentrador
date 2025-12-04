@@ -467,7 +467,7 @@ $(document).ready(function() {
     
     // Limpiar campos condicionales al cerrar el modal
     $('#modalEditarSolicitudSolic').on('hidden.bs.modal', function() {
-        $('#editarSolicDescripcionRiesgo').prop('required', false).val('');
+        $('#editarSolicDescripcionRiesgo').prop('required', true).val('');
         $('#editarSolicDescripcionAfectacionContainer').hide();
         $('#editarSolicDescripcionAfectacion').prop('required', false).val('');
         

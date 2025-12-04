@@ -147,7 +147,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>ID Solicitud</label>
+                            <label>ID</label>
                             <input type="text" class="form-control" id="filtroIDSolicitudDesp" placeholder="Buscar por ID...">
                         </div>
                     </div>
@@ -981,6 +981,9 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         $('#filtroTipoDesp').selectpicker();
         $('#filtroEstadoDesp').selectpicker();
         
+        // Configurar filtro de estado inicial (por defecto "En Proceso" está seleccionado)
+        actualizarFiltroEstado('proceso');
+        
         // Restringir siempre el rango de fechas a los últimos 2 años
         $('#filtroFechaDesdeDesp, #filtroFechaHastaDesp').attr('min', fechaMin).attr('max', fechaMax);
     });
@@ -1073,10 +1076,43 @@ $('#zona-filtro').on('hide.bs.collapse', function () {
         console.log('Filtros limpiados');
     };
     
+    // Función para actualizar opciones del filtro de estado
+    function actualizarFiltroEstado(tipo) {
+        const filtroEstado = $('#filtroEstadoDesp');
+        
+        // Limpiar opciones actuales
+        filtroEstado.empty();
+        
+        // Agregar opción "Todos"
+        filtroEstado.append('<option value="">Todos</option>');
+        
+        let estadosAMostrar = [];
+        
+        if (tipo === 'proceso') {
+            estadosAMostrar = estadosEnProceso;
+        } else if (tipo === 'finalizadas') {
+            estadosAMostrar = estadosFinalizadas;
+        } else if (tipo === 'todas') {
+            // Mostrar todos los estados
+            estadosAMostrar = [...estadosEnProceso, ...estadosFinalizadas];
+        }
+        
+        // Agregar opciones según el tipo seleccionado
+        estadosAMostrar.forEach(estado => {
+            filtroEstado.append(`<option value="${estado}">${estado}</option>`);
+        });
+        
+        // Refrescar el selectpicker
+        filtroEstado.selectpicker('refresh');
+    }
+
     // Función para filtrar por estado
     window.filtrarPorEstado = function(tipo) {
         console.log('Filtrando por:', tipo);
         filtroActual = tipo;
+        
+        // Actualizar opciones del filtro de estado
+        actualizarFiltroEstado(tipo);
         
         // Ajustar rango de fechas según el radio seleccionado
         if (tipo === 'proceso') {

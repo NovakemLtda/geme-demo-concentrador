@@ -242,15 +242,10 @@ window.poblarModalClonar = function(solicitud, tipo) {
     $(`${modalContext} #${prefix}AplicaSODI`).val(solicitud.APLICA_SODI || '');
     $(`${modalContext} #${prefix}Riesgo`).val(solicitud.RIESGO || '');
     
-    // Descripción del Riesgo del Trabajo (condicional) - se copia
-    if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-        $(`${modalContext} #${prefix}DescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
-        $(`${modalContext} #${prefix}DescripcionRiesgoContainer`).show();
-        $(`${modalContext} #${prefix}DescripcionRiesgo`).attr('required', 'required');
-    } else {
-        $(`${modalContext} #${prefix}DescripcionRiesgoContainer`).hide();
-        $(`${modalContext} #${prefix}DescripcionRiesgo`).val('').removeAttr('required');
-    }
+    // Descripción del Riesgo del Trabajo - siempre se copia y es obligatoria
+    $(`${modalContext} #${prefix}DescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #${prefix}DescripcionRiesgoContainer`).show();
+    $(`${modalContext} #${prefix}DescripcionRiesgo`).attr('required', 'required');
     
     // Descripción y Condiciones - se copian
     $(`${modalContext} #${prefix}Descripcion`).val(solicitud.DESCRIPCION || '');

@@ -1121,15 +1121,10 @@ function poblarModalClonarAdmin(solicitud) {
     $(`${modalContext} #clonarAdminAplicaSODI`).val(solicitud.APLICA_SODI || '');
     $(`${modalContext} #clonarAdminRiesgo`).val(solicitud.RIESGO || '');
     
-    // Descripción del Riesgo del Trabajo (condicional) - se copia
-    if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-        $(`${modalContext} #clonarAdminDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
-        $(`${modalContext} #clonarAdminDescripcionRiesgoContainer`).show();
-        $(`${modalContext} #clonarAdminDescripcionRiesgo`).attr('required', 'required');
-    } else {
-        $(`${modalContext} #clonarAdminDescripcionRiesgoContainer`).hide();
-        $(`${modalContext} #clonarAdminDescripcionRiesgo`).val('').removeAttr('required');
-    }
+    // Descripción del Riesgo del Trabajo - siempre se copia y es obligatoria
+    $(`${modalContext} #clonarAdminDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #clonarAdminDescripcionRiesgoContainer`).show();
+    $(`${modalContext} #clonarAdminDescripcionRiesgo`).attr('required', 'required');
     
     // Descripción y Condiciones - se copian
     $(`${modalContext} #clonarAdminDescripcion`).val(solicitud.DESCRIPCION || '');
@@ -1222,13 +1217,9 @@ function poblarModalGestionar(solicitud) {
     $(`${modalContext} #gestionarAplicaSODI`).val(solicitud.APLICA_SODI || '');
     $(`${modalContext} #gestionarRiesgo`).val(solicitud.RIESGO || '');
     
-    // Descripción del Riesgo del Trabajo (condicional - solo si es Medio o Alto)
-    if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-        $(`${modalContext} #gestionarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
-        $(`${modalContext} #gestionarDescripcionRiesgoContainer`).show();
-    } else {
-        $(`${modalContext} #gestionarDescripcionRiesgoContainer`).hide();
-    }
+    // Descripción del Riesgo del Trabajo - siempre se muestra
+    $(`${modalContext} #gestionarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #gestionarDescripcionRiesgoContainer`).show();
     
     // Descripción y Condiciones (SOLO LECTURA)
     $(`${modalContext} #gestionarDescripcion`).val(solicitud.DESCRIPCION || '');
@@ -1349,7 +1340,7 @@ function aplicarReglasEditabilidadGestion(estado) {
         $(`${modalContext} #gestionarSODIAdjuntoRequired`).show();
         
         // Agregar asteriscos a campos obligatorios
-        $(`${modalContext} label:contains("ID Solicitud")`).append(' <span class="text-danger">*</span>');
+        $(`${modalContext} label:contains("ID")`).append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Tipo")`).first().append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Empresa Solicitante")`).append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Empresa Receptora")`).append(' <span class="text-danger">*</span>');
@@ -1651,14 +1642,9 @@ function poblarModalEditar(solicitud) {
     $(`${modalContext} #editarAplicaSODI`).val(solicitud.APLICA_SODI || '').prop('disabled', false);
     $(`${modalContext} #editarRiesgo`).val(solicitud.RIESGO || '').prop('disabled', false);
     
-    // Descripción del Riesgo del Trabajo (condicional) - EDITABLE
-    if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-        $(`${modalContext} #editarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '').prop('readonly', false);
-        $(`${modalContext} #editarDescripcionRiesgoContainer`).show();
-    } else {
-        $(`${modalContext} #editarDescripcionRiesgoContainer`).hide();
-        $(`${modalContext} #editarDescripcionRiesgo`).val('');
-    }
+    // Descripción del Riesgo del Trabajo - siempre EDITABLE
+    $(`${modalContext} #editarDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '').prop('readonly', false);
+    $(`${modalContext} #editarDescripcionRiesgoContainer`).show();
     
     // Descripción y Condiciones - EDITABLE
     $(`${modalContext} #editarDescripcion`).val(solicitud.DESCRIPCION || '').prop('readonly', false);
@@ -1912,13 +1898,9 @@ function poblarModalVerAdmin(solicitud) {
     $('#verAdminAplicaSODI').val(solicitud.APLICA_SODI || '');
     $('#verAdminRiesgo').val(solicitud.RIESGO || '');
     
-    // Campo condicional - DESCRIPCION_RIESGO
-    if (solicitud.DESCRIPCION_RIESGO && (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto')) {
-        $('#verAdminDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO);
-        $('#verAdminDescripcionRiesgoContainer').show();
-    } else {
-        $('#verAdminDescripcionRiesgoContainer').hide();
-    }
+    // Campo DESCRIPCION_RIESGO - siempre se muestra
+    $('#verAdminDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO || '');
+    $('#verAdminDescripcionRiesgoContainer').show();
     
     // SODI Adjunto (mostrar solo si aplica SODI)
     if (solicitud.APLICA_SODI === 'Sí') {
@@ -2215,13 +2197,9 @@ function poblarModalGestionarDespachador(solicitud) {
     $('#gestionarDespAplicaSODI').val(solicitud.APLICA_SODI || '');
     $('#gestionarDespRiesgo').val(solicitud.RIESGO || '');
     
-    // Descripción del Riesgo del Trabajo (condicional - solo si es Medio o Alto)
-    if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-        $('#gestionarDespDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO || '');
-        $('#gestionarDespDescripcionRiesgoContainer').show();
-    } else {
-        $('#gestionarDespDescripcionRiesgoContainer').hide();
-    }
+    // Descripción del Riesgo del Trabajo - siempre se muestra
+    $('#gestionarDespDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO || '');
+    $('#gestionarDespDescripcionRiesgoContainer').show();
     
     // Descripción y Condiciones (SOLO LECTURA)
     $('#gestionarDespDescripcion').val(solicitud.DESCRIPCION || '');
@@ -2341,7 +2319,7 @@ function aplicarReglasEditabilidadDespachador(estado) {
         $(`${modalContext} #gestionarDespDescripcionAfectacion`).prop('readonly', false); // Condicional
         
         // Agregar asteriscos a campos obligatorios
-        $(`${modalContext} label:contains("ID Solicitud")`).append(' <span class="text-danger">*</span>');
+        $(`${modalContext} label:contains("ID")`).append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Tipo")`).first().append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Inicio Programado")`).append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Fin Programado")`).append(' <span class="text-danger">*</span>');
@@ -2405,7 +2383,7 @@ function aplicarReglasEditabilidadDespachador(estado) {
         $(`${modalContext} #gestionarDespAfectaciones`).prop('disabled', false);
         
         // Agregar asteriscos (similar a Despachador Gestionando)
-        $(`${modalContext} label:contains("ID Solicitud")`).append(' <span class="text-danger">*</span>');
+        $(`${modalContext} label:contains("ID")`).append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Tipo")`).first().append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Inicio Programado")`).append(' <span class="text-danger">*</span>');
         $(`${modalContext} label:contains("Fin Programado")`).append(' <span class="text-danger">*</span>');
@@ -2903,13 +2881,9 @@ function poblarModalEditarSolic(solicitud) {
     $(`${modalContext} #editarSolicTipoIntervencion`).val(solicitud.TIPO_INTERVENCION || '');
     $(`${modalContext} #editarSolicRiesgo`).val(solicitud.RIESGO || '');
     
-    // Campo condicional - DESCRIPCION_RIESGO
-    if (solicitud.DESCRIPCION_RIESGO && (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto')) {
-        $(`${modalContext} #editarSolicDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO);
-        $(`${modalContext} #editarSolicDescripcionRiesgoContainer`).show();
-    } else {
-        $(`${modalContext} #editarSolicDescripcionRiesgoContainer`).hide();
-    }
+    // Campo DESCRIPCION_RIESGO - siempre se muestra
+    $(`${modalContext} #editarSolicDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #editarSolicDescripcionRiesgoContainer`).show();
     
     // SODI - radio buttons
     if (solicitud.APLICA_SODI === 'Sí') {
@@ -3027,13 +3001,9 @@ function poblarModalClonarSolic(solicitud) {
     
     $(`${modalContext} #clonarSolicRiesgo`).val(solicitud.RIESGO || '');
     
-    // Campo condicional - DESCRIPCION_RIESGO
-    if (solicitud.DESCRIPCION_RIESGO && (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto')) {
-        $(`${modalContext} #clonarSolicDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO);
-        $(`${modalContext} #clonarSolicDescripcionRiesgoContainer`).show();
-    } else {
-        $(`${modalContext} #clonarSolicDescripcionRiesgoContainer`).hide();
-    }
+    // Campo DESCRIPCION_RIESGO - siempre se muestra
+    $(`${modalContext} #clonarSolicDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #clonarSolicDescripcionRiesgoContainer`).show();
     
     // Descripción y Condiciones - se copian los valores
     $(`${modalContext} #clonarSolicDescripcion`).val(solicitud.DESCRIPCION || '');
@@ -3130,13 +3100,9 @@ function poblarModalGestionarSolicitante(solicitud) {
     
     $('#gestionarSolRiesgo').val(solicitud.RIESGO || '');
     
-    // Campo condicional - DESCRIPCION_RIESGO
-    if (solicitud.DESCRIPCION_RIESGO && (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto')) {
-        $('#gestionarSolDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO);
-        $('#gestionarSolDescripcionRiesgoContainer').show();
-    } else {
-        $('#gestionarSolDescripcionRiesgoContainer').hide();
-    }
+    // Campo DESCRIPCION_RIESGO - siempre se muestra
+    $('#gestionarSolDescripcionRiesgo').val(solicitud.DESCRIPCION_RIESGO || '');
+    $('#gestionarSolDescripcionRiesgoContainer').show();
     
     // Descripción y Condiciones (EDITABLE)
     $('#gestionarSolDescripcion').val(solicitud.DESCRIPCION || '');
@@ -3319,13 +3285,9 @@ function poblarModalVerSolicitante(solicitud) {
     $(`${modalContext} #verSolicAplicaSODI`).val(solicitud.APLICA_SODI || '-');
     $(`${modalContext} #verSolicRiesgo`).val(solicitud.RIESGO || '-');
     
-    // Campos condicionales - DESCRIPCION_RIESGO
-    if (solicitud.DESCRIPCION_RIESGO && (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto')) {
-        $(`${modalContext} #verSolicDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO);
-        $(`${modalContext} #verSolicDescripcionRiesgoContainer`).show();
-    } else {
-        $(`${modalContext} #verSolicDescripcionRiesgoContainer`).hide();
-    }
+    // Campo DESCRIPCION_RIESGO - siempre se muestra
+    $(`${modalContext} #verSolicDescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #verSolicDescripcionRiesgoContainer`).show();
     
     // Descripción y Condiciones
     $(`${modalContext} #verSolicDescripcion`).val(solicitud.DESCRIPCION || '-');
@@ -3400,15 +3362,10 @@ function poblarModalClonar(solicitud, tipo) {
     $(`${modalContext} #${prefix}AplicaSODI`).val(solicitud.APLICA_SODI || '');
     $(`${modalContext} #${prefix}Riesgo`).val(solicitud.RIESGO || '');
     
-    // Descripción del Riesgo del Trabajo (condicional) - se copia
-    if (solicitud.RIESGO === 'Medio' || solicitud.RIESGO === 'Alto') {
-        $(`${modalContext} #${prefix}DescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
-        $(`${modalContext} #${prefix}DescripcionRiesgoContainer`).show();
-        $(`${modalContext} #${prefix}DescripcionRiesgo`).attr('required', 'required');
-    } else {
-        $(`${modalContext} #${prefix}DescripcionRiesgoContainer`).hide();
-        $(`${modalContext} #${prefix}DescripcionRiesgo`).val('').removeAttr('required');
-    }
+    // Descripción del Riesgo del Trabajo - siempre se copia y es obligatoria
+    $(`${modalContext} #${prefix}DescripcionRiesgo`).val(solicitud.DESCRIPCION_RIESGO || '');
+    $(`${modalContext} #${prefix}DescripcionRiesgoContainer`).show();
+    $(`${modalContext} #${prefix}DescripcionRiesgo`).attr('required', 'required');
     
     // Descripción y Condiciones - se copian
     $(`${modalContext} #${prefix}Descripcion`).val(solicitud.DESCRIPCION || '');
