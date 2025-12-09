@@ -36,7 +36,7 @@ $(document).ready(function() {
         }
         
         // Estados gestionables por el despachador
-        const estadosGestionables = ['Programada', 'Vigente', 'Extendida'];
+        const estadosGestionables = ['Despachador Gestionando', 'Programada', 'Vigente', 'Extendida', 'Suspendida', 'Finalizada'];
         if (!estadosGestionables.includes(solicitud.ESTADO)) {
             alert('Esta solicitud no puede ser gestionada por el despachador en su estado actual: ' + solicitud.ESTADO);
             return;
@@ -268,9 +268,6 @@ $(document).ready(function() {
         configurarTransicionesEstadoDesp(solicitud.ESTADO);
         
         // Configurar tabs de Aprobadores y Distribución
-        configurarTabsAprobadoresDistribucion('gestionar', solicitud);
-        
-        // Configurar tabs de Aprobadores y Distribución
         configurarTabsAprobadoresDistribucion('gestionarDesp', solicitud);
         
         console.log('Modal gestionar despachador poblado correctamente');
@@ -438,91 +435,39 @@ $(document).ready(function() {
         $(`${modalContext} input, ${modalContext} select, ${modalContext} textarea`).prop('readonly', true).prop('disabled', true);
         
         // Campos siempre editables para el despachador
-        $(`${modalContext} #gestionarDespComentarios`).prop('readonly', false);
+        $(`${modalContext} #gestionarDespComentarios`).prop('readonly', false).prop('disabled', false);
         
         // Aplicar reglas según estado
-        if (estado === 'Programada') {
-            // En estado Programada, puede editar fechas efectivas para iniciar
-            $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).attr('required', true);
+        if (estado === 'Despachador Gestionando') {
+            // Puede editar campos básicos y fechas programadas
+            $(`${modalContext} #gestionarDespIDSolicitud, ${modalContext} #gestionarDespTipo`).prop('readonly', false);
+            $(`${modalContext} #gestionarDespInicioProgramado, ${modalContext} #gestionarDespFinProgramado`).prop('readonly', false);
+            $(`${modalContext} #gestionarDespEmpresaSolicitante, ${modalContext} #gestionarDespEmpresaReceptora`).prop('disabled', false);
+            
+        } else if (estado === 'Programada') {
+            // Puede editar ambas fechas efectivas (inicio obligatorio, fin opcional)
+            $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).prop('disabled', false).attr('required', true);
+            $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).prop('disabled', false);
+            
         } else if (estado === 'Vigente') {
-            // En estado Vigente, puede editar fecha fin efectiva para finalizar
-            $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).attr('required', true);
+            // Puede editar ambas fechas efectivas (inicio ya debería estar, fin para finalizar)
+            $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).prop('disabled', false);
+            $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).prop('disabled', false);
+            
         } else if (estado === 'Extendida') {
-            // En estado Extendida, puede editar fecha fin efectiva
-            $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).attr('required', true);
+            // Puede editar ambas fechas efectivas (ambas deberían estar presentes)
+            $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).prop('disabled', false);
+            $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).prop('disabled', false);
+            
+        } else if (estado === 'Suspendida') {
+            // Puede editar ambas fechas efectivas (similar a Extendida)
+            $(`${modalContext} #gestionarDespInicioEfectivo`).prop('readonly', false).prop('disabled', false);
+            $(`${modalContext} #gestionarDespFinEfectivo`).prop('readonly', false).prop('disabled', false);
+            
+        } else if (estado === 'Finalizada') {
+            // Solo puede editar comentarios (fechas en readonly para referencia)
+            // Las fechas efectivas se mantienen readonly porque ya están finalizadas
         }
-    }
-    
-    // Configurar estado y acciones disponibles para el despachador
-    function configurarEstadoGestionDespachador(estado) {
-        const modalContext = '#modalGestionarSolicitudDesp';
-        const accionesContainer = $(`${modalContext} #gestionarDespAccionesContainer`);
-        
-        let acciones = '';
-        
-        switch(estado) {
-            case 'Programada':
-                acciones = `
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="accionIniciar" name="accionGestionDesp" class="custom-control-input" value="Vigente" checked>
-                        <label class="custom-control-label" for="accionIniciar">
-                            <i class="fas fa-play mr-1"></i>Iniciar Trabajo
-                        </label>
-                        <small class="form-text text-muted ml-4">Cambiar a "Vigente"</small>
-                    </div>
-                    <div class="custom-control custom-radio mt-2">
-                        <input type="radio" id="accionSuspender" name="accionGestionDesp" class="custom-control-input" value="Suspendida">
-                        <label class="custom-control-label" for="accionSuspender">
-                            <i class="fas fa-pause mr-1"></i>Suspender Trabajo
-                        </label>
-                        <small class="form-text text-muted ml-4">Cambiar a "Suspendida"</small>
-                    </div>
-                `;
-                break;
-                
-            case 'Vigente':
-                acciones = `
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="accionFinalizar" name="accionGestionDesp" class="custom-control-input" value="Finalizada" checked>
-                        <label class="custom-control-label" for="accionFinalizar">
-                            <i class="fas fa-check mr-1"></i>Finalizar Trabajo
-                        </label>
-                        <small class="form-text text-muted ml-4">Cambiar a "Finalizada"</small>
-                    </div>
-                    <div class="custom-control custom-radio mt-2">
-                        <input type="radio" id="accionExtender" name="accionGestionDesp" class="custom-control-input" value="Extendida">
-                        <label class="custom-control-label" for="accionExtender">
-                            <i class="fas fa-clock mr-1"></i>Extender Trabajo
-                        </label>
-                        <small class="form-text text-muted ml-4">Cambiar a "Extendida"</small>
-                    </div>
-                    <div class="custom-control custom-radio mt-2">
-                        <input type="radio" id="accionSuspender" name="accionGestionDesp" class="custom-control-input" value="Suspendida">
-                        <label class="custom-control-label" for="accionSuspender">
-                            <i class="fas fa-pause mr-1"></i>Suspender Trabajo
-                        </label>
-                        <small class="form-text text-muted ml-4">Cambiar a "Suspendida"</small>
-                    </div>
-                `;
-                break;
-                
-            case 'Extendida':
-                acciones = `
-                    <div class="custom-control custom-radio">
-                        <input type="radio" id="accionFinalizar" name="accionGestionDesp" class="custom-control-input" value="Finalizada" checked>
-                        <label class="custom-control-label" for="accionFinalizar">
-                            <i class="fas fa-check mr-1"></i>Finalizar Trabajo
-                        </label>
-                        <small class="form-text text-muted ml-4">Cambiar a "Finalizada"</small>
-                    </div>
-                `;
-                break;
-                
-            default:
-                acciones = '<p class="text-muted">No hay acciones disponibles para este estado</p>';
-        }
-        
-        accionesContainer.html(acciones);
     }
     
     // Confirmar gestión de solicitud - Despachador

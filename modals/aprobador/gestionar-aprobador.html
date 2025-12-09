@@ -461,9 +461,9 @@ window.confirmarDecisionAprobador = function() {
     
     switch(accion) {
         case 'aprobar':
-            nuevoEstado = 'En Análisis';
+            nuevoEstado = 'Pendiente';
             icono = '✅';
-            mensaje = 'Solicitud aprobada exitosamente.\n\nLa solicitud pasa a estado "En Análisis" para continuar el proceso de revisión técnica.';
+            mensaje = 'Solicitud aprobada exitosamente.\n\nLa solicitud pasa a estado "Pendiente" para continuar el proceso de revisión técnica.';
             break;
         case 'devolver':
             nuevoEstado = 'Devuelta';
@@ -476,15 +476,6 @@ window.confirmarDecisionAprobador = function() {
             mensaje = 'Solicitud anulada.\n\nLa solicitud ha sido marcada como "No Solicitada" y no continuará el proceso.';
             break;
     }
-    
-    console.log('Decisión del aprobador:', {
-        solicitudId,
-        accion,
-        nuevoEstado,
-        comentarios,
-        aprobador: 'Demo Novakem 10',
-        fecha: new Date().toISOString()
-    });
     
     // Aquí se actualizaría el estado en la base de datos
     // Por ahora solo mostramos el mensaje de confirmación
