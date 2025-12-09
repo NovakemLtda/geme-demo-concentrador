@@ -95,7 +95,7 @@ $(document).ready(function() {
     // Función para ver mis tareas
     window.verMisTarea = function() {
         console.log('Ver Mis Tareas');
-        loadView('views/mis-tareas.html?v=14');
+        loadView('views/mis-tareas.html?v=15');
     };
     
     // Variable global para filtros de tareas
